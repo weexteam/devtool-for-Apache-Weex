@@ -1,0 +1,25 @@
+{
+  "name": "weex-devtool",
+  "description": "weex developer tool for debugging weex app with chrome devtool",
+  "version": "0.1.1",
+  "author": "exolution <exolution@163.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "weex",
+    "debugger",
+    "inspector",
+    "devtool"
+  ],
+  "dependencies": {
+    "commander": "^2.9.0",
+    "koa": "^1.2.0",
+    "koa-router": "~5.2.3",
+    "koa-serve": "~0.1.6",
+    "koa-serve-static": "0.0.1",
+    "koa-websocket": "~1.1.0",
+    "opn": "^4.0.2"
+  },
+  "bin": {
+    "weex-devtool": "bin/weex-devtool.js"
+  }
+}

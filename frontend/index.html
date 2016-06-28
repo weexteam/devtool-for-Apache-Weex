@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weex Debugger - Device List</title>
+    <style>
+        .device-wrap{
+            display: inline-block;
+            position: relative;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 5px 4px 15px 0 rgba(0,0,0,0.6);
+            margin:20px;
+            overflow: hidden;
+            min-width: 300px;
+        }
+        .line{
+            margin: 5px 0;
+        }
+        .line span{
+            font-size:14px;
+            color:#666;
+        }
+        .line b{
+            font-size: 18px;
+            font-weight: bolder;
+            margin-left: 8px;
+        }
+        .btn{
+            display: inline-block;
+            border: 1px solid #000;
+            padding: 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            color: #000;
+            margin: 20px 10px 0 10px;
+            width: 90px;
+            text-align: center;
+            background: #fff;
+            transition:0.3s;
+            position: relative;
+            z-index: 2;
+        }
+        .btn:hover{
+            color:#fff;
+            background: rgb(76,183,238);
+        }
+        fieldset{
+            margin:20px;
+            min-height:300px;
+            border: none;
+            border-top: 1px solid;
+        }
+        legend{
+            margin-left: 20px;
+        }
+        .btn-ctn{
+            display: block;
+            margin: 0 auto;
+            width: 248px;
+        }
+        .tips{
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgb(76,183,238);
+            right: 10px;
+            top: 8px;
+            text-align: center;
+            line-height: 23px;
+            font-weight: bold;
+            cursor: help;
+            color: #fff;
+            background: rgb(76,183,238);
+            z-index: 4;
+        }
+        .tips:hover+.mask{
+            transform: scale(45);
+        }
+        .tips:hover+.mask+.help{
+            opacity:1;
+        }
+        .mask{
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            border-radius: 50%;
+            background: rgb(76,183,238);
+            right: 10px;
+            top: 8px;
+            transition: 0.8s;
+            z-index: 1;
+        }
+        .help{
+            transition:1s;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            color: #fff;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .help>div{
+            width: 42%;
+            border: 1px solid #fff;
+            display: inline-block;
+            padding: 10px 3%;
+            height: 110px;
+            font-size: 15px;
+            margin: 15px 4% 0 4%;
+            text-align: center;
+            line-height: 1.2;
+            box-sizing: border-box;
+            vertical-align: top;
+            position: relative;
+        }
+        .arrow{
+            position: absolute;
+            width: 0;
+            border-style: solid;
+            border-width: 10px 8px;
+            border-color: #fff transparent transparent transparent;
+            bottom: -20px;
+            left: 50%;
+            margin-left: -10px;
+        }
+    </style>
+</head>
+
+<body>
+<fieldset>
+    <legend>Device List</legend>
+    <div id="container"></div>
+</fieldset>
+<script>
+    let websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
+    websocket.onmessage=function(event){
+        let message=JSON.parse(event.data);
+        let html=message.map(device=>{
+            return `
+            <div class="device-wrap">
+                <div class="line"><span>AppName:</span><b>${device.name}</b></div>
+                <div class="line"><span>DeviceModel: </span><b>${device.model}</b></div>
+                <div class="line"><span>platform: </span><b>${device.platform}</b></div>
+                <div class="line"><span>WeexVersion: </span><b>${device.weexVersion}</b></div>
+                <div class="tips">?</div>
+                <div class="mask"></div>
+                <div class="help"><div class="inspector-help">click to open a devtool page for inspecting native Element and styles<div class="arrow"></div></div><div class="debugger-help">click to debug js with breakpoint callstack and so on. <div class="arrow"></div></div></div>
+                <div class="btn-ctn">
+                <a class="btn" target="inspector" href="/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}">Inspector</a>
+                <a class="btn" target="debugger" href="/debugger.html?sessionId=${device.debuggerSessionId}">Debugger</a>
+                </div>
+            </div>
+            `;
+
+        })
+        document.getElementById('container').innerHTML=html.join('\n');
+        console.log(message);
+    }
+</script>
+</body>
+
+</html>

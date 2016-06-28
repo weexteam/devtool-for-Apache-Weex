@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS Debugger</title>
+    <script src="js/WebsocketClient.js"></script>
+    <style>
+        body{
+            font-size:large;
+        }
+        .shortcut{
+            font-family: "Monaco", monospace;
+            font-size: medium;
+            color: #eee;
+            background-color: #333;
+            padding: 4px;
+            border-radius: 4px;
+            letter-spacing: 3px;
+        }
+        b{
+            background: #ebebeb;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        #warning{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <p>Press <span class="shortcut">⌘+⌥+I</span> to open Developer Tools. Select <b>Sources</b> tag and start your debugger way!</p>
+    <p id="warning"></p>
+</div>
+<script>
+    let worker;
+    let timer;
+    let websocket=new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/'+location.search.split('?sessionId=')[1]);
+    websocket.on('WxDebug.callJS',function(message){
+        clearTimeout(timer);
+        document.getElementById('warning').innerHTML="";
+        worker.postMessage(message);
+
+    });
+    websocket.on('socketOpened',function(){
+        clearTimeout(timer);
+        timer=setTimeout(function(){
+            document.getElementById('warning').innerHTML='Warning:The session with native was closed,please restart your native app!'
+        },2000)
+    });
+    websocket.on('WxDebug.initJSRuntime',function(message){
+        clearTimeout(timer);
+        document.getElementById('warning').innerHTML="";
+        destroyJSRuntime();
+        initJSRuntime();
+
+    })
+
+    function destroyJSRuntime(){
+        if(worker){
+            worker.terminate();
+            worker.onmessage=null;
+            worker=null;
+        }
+    }
+    function initJSRuntime() {
+        worker = new Worker('/js/runtime.js');
+        worker.onmessage=function(message){
+            websocket.send(message.data);
+        }
+    }
+    initJSRuntime();
+</script>
+</body>
+</html>

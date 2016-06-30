@@ -2,77 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Weex Debugger - Device List</title>
+    <title>Weex Devtool - Device List</title>
     <style>
+        body{
+            background: #f1f2f3;
+        }
+        #container{
+            margin: 30px 0 60px 0;
+        }
         .device-wrap{
             display: inline-block;
             position: relative;
-            border: 1px solid #ddd;
-            padding: 20px;
-            box-shadow: 5px 4px 15px 0 rgba(0,0,0,0.6);
-            margin:20px;
+            padding: 40px 31px 100px 31px;
+            box-shadow: 0px 0px 10px 0 rgba(0,0,0,0.3);
+            border-radius: 5px;
+            margin:15px;
             overflow: hidden;
-            min-width: 300px;
+            background: #fff;
         }
         .line{
-            margin: 5px 0;
+            margin: 15px 0;
         }
         .line span{
-            font-size:14px;
-            color:#666;
+            font-size:16px;
+            color:#737373;
+            width:106px;
+            display: inline-block;
         }
         .line b{
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bolder;
             margin-left: 8px;
+            width: 170px;
+            overflow: hidden;
+            display: inline-block;
+            text-overflow: ellipsis;
+            text-align: right;
+        }
+        .btn:first-child{
+            border-right:1px solid #fff;
         }
         .btn{
             display: inline-block;
-            border: 1px solid #000;
             padding: 5px;
             text-decoration: none;
-            border-radius: 3px;
-            color: #000;
-            margin: 20px 10px 0 10px;
-            width: 90px;
+            width: 50%;
             text-align: center;
-            background: #fff;
-            transition:0.3s;
-            position: relative;
+            background: #000;
             z-index: 2;
+            color: #fff;
+            border: 0;
+            box-sizing: border-box;
+            font-size: 18px;
+            line-height: 40px;
         }
         .btn:hover{
             color:#fff;
-            background: rgb(76,183,238);
+            background: #333;
         }
         fieldset{
             margin:20px;
             min-height:300px;
             border: none;
-            border-top: 1px solid;
+            border-top: 1px solid #bbb;
+            border-bottom: 2px solid #000;
         }
         legend{
-            margin-left: 20px;
+            margin: 0 auto;
+            border: 1px solid #bbb;
+            padding: 8px 30px;
+            font-size: 20px;
+            varter-spacing: 4px;
+            border-radius: 5px;
         }
         .btn-ctn{
-            display: block;
-            margin: 0 auto;
-            width: 248px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0px;
+            font-size: 0;
         }
         .tips{
             width: 20px;
             height: 20px;
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgb(76,183,238);
-            right: 10px;
-            top: 8px;
+            border: 1px solid #aaa;
+            right: 35px;
+            bottom: 76px;
             text-align: center;
             line-height: 23px;
             font-weight: bold;
             cursor: help;
-            color: #fff;
-            background: rgb(76,183,238);
+            color: #aaa;
+            /* background: rgb(76,183,238); */
             z-index: 4;
         }
         .tips:hover+.mask{
@@ -129,6 +152,27 @@
             left: 50%;
             margin-left: -10px;
         }
+        .help-ctn{
+            padding-left: 50px;
+        }
+        .help-ctn section{
+            margin-bottom: 20px;
+        }
+        .help-ctn b{
+            border: 1px solid #000;
+            display: inline-block;
+            vertical-align: middle;
+            width:87px;
+            padding: 5px 10px;
+            text-align: center;
+        }
+        .help-ctn div{
+            display: inline-block;
+            margin-left: 20px;
+            vertical-align: middle;
+            line-height: 1.4;
+            max-width:70%;
+        }
     </style>
 </head>
 
@@ -137,30 +181,61 @@
     <legend>Device List</legend>
     <div id="container"></div>
 </fieldset>
+<div class="help-ctn">
+    <section>
+        <b>Debugger</b>
+        <div>click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)</div>
+    </section>
+    <section>
+    <b>Inspector</b>
+    <div>click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"</div>
+    </section>
+</div>
 <script>
-    let websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
+    var websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
     websocket.onmessage=function(event){
-        let message=JSON.parse(event.data);
-        let html=message.map(device=>{
+        var message=JSON.parse(event.data);
+        console.log(message);
+        renderDeviceList(message);
+    }
+    websocket.onclose=function(){
+       renderDeviceList([]);
+    }
+    function renderDeviceList(deviceList){
+        var html=deviceList.map(function(device){
             return `
             <div class="device-wrap">
-                <div class="line"><span>AppName:</span><b>${device.name}</b></div>
-                <div class="line"><span>DeviceModel: </span><b>${device.model}</b></div>
-                <div class="line"><span>platform: </span><b>${device.platform}</b></div>
-                <div class="line"><span>WeexVersion: </span><b>${device.weexVersion}</b></div>
-                <div class="tips">?</div>
-                <div class="mask"></div>
-                <div class="help"><div class="inspector-help">click to open a devtool page for inspecting native Element and styles<div class="arrow"></div></div><div class="debugger-help">click to debug js with breakpoint callstack and so on. <div class="arrow"></div></div></div>
+                <div class="line"><span>AppName</span><b>${device.name}</b></div>
+                <div class="line"><span>DeviceModel</span><b>${device.model}</b></div>
+                <div class="line"><span>platform</span><b>${device.platform}</b></div>
+                <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
                 <div class="btn-ctn">
-                <a class="btn" target="inspector" href="/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}">Inspector</a>
-                <a class="btn" target="debugger" href="/debugger.html?sessionId=${device.debuggerSessionId}">Debugger</a>
+                <a class="btn" target="debugger${device.debuggerSessionId}" href="/debugger.html?sessionId=${device.debuggerSessionId}">Debugger</a>
+                <a class="btn" target="inspector${device.inspectorSessionId}" href="/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}">Inspector</a>
+                </div>
+                <div class="help">
+                Inspector: click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"; Debugger: click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)
                 </div>
             </div>
             `;
 
-        })
+        });
         document.getElementById('container').innerHTML=html.join('\n');
-        console.log(message);
+    }
+    if(location.search=='?gs') {
+        setTimeout(function(){
+            renderDeviceList([{
+                name: 'com.alibaba.weex',
+                model: 'MI 4W',
+                platform: 'Android',
+                weexVersion: '1.5.1'
+            },{
+                name: 'WeexDemo',
+                model: 'iPhone:9.1',
+                platform: 'iOS',
+                weexVersion: '1.5.1'
+            }])
+        },1000)
     }
 </script>
 </body>

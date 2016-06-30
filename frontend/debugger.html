@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JS Debugger</title>
-    <script src="js/WebsocketClient.js"></script>
+    <title>Weex Devtool - JS Debugger</title>
+    <script src="lib/EventEmitter.js"></script>
+    <script src="lib/WebsocketClient.js"></script>
     <style>
         body{
             font-size:large;
@@ -33,13 +34,15 @@
     <p id="warning"></p>
 </div>
 <script>
-    let worker;
-    let timer;
-    let websocket=new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/'+location.search.split('?sessionId=')[1]);
+    var worker;
+    var timer;
+    var websocket=new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/'+location.search.split('?sessionId=')[1]);
     websocket.on('WxDebug.callJS',function(message){
-        clearTimeout(timer);
-        document.getElementById('warning').innerHTML="";
-        worker.postMessage(message);
+        if(worker){
+            worker.postMessage(message);
+        }
+        else{
+        }
 
     });
     websocket.on('socketOpened',function(){
@@ -52,7 +55,7 @@
         clearTimeout(timer);
         document.getElementById('warning').innerHTML="";
         destroyJSRuntime();
-        initJSRuntime();
+        initJSRuntime(message);
 
     })
 
@@ -63,13 +66,14 @@
             worker=null;
         }
     }
-    function initJSRuntime() {
-        worker = new Worker('/js/runtime.js');
+    function initJSRuntime(message) {
+        worker = new Worker('/lib/runtime.js');
         worker.onmessage=function(message){
             websocket.send(message.data);
         }
+        worker.postMessage(message)
     }
-    initJSRuntime();
+    //initJSRuntime();
 </script>
 </body>
 </html>

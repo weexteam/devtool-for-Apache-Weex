@@ -2,10 +2,12 @@
  * Created by godsong on 16/6/13.
  */
 const Router = require('koa-router');
-const P2PSession = require('../lib/P2PSession');
-const DeviceManager=require('../lib/DeviceManager');
-
+const P2PSession = require('../components/P2PSession');
+const DeviceManager=require('../components/DeviceManager');
+const MemoryFile=require('../components/MemoryFile');
+const uuid=require('../util/uuid');
 let wsRouter = Router();
+const bundleWrapper='function __weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__){';
 
 wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
     console.log('new inspector client connected,join[' + this.params.sessionId + ']');
@@ -46,17 +48,14 @@ wsRouter.all('/debugProxy/native1', function*(next) {
     });
     yield next;
 });
+function _logMessage(message){
+
+}
 wsRouter.all('/debugProxy/native', function*(next) {
     console.log('new native  client connected');
-    this.websocket.on('message',function(message){
-        let len=message.length;
-        message=JSON.parse(message);
-        if(len<1000) {
-            console.log('native:', message);
-        }
-        else{
-            console.log('native:',message.method);
-        }
+    this.websocket.on('message',function(messageText){
+        let message=JSON.parse(messageText);
+
         let device=DeviceManager.getDevice(this);
         if(message.method){
             let [domain,method] = message.method.split('.');
@@ -64,6 +63,15 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 if(method=='registerDevice'){
                     DeviceManager.registerDevice(message.params,this);
                     this.send(JSON.stringify({id:message.id,result:'ready'}));
+                }
+                else if(method=='initJSRuntime'){
+                    console.log('initJSRuntime');
+                    message.params.url=new MemoryFile('js-framework.js',message.params.source).getUrl();
+                    device.debuggerSession.postMessage(this,message);
+                }
+                else if(method=='callJS'&&message.params.method=='createInstance'){
+                    message.params.sourceUrl=new MemoryFile(message.params.args[2].bundleUrl||(uuid()+'.js'),bundleWrapper+message.params.args[1]+'}').getUrl();
+                    device.debuggerSession.postMessage(this,message);
                 }
                 else{
                     if(device)

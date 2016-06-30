@@ -46,7 +46,6 @@ class DeviceManager extends Emitter{
             this.deviceList.push(device);
             this.emit('update',this.getDeviceList());
             device.inspectorSession.on('timeout',()=>{
-                console.log('timeout1',device.debuggerSession.isTimeout);
 
                 if(device.debuggerSession.isTimeout){
                     if(!device.destroyed) {
@@ -57,7 +56,6 @@ class DeviceManager extends Emitter{
                 }
             });
             device.debuggerSession.on('timeout',()=>{
-                console.log('timeout2',device.inspectorSession.isTimeout)
                 if(device.inspectorSession.isTimeout){
                     if(!device.destroyed) {
                         device.destroy();

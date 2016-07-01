@@ -205,7 +205,7 @@
     </section>
 </div>
 <div id="qrcode"></div>
-<div class="qrcode-desc">You can use Playground App to scan this qrcode for starting debuger.or add similar logic to your native code</div>
+<div class="qrcode-desc">You can use Playground App to scan this qrcode for starting debugger.or add similar logic to your native code</div>
 <script>
     var websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
     websocket.onmessage=function(event){
@@ -238,7 +238,7 @@
         document.getElementById('container').innerHTML=html.join('\n');
     }
     var qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: location.host,
+        text: `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`,
         width: 111,
         height: 111,
         colorDark : "#000000",

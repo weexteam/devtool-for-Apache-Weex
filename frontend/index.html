@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Weex Devtool - Device List</title>
+    <script src="lib/qrcode.min.js"></script>
     <style>
         body{
             background: #f1f2f3;
@@ -173,6 +174,18 @@
             line-height: 1.4;
             max-width:70%;
         }
+        #qrcode{
+            margin-left: 50px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .qrcode-desc{
+            display: inline-block;
+            width: 65%;
+            vertical-align: middle;
+            line-height: 1.4;
+            margin-left: 20px;
+        }
     </style>
 </head>
 
@@ -191,6 +204,8 @@
     <div>click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"</div>
     </section>
 </div>
+<div id="qrcode"></div>
+<div class="qrcode-desc">You can use Playground App to scan this qrcode for starting debuger.or add similar logic to your native code</div>
 <script>
     var websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
     websocket.onmessage=function(event){
@@ -222,6 +237,14 @@
         });
         document.getElementById('container').innerHTML=html.join('\n');
     }
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: location.host,
+        width: 111,
+        height: 111,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
     if(location.search=='?gs') {
         setTimeout(function(){
             renderDeviceList([{

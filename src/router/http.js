@@ -8,7 +8,6 @@ httpRouter.get('/source/*', function*(next) {
 
     let query=this.request.url.split('?');
     query=query[1]?'?'+query[1]:'';
-    console.log(path+query,MemoryFile.dump());
     var file=MemoryFile.get(path+query);
     if(file) {
         this.response.status = 200;

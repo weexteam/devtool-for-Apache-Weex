@@ -20,7 +20,7 @@ module.exports = function (port) {
 
     app.ws.use(wsRouter.routes());
     app.on('error', function (err, ctx) {
-        console.log(err.message);
+        console.error(err.message);
     });
     /*
      ===================================
@@ -30,6 +30,7 @@ module.exports = function (port) {
 
     app.use(httpRouter.routes());
     app.use(serveStatic(rootpath));
+
     app.listen(port);
     getIP(function (err, ips) {
         console.info('start debugger server at http://' + ips[0] + ':' + port);

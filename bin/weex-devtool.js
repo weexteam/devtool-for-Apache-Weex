@@ -26,3 +26,5 @@ if(program.version==undefined){
 config.verbose=program.verbose;
 config.port=program.port;
 startServer(program.port);
+var e=new Error('aaa');
+console.log();

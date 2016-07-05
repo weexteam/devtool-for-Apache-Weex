@@ -3,13 +3,15 @@
  */
 const P2PSession = require('./P2PSession');
 const Emitter = require('events').EventEmitter;
+const Logger=require('./Logger');
 class Device{
     constructor(deviceInfo,websocket){
         this.deviceId=deviceInfo.deviceId;
 
         this.inspectorSession=P2PSession.newSession(websocket);
         this.debuggerSession=P2PSession.newSession(websocket);
-
+        let index=websocket._info.split(' ')[0];
+        websocket._info=`native[${ this.inspectorSession.id}+${this.debuggerSession.id}:0x${index%2==1?'0'+index:index}]`;
         this.deviceInfo=Object.assign(deviceInfo,{
             inspectorSessionId:this.inspectorSession.id,
             debuggerSessionId:this.debuggerSession.id
@@ -34,6 +36,9 @@ class DeviceManager extends Emitter{
         super();
         this.deviceList=[];
     }
+    removeDevice(device){
+        this.deviceList=this.deviceList.filter(dvc=>dvc!==device);
+    }
     registerDevice(deviceInfo,websocket){
        let existDevice=this.deviceList.filter(dvc=>dvc.deviceId==deviceInfo.deviceId)[0];
         if(existDevice){
@@ -42,15 +47,15 @@ class DeviceManager extends Emitter{
         }
         else{
             let device= new Device(deviceInfo,websocket);
-            let idx=this.deviceList.length;
             this.deviceList.push(device);
             this.emit('update',this.getDeviceList());
             device.inspectorSession.on('timeout',()=>{
 
                 if(device.debuggerSession.isTimeout){
                     if(!device.destroyed) {
+
+                        this.removeDevice(device);
                         device.destroy();
-                        this.deviceList.splice(idx, 1);
                         this.emit('update',this.getDeviceList());
                     }
                 }
@@ -58,8 +63,8 @@ class DeviceManager extends Emitter{
             device.debuggerSession.on('timeout',()=>{
                 if(device.inspectorSession.isTimeout){
                     if(!device.destroyed) {
+                        this.removeDevice(device);
                         device.destroy();
-                        this.deviceList.splice(idx, 1);
                         this.emit('update',this.getDeviceList());
                     }
                 }

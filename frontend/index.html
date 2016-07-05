@@ -207,15 +207,19 @@
 <div id="qrcode"></div>
 <div class="qrcode-desc">You can use Playground App to scan this qrcode for starting debugger.or add similar logic to your native code</div>
 <script>
-    var websocket=new WebSocket('ws://'+location.host+'/debugProxy/list');
-    websocket.onmessage=function(event){
-        var message=JSON.parse(event.data);
-        console.log(message);
-        renderDeviceList(message);
+    function connect() {
+        var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
+        websocket.onmessage = function (event) {
+            var message = JSON.parse(event.data);
+            console.log(message);
+            renderDeviceList(message);
+        };
+        websocket.onclose = function () {
+            renderDeviceList([]);
+            setTimeout(connect,5000);
+        }
     }
-    websocket.onclose=function(){
-       renderDeviceList([]);
-    }
+    connect();
     function renderDeviceList(deviceList){
         var html=deviceList.map(function(device){
             return `

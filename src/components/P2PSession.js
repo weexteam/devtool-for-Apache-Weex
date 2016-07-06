@@ -3,14 +3,14 @@
  */
 const Emitter = require('events').EventEmitter;
 const uuid = require('../util/uuid');
-const Logger=require('./Logger');
+const Logger = require('./Logger');
 class Peer extends Emitter {
     constructor(websocket) {
         super();
         this.messageBuffer = [];
         this.websocket = websocket;
         this.websocket.on('close', ()=> {
-            Logger.log('socket close:',this.websocket._info);
+            Logger.log('socket close:', this.websocket._info);
             if (this.oppositePeer) {
                 this.oppositePeer.oppositePeer = null;
             }
@@ -48,8 +48,6 @@ class P2PSession extends Emitter {
         super();
         this.peerList = [];
         this.id = uuid();
-        this.emptyCount = 0;
-        this.maxTimeoutCount = 5;
         this.fresh = true;
     }
 
@@ -61,6 +59,12 @@ class P2PSession extends Emitter {
         return session;
     }
 
+    static removeSession(websocket) {
+        var session = _sessionMap[websocket._p2pSessionId];
+        if (session) {
+            session.destroy();
+        }
+    }
 
     static join(sessionId, websocket) {
         if (_sessionMap[sessionId]) {
@@ -115,15 +119,11 @@ class P2PSession extends Emitter {
         }
     }
 
-    setTimeout(timeout) {
-        this.maxTimeoutCount = timeout;
-    }
 
     destroy() {
         this.removeAllListeners();
         this.peerList = null;
-        clearInterval(this.idleTimer);
-        this.isTimeout = false;
+        delete _sessionMap[this.id];
     }
 
 
@@ -148,27 +148,16 @@ class P2PSession extends Emitter {
             return;
         }
         peer.on('close', ()=> {
-            let l = this.peerList.length;
-            this.peerList = this.peerList.filter(p=>p !== peer);
-            if (this.peerList.length == 0) {
-                this.idleTimer = setInterval(()=> {
-                    this.emptyCount++;
-                    if (this.emptyCount >= this.maxTimeoutCount) {
-                        this.isTimeout = true;
-                        this.emit('timeout');
-                    }
-                }, 2000)
+            if(this.peerList) {
+                this.peerList = this.peerList.filter(p=>p !== peer);
             }
 
         });
         Logger.log('addPeer', this.id, this.peerList.length);
         if (this.peerList.length == 2) {
-
             this.fresh = false;
         }
         clearInterval(this.idleTimer);
-        this.emptyCount = 0;
-        this.isTimeout = false;
     }
 
 }

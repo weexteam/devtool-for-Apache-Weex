@@ -56,6 +56,7 @@
             box-sizing: border-box;
             font-size: 18px;
             line-height: 40px;
+            cursor: pointer;
         }
         .btn:hover{
             color:#fff;
@@ -179,6 +180,9 @@
             display: inline-block;
             vertical-align: middle;
         }
+        #qrcode img:hover{
+            -webkit-transform: scale(2);
+        }
         .qrcode-desc{
             display: inline-block;
             width: 65%;
@@ -220,8 +224,27 @@
         }
     }
     connect();
+    function diff(deviceList){
+        var next;
+        for(var i=0;i<_deviceList.length;i++){
+            next=false;
+            for(var j=0;j<deviceList.length;j++){
+                if(deviceList[j].deviceId==_deviceList[i].deviceId){
+                    break;
+                    next=true;
+                }
+            }
+            if(next)continue;
+            _deviceList[i].inspectorWindow&&_deviceList[i].inspectorWindow.close();
+            _deviceList[i].debuggerWindow&&_deviceList[i].debuggerWindow.close();
+
+        }
+    }
+    var _deviceList=[];
     function renderDeviceList(deviceList){
-        var html=deviceList.map(function(device){
+        diff(deviceList);
+        _deviceList=deviceList;
+        var html=deviceList.map(function(device,i){
             return `
             <div class="device-wrap">
                 <div class="line"><span>AppName</span><b>${device.name}</b></div>
@@ -229,8 +252,8 @@
                 <div class="line"><span>platform</span><b>${device.platform}</b></div>
                 <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
                 <div class="btn-ctn">
-                <a class="btn" target="debugger${device.debuggerSessionId}" href="/debugger.html?sessionId=${device.debuggerSessionId}">Debugger</a>
-                <a class="btn" target="inspector${device.inspectorSessionId}" href="/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}">Inspector</a>
+                <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
+                <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
                 </div>
                 <div class="help">
                 Inspector: click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"; Debugger: click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)
@@ -240,6 +263,21 @@
 
         });
         document.getElementById('container').innerHTML=html.join('\n');
+    }
+    function findDevice(deviceId){
+        return _deviceList.filter(function(device){
+            return device.deviceId==deviceId;
+        })[0]
+    }
+    function openDebugger(deviceId){
+        var device=findDevice(deviceId);
+        device.debuggerWindow=window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`,`debugger${device.debuggerSessionId}`);
+
+    }
+    function openInspector(deviceId){
+        var device=findDevice(deviceId);;
+        device.inspectorWindow=window.open(`/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}`,`inspector${device.inspectorSessionId}`);
+
     }
     var qrcode = new QRCode(document.getElementById("qrcode"), {
         text: `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`,

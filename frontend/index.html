@@ -5,32 +5,37 @@
     <title>Weex Devtool - Device List</title>
     <script src="lib/qrcode.min.js"></script>
     <style>
-        body{
+        body {
             background: #f1f2f3;
         }
-        #container{
+
+        #container {
             margin: 30px 0 60px 0;
         }
-        .device-wrap{
+
+        .device-wrap {
             display: inline-block;
             position: relative;
             padding: 40px 31px 100px 31px;
-            box-shadow: 0px 0px 10px 0 rgba(0,0,0,0.3);
+            box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.3);
             border-radius: 5px;
-            margin:15px;
+            margin: 15px;
             overflow: hidden;
             background: #fff;
         }
-        .line{
+
+        .line {
             margin: 15px 0;
         }
-        .line span{
-            font-size:16px;
-            color:#737373;
-            width:106px;
+
+        .line span {
+            font-size: 16px;
+            color: #737373;
+            width: 106px;
             display: inline-block;
         }
-        .line b{
+
+        .line b {
             font-size: 16px;
             font-weight: bolder;
             margin-left: 8px;
@@ -40,10 +45,12 @@
             text-overflow: ellipsis;
             text-align: right;
         }
-        .btn:first-child{
-            border-right:1px solid #fff;
+
+        .btn:first-child {
+            border-right: 1px solid #fff;
         }
-        .btn{
+
+        .btn {
             display: inline-block;
             padding: 5px;
             text-decoration: none;
@@ -58,18 +65,21 @@
             line-height: 40px;
             cursor: pointer;
         }
-        .btn:hover{
-            color:#fff;
+
+        .btn:hover {
+            color: #fff;
             background: #333;
         }
-        fieldset{
-            margin:20px;
-            min-height:300px;
+
+        fieldset {
+            margin: 20px;
+            min-height: 300px;
             border: none;
             border-top: 1px solid #bbb;
             border-bottom: 2px solid #000;
         }
-        legend{
+
+        legend {
             margin: 0 auto;
             border: 1px solid #bbb;
             padding: 8px 30px;
@@ -77,14 +87,16 @@
             varter-spacing: 4px;
             border-radius: 5px;
         }
-        .btn-ctn{
+
+        .btn-ctn {
             position: absolute;
             left: 0;
             right: 0;
             bottom: 0px;
             font-size: 0;
         }
-        .tips{
+
+        .tips {
             width: 20px;
             height: 20px;
             position: absolute;
@@ -100,26 +112,30 @@
             /* background: rgb(76,183,238); */
             z-index: 4;
         }
-        .tips:hover+.mask{
+
+        .tips:hover + .mask {
             transform: scale(45);
         }
-        .tips:hover+.mask+.help{
-            opacity:1;
+
+        .tips:hover + .mask + .help {
+            opacity: 1;
         }
-        .mask{
+
+        .mask {
             position: absolute;
             width: 20px;
             height: 20px;
             position: absolute;
             border-radius: 50%;
-            background: rgb(76,183,238);
+            background: rgb(76, 183, 238);
             right: 10px;
             top: 8px;
             transition: 0.8s;
             z-index: 1;
         }
-        .help{
-            transition:1s;
+
+        .help {
+            transition: 1s;
             opacity: 0;
             position: absolute;
             top: 0;
@@ -130,7 +146,8 @@
             z-index: 3;
             pointer-events: none;
         }
-        .help>div{
+
+        .help > div {
             width: 42%;
             border: 1px solid #fff;
             display: inline-block;
@@ -144,7 +161,8 @@
             vertical-align: top;
             position: relative;
         }
-        .arrow{
+
+        .arrow {
             position: absolute;
             width: 0;
             border-style: solid;
@@ -154,41 +172,51 @@
             left: 50%;
             margin-left: -10px;
         }
-        .help-ctn{
+
+        .help-ctn {
             padding-left: 50px;
         }
-        .help-ctn section{
+
+        .help-ctn section {
             margin-bottom: 20px;
         }
-        .help-ctn b{
+
+        .help-ctn b {
             border: 1px solid #000;
             display: inline-block;
             vertical-align: middle;
-            width:87px;
+            width: 87px;
             padding: 5px 10px;
             text-align: center;
         }
-        .help-ctn div{
+
+        .help-ctn div {
             display: inline-block;
             margin-left: 20px;
             vertical-align: middle;
             line-height: 1.4;
-            max-width:70%;
+            max-width: 70%;
         }
-        #qrcode{
+
+        .qrcode {
             margin-left: 50px;
             display: inline-block;
             vertical-align: middle;
         }
-        #qrcode img:hover{
+
+        #qrcode img:hover {
             -webkit-transform: scale(2);
         }
-        .qrcode-desc{
+
+        .qrcode-desc {
             display: inline-block;
             width: 65%;
             vertical-align: middle;
             line-height: 1.4;
             margin-left: 20px;
+        }
+        .qrcode-section{
+            margin:20px 0;
         }
     </style>
 </head>
@@ -201,50 +229,77 @@
 <div class="help-ctn">
     <section>
         <b>Debugger</b>
+
         <div>click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)</div>
     </section>
     <section>
-    <b>Inspector</b>
-    <div>click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"</div>
+        <b>Inspector</b>
+
+        <div>click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"
+        </div>
     </section>
 </div>
-<div id="qrcode"></div>
-<div class="qrcode-desc">You can use Playground App to scan this qrcode for starting debugger.or add similar logic to your native code</div>
+<div class="qrcode-section">
+    <div id="switchQrcode" class="qrcode"></div>
+    <div class="qrcode-desc">this qrcode could be used with playground to start Debugger.
+    </div>
+</div>
+<hr>
+<div class="qrcode-section">
+    <div id="entryQrcode" class="qrcode"></div>
+    <div class="qrcode-desc" id="entryName">
+    </div>
+</div>
 <script>
     function connect() {
         var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
         websocket.onmessage = function (event) {
             var message = JSON.parse(event.data);
-            console.log(message);
-            renderDeviceList(message);
+            if (message.method == 'WxDebug.pushDeviceList') {
+                renderDeviceList(message.params);
+            }
+            else if (message.method == 'WxDebug.setEntry') {
+                var match=message.params.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
+                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${message.params}">${match[1]}.we`;
+                var qrcode = new QRCode(document.getElementById("entryQrcode"), {
+                    text: message.params,
+                    width: 111,
+                    height: 111,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            }
+
+
         };
         websocket.onclose = function () {
             renderDeviceList([]);
-            setTimeout(connect,5000);
+            setTimeout(connect, 5000);
         }
     }
     connect();
-    function diff(deviceList){
+    function diff(deviceList) {
         var next;
-        for(var i=0;i<_deviceList.length;i++){
-            next=false;
-            for(var j=0;j<deviceList.length;j++){
-                if(deviceList[j].deviceId==_deviceList[i].deviceId){
+        for (var i = 0; i < _deviceList.length; i++) {
+            next = false;
+            for (var j = 0; j < deviceList.length; j++) {
+                if (deviceList[j].deviceId == _deviceList[i].deviceId) {
                     break;
-                    next=true;
+                    next = true;
                 }
             }
-            if(next)continue;
-            _deviceList[i].inspectorWindow&&_deviceList[i].inspectorWindow.close();
-            _deviceList[i].debuggerWindow&&_deviceList[i].debuggerWindow.close();
+            if (next)continue;
+            _deviceList[i].inspectorWindow && _deviceList[i].inspectorWindow.close();
+            _deviceList[i].debuggerWindow && _deviceList[i].debuggerWindow.close();
 
         }
     }
-    var _deviceList=[];
-    function renderDeviceList(deviceList){
+    var _deviceList = [];
+    function renderDeviceList(deviceList) {
         diff(deviceList);
-        _deviceList=deviceList;
-        var html=deviceList.map(function(device,i){
+        _deviceList = deviceList;
+        var html = deviceList.map(function (device, i) {
             return `
             <div class="device-wrap">
                 <div class="line"><span>AppName</span><b>${device.name}</b></div>
@@ -262,45 +317,46 @@
             `;
 
         });
-        document.getElementById('container').innerHTML=html.join('\n');
+        document.getElementById('container').innerHTML = html.join('\n');
     }
-    function findDevice(deviceId){
-        return _deviceList.filter(function(device){
-            return device.deviceId==deviceId;
+    function findDevice(deviceId) {
+        return _deviceList.filter(function (device) {
+            return device.deviceId == deviceId;
         })[0]
     }
-    function openDebugger(deviceId){
-        var device=findDevice(deviceId);
-        device.debuggerWindow=window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`,`debugger${device.debuggerSessionId}`);
+    function openDebugger(deviceId) {
+        var device = findDevice(deviceId);
+        device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
 
     }
-    function openInspector(deviceId){
-        var device=findDevice(deviceId);;
-        device.inspectorWindow=window.open(`/devtools/inspector.html?ws=${location.host+'/debugProxy/inspector/'+device.inspectorSessionId}`,`inspector${device.inspectorSessionId}`);
+    function openInspector(deviceId) {
+        var device = findDevice(deviceId);
+        ;
+        device.inspectorWindow = window.open(`/devtools/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
 
     }
-    var qrcode = new QRCode(document.getElementById("qrcode"), {
+    var qrcode = new QRCode(document.getElementById("switchQrcode"), {
         text: `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`,
         width: 111,
         height: 111,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.L
     });
-    if(location.search=='?gs') {
-        setTimeout(function(){
+    if (location.search == '?gs') {
+        setTimeout(function () {
             renderDeviceList([{
                 name: 'com.alibaba.weex',
                 model: 'MI 4W',
                 platform: 'Android',
                 weexVersion: '1.5.1'
-            },{
+            }, {
                 name: 'WeexDemo',
                 model: 'iPhone:9.1',
                 platform: 'iOS',
                 weexVersion: '1.5.1'
             }])
-        },1000)
+        }, 1000)
     }
 </script>
 </body>

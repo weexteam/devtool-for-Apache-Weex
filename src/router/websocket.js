@@ -7,6 +7,7 @@ const DeviceManager = require('../components/DeviceManager');
 const MemoryFile = require('../components/MemoryFile');
 const uuid = require('../util/uuid');
 const Logger=require('../components/Logger');
+const Config=require('../components/Config');
 let wsRouter = Router();
 const bundleWrapper = 'function __weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__){';
 let chromeWsIndex=2;
@@ -41,18 +42,19 @@ wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
     });
     yield next;
 });
-let _listSocket = null;
 DeviceManager.on('update', function (deviceList) {
-    if (_listSocket) {
-        _listSocket.send(JSON.stringify(deviceList));
-    }
+    listPageWebsocket.forEach(ws=>{
+        ws.send(JSON.stringify({method:"WxDebug.pushDeviceList",params:deviceList}));
+    })
 });
+let listPageWebsocket=[];
 wsRouter.all('/debugProxy/list', function*(next) {
-    _listSocket = this.websocket;
+    listPageWebsocket.push(this.websocket);
     this.websocket.on('close', function () {
-        _listSocket = null;
+        listPageWebsocket=listPageWebsocket.filter(ws=>ws!==this);
     });
-    _listSocket.send(JSON.stringify(DeviceManager.getDeviceList()));
+    this.websocket.send(JSON.stringify({method:"WxDebug.pushDeviceList",params:DeviceManager.getDeviceList()}));
+    if(Config.entryBundleUrl)this.websocket.send(JSON.stringify({method:"WxDebug.setEntry",params:Config.entryBundleUrl}));
 });
 
 
@@ -100,7 +102,10 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 Logger.error('undefined device');
         }
     });
+    this.websocket.on('close',function(){
+        let device=DeviceManager.getDevice(this);
+        DeviceManager.removeDeviceDelayed(device,3000);
+    });
     yield next;
-
 });
 module.exports = wsRouter;

@@ -12,7 +12,7 @@ exports.loader = function (source, targetPath = '') {
         let basename = Path.basename(source, '.we');
         let targetDir = Path.join(__dirname, '../../frontend/',Config.bundleDir, targetPath);
         webpack({
-            entry: source,
+            entry: source+'?entry=true',
             output: {
                 path: targetDir,
                 filename: basename + '.js'

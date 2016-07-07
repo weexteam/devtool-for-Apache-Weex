@@ -257,6 +257,19 @@
 </div>
 <script>
     var bundleUrl;
+    function creeateQRCode(id,content,width,height){
+        var el=document.getElementById(id);
+        el.innerHTML='';
+        var qrcode = new QRCode(el, {
+            text: content,
+            width: width||150,
+            height: height||150,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L
+        });
+        el.title='';
+    }
     function connect() {
         var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
         websocket.onmessage = function (event) {
@@ -268,14 +281,7 @@
                 var match=message.params.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
                 document.getElementById('entryName').innerHTML=`<a target="_blank" href="${message.params}">${match[1]}.we`;
                 bundleUrl=message.params;
-                var qrcode = new QRCode(document.getElementById("entryQrcode"), {
-                    text: message.params,
-                    width: 150,
-                    height: 150,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.L
-                });
+                creeateQRCode('entryQrcode',message.params);
             }
             else if(message.method=='WxDebug.refreshPage'){
                 _deviceList.forEach(function(device){
@@ -355,14 +361,8 @@
         device.inspectorWindow = window.open(`/devtools/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
 
     }
-    var qrcode = new QRCode(document.getElementById("switchQrcode"), {
-        text: `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`,
-        width: 150,
-        height: 150,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.L
-    });
+    creeateQRCode('switchQrcode',`http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
+
     if (location.search == '?gs') {
         setTimeout(function () {
             renderDeviceList([{

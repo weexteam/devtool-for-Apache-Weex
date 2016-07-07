@@ -17,14 +17,14 @@ program
     .option('-v, --version', 'display version')
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
-    .option('-w, --watch', 'watch we file changes and auto build them')
+    .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]',true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
 program['arguments']('[we_file]')
     .action(function (we_file) {
         program.we_file = we_file;
     });
 program.parse(process.argv);
-
+program.watch=true;
 if (program.version == undefined) {
     //fix tj's commander bug
     console.log(info.version);
@@ -39,7 +39,6 @@ if (supportMode.indexOf(program.mode) == -1) {
 }
 else {
     Config.buildMode = program.mode;
-    console.log(Config.buildMode)
 }
 del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
 if (program.we_file) {

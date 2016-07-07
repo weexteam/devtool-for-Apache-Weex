@@ -3,8 +3,8 @@
  */
 var fs=require('fs');
 let text=fs.readFileSync('./in.txt').toString();
-let properties = []
-let propertyNames = new Set()
+let properties = [];
+let propertyNames = new Set();
 text.split('\n').forEach(function(line){
     line=line.trim();
     if(!line||line.indexOf('//')==0||line.indexOf('alias_for')>=0){
@@ -38,4 +38,4 @@ for(let property of properties) {
         delete property["longhands"];
     }
 }
-fs.writeFileSync('./out.txt',JSON.stringify(properties))
+fs.writeFileSync('./out.txt',JSON.stringify(properties));

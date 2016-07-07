@@ -13,7 +13,7 @@ exports.log = function (...args) {
 };
 exports.error = function (...args) {
     _log('error', args);
-}
+};
 exports.printMessage = function (message, prefix) {
     if (config.verbose) {
         if (message.method == 'WxDebug.callJS') {

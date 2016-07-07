@@ -29,7 +29,7 @@ function exists(file) {
         })
     });
 }
-let bundleDir = Path.join(__dirname, '../../frontend/',Config.bundleDir)
+let bundleDir = Path.join(__dirname, '../../frontend/',Config.bundleDir);
 httpRouter.get('/'+Config.bundleDir+'/*', function*(next) {
     let ext = Path.extname(this.params[0]);
     if (ext == '.js' || ext == '.we') {

@@ -46,7 +46,6 @@ class DeviceManager extends Emitter {
     }
     removeDevice(device) {
         device.destroy();
-        console.trace('remove Device')
         this.deviceList = this.deviceList.filter(dvc=>dvc !== device);
         this.emit('update', this.getDeviceList());
     }

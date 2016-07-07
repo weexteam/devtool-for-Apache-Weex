@@ -37,7 +37,7 @@ module.exports = function (callback, bypassCache) {
         var matches = stdout.match(filterRE) || [];
         //if (!error) {
         for (var i = 0; i < matches.length; i++) {
-            ip = matches[i].replace(filterRE, '$1')
+            ip = matches[i].replace(filterRE, '$1');
             if (!ignoreRE.test(ip)) {
                 cached.push(ip);
             }

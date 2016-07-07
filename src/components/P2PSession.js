@@ -143,7 +143,7 @@ class P2PSession extends Emitter {
             this.peerList[0].setOppositePeer(peer);
         }
         else {
-            this.peerList.forEach(peer=>Logger.log('state:', peer.websocket.readyState))
+            this.peerList.forEach(peer=>Logger.log('state:', peer.websocket.readyState));
             Logger.log('Peer session can not add the third peer!');
             return;
         }

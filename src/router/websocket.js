@@ -78,7 +78,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     device.debuggerSession.postMessage(this, message);
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
-                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper + message.params.args[1] + '}').getUrl();
+                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper + message.params.args[1] + '\n}').getUrl();
                     device.debuggerSession.postMessage(this, message);
                 }
                 else {

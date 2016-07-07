@@ -4,7 +4,7 @@
 var Path = require('path');
 var webpack = require('webpack');
 var loader = require('weex-loader');
-var transformer = require('weex-transformer')
+var transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config=require('./Config');
 exports.loader = function (source, targetPath = '') {
@@ -17,7 +17,7 @@ exports.loader = function (source, targetPath = '') {
                 path: targetDir,
                 filename: basename + '.js'
             },
-            //devtool: '#inline-source-map',
+            devtool: '#inline-source-map',
             module: {
                 loaders: [
                     {
@@ -38,7 +38,7 @@ exports.transformer = function (source, targetPath = '') {
     return new Promise((resolve,reject )=> {
         Fs.readFile(source, function (err, fileContent) {
             if (err) {
-                console.error(err)
+                console.error(err);
                 return reject(err);
             }
             var output = transformer.transform(Path.basename(source,'.we'), fileContent.toString());
@@ -47,4 +47,4 @@ exports.transformer = function (source, targetPath = '') {
             resolve(targetDir);
         });
     });
-}
+};

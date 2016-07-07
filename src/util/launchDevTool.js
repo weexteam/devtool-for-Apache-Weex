@@ -25,4 +25,4 @@ let launchDevTools=module.exports= function (ip,port) {
             resolve();
         });
     });
-}
+};

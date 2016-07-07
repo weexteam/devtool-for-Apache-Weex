@@ -1,7 +1,7 @@
 {
   "name": "weex-devtool",
   "description": "weex developer tool for debugging weex app with chrome devtool",
-  "version": "0.2.2",
+  "version": "0.2.9",
   "author": "exolution <exolution@163.com>",
   "license": "GPL-3.0",
   "main": "index.js",
@@ -26,6 +26,7 @@
     "babel-runtime": "^6.6.1",
     "commander": "^2.9.0",
     "del": "^2.2.1",
+    "ip": "^1.1.3",
     "koa": "^1.2.0",
     "koa-router": "~5.2.3",
     "koa-serve": "~0.1.6",

@@ -7,6 +7,7 @@
     <style>
         body {
             background: #f1f2f3;
+            font-family: "STHeiti","Microsoft YaHei",monospace;
         }
 
         #container {
@@ -175,6 +176,7 @@
 
         .help-ctn {
             padding-left: 50px;
+            display:none;
         }
 
         .help-ctn section {
@@ -218,6 +220,9 @@
         .qrcode-section{
             margin:20px 0;
         }
+        hr{
+            margin: 0 20px;
+        }
     </style>
 </head>
 
@@ -226,7 +231,7 @@
     <legend>Device List</legend>
     <div id="container"></div>
 </fieldset>
-<div class="help-ctn">
+<div class="help-ctn" id="help_ctn">
     <section>
         <b>Debugger</b>
 
@@ -299,6 +304,12 @@
     function renderDeviceList(deviceList) {
         diff(deviceList);
         _deviceList = deviceList;
+        if(deviceList.length>0){
+            document.getElementById('help_ctn').style.display='block';
+        }
+        else{
+            document.getElementById('help_ctn').style.display='none';
+        }
         var html = deviceList.map(function (device, i) {
             return `
             <div class="device-wrap">
@@ -337,8 +348,8 @@
     }
     var qrcode = new QRCode(document.getElementById("switchQrcode"), {
         text: `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`,
-        width: 111,
-        height: 111,
+        width: 150,
+        height: 150,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.L

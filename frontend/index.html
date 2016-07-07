@@ -256,6 +256,7 @@
     </div>
 </div>
 <script>
+    var bundleUrl;
     function connect() {
         var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
         websocket.onmessage = function (event) {
@@ -266,14 +267,22 @@
             else if (message.method == 'WxDebug.setEntry') {
                 var match=message.params.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
                 document.getElementById('entryName').innerHTML=`<a target="_blank" href="${message.params}">${match[1]}.we`;
+                bundleUrl=message.params;
                 var qrcode = new QRCode(document.getElementById("entryQrcode"), {
                     text: message.params,
-                    width: 111,
-                    height: 111,
+                    width: 150,
+                    height: 150,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.L
                 });
+            }
+            else if(message.method=='WxDebug.refreshPage'){
+                _deviceList.forEach(function(device){
+                    device.inspectorWindow&&device.inspectorWindow.location.reload();
+                    device.debuggerWindow&&device.debuggerWindow.location.reload();
+                })
+
             }
 
 

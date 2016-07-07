@@ -4,6 +4,7 @@
 
 const http = require('http');
 const crypto = require('crypto');
+const Config=require('./Config');
 let _memoryFileMap = {};
 class MemoryFile {
     static get(name) {
@@ -17,6 +18,9 @@ class MemoryFile {
     constructor(fileName, content) {
         if (fileName.indexOf('http://') == 0) {
             this.name = fileName.slice(7);
+            if(this.name.indexOf(Config.ip)==0){
+                this.url=fileName;
+            }
         }
         else this.name = fileName;
         var md5 = crypto.createHash('md5');

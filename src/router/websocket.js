@@ -8,8 +8,9 @@ const MemoryFile = require('../components/MemoryFile');
 const uuid = require('../util/uuid');
 const Logger=require('../components/Logger');
 const Config=require('../components/Config');
+const MessageBus=require('../components/MessageBus');
+const bundleWrapper=require('../util/bundleWrapper');
 let wsRouter = Router();
-const bundleWrapper = 'function __weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__){';
 let chromeWsIndex=2;
 let nativeWsIndex=1;
 function _toFixed(num){
@@ -48,6 +49,11 @@ DeviceManager.on('update', function (deviceList) {
     })
 });
 let listPageWebsocket=[];
+MessageBus.on('page.refresh',function(){
+    listPageWebsocket.forEach(ws=>{
+        ws.send(JSON.stringify({method:"WxDebug.refreshPage"}));
+    })
+})
 wsRouter.all('/debugProxy/list', function*(next) {
     listPageWebsocket.push(this.websocket);
     this.websocket.on('close', function () {
@@ -83,7 +89,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     }
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
-                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper + message.params.args[1].replace(/\/\/#\s*sourceMappingURL|$/, '}\n$&')).getUrl();
+                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper( message.params.args[1])).getUrl();
                     device.debuggerSession.postMessage(this, message);
                 }
                 else {

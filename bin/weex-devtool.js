@@ -10,11 +10,14 @@ var Path = require('path');
 var IP = require('ip');
 var launchDevTool = require('../lib/util/launchDevTool');
 var del = require('del');
+var watch = require('node-watch');
+var MessageBus = require('../lib/components/MessageBus');
 program
     .option('-V, --verbose', 'display logs of debugger server')
     .option('-v, --version', 'display version')
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
+    .option('-w, --watch', 'watch we file changes and auto build them')
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
 program['arguments']('[we_file]')
     .action(function (we_file) {
@@ -60,6 +63,16 @@ function resolvePath() {
             console.log('Build completed! ' + (new Date().getTime() - t) + 'ms');
             startServerAndLaunchDevtool(program.we_file);
         })
+        if (program.watch) {
+            watch(dir, function () {
+                t = new Date().getTime();
+                console.log(dir + ' updated! rebuilding...')
+                Builder[Config.buildMode](dir).then(function () {
+                    console.log('Build completed! ' + (new Date().getTime() - t) + 'ms');
+                    MessageBus.emit('page.refresh');
+                });
+            })
+        }
     }
     else if (!ext) {
         if (Fs.statSync(dir).isDirectory()) {
@@ -82,6 +95,7 @@ function startServerAndLaunchDevtool(entry) {
 
 
     var ip = IP.address();
+    Config.ip=ip;
     console.info('start debugger server at http://' + ip + ':' + port);
     if (entry) {
         Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));

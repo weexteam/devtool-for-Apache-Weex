@@ -4,6 +4,8 @@ const Fs = require('fs');
 const Path = require('path');
 const Config = require('../components/Config');
 const Builder = require('../components/Builder');
+const bundleWrapper=require('../util/bundleWrapper');
+const URL=require('url');
 var httpRouter = Router();
 
 httpRouter.get('/source/*', function*(next) {
@@ -15,8 +17,15 @@ httpRouter.get('/source/*', function*(next) {
     var file = MemoryFile.get(path + query);
     if (file) {
         this.response.status = 200;
-        this.response.contentType = 'text/javascript';
-        this.response.body = file.getContent();
+        this.type = 'text/javascript';
+        if(file.url){
+            let content=Fs.readFileSync(Path.join(__dirname,'../../frontend/',URL.parse(file.url).path)).toString();
+            this.response.body=bundleWrapper(content);
+        }
+        else{
+            this.response.body = file.getContent();
+        }
+
     }
     else {
         this.response.status = 404;

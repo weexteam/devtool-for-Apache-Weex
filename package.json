@@ -32,6 +32,7 @@
     "koa-serve": "~0.1.6",
     "koa-serve-static": "0.0.1",
     "koa-websocket": "~1.1.0",
+    "node-watch": "^0.3.5",
     "opn": "^4.0.2",
     "webpack": "^1.13.1",
     "weex-loader": "^0.1.5",

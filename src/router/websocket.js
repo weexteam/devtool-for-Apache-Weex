@@ -74,37 +74,44 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     this.send(JSON.stringify({id: message.id, result: 'ready'}));
                 }
                 else if (method == 'initJSRuntime') {
-                    message.params.url = new MemoryFile('js-framework.js', message.params.source).getUrl();
-                    device.debuggerSession.postMessage(this, message);
+                    if(device) {
+                        message.params.url = new MemoryFile('js-framework.js', message.params.source).getUrl();
+                        device.debuggerSession.postMessage(this, message);
+                    }
+                    else{
+                        Logger.error('Fatal Error:native device unregistered before initJSRuntime!');
+                    }
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
-                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper + message.params.args[1] + '\n}').getUrl();
+                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper + message.params.args[1].replace(/\/\/#\s*sourceMappingURL|$/, '}\n$&')).getUrl();
                     device.debuggerSession.postMessage(this, message);
                 }
                 else {
                     if (device)
                         device.debuggerSession.postMessage(this, message);
                     else
-                        Logger.error('undefined device');
+                        Logger.error('Fatal Error:native device unregistered before ['+message.method+']');
                 }
             }
             else {
                 if (device)
                     device.inspectorSession.postMessage(this, message);
                 else
-                    Logger.error('undefined device');
+                    Logger.error('Fatal Error:native device unregistered before send inspector protocol ['+message.method+']');
             }
         }
         else {
             if (device)
                 device.inspectorSession.postMessage(this, message);
             else
-                Logger.error('undefined device');
+                Logger.error('Fatal Error:native device unregistered before send inspector protocol');
         }
     });
     this.websocket.on('close',function(){
         let device=DeviceManager.getDevice(this);
-        DeviceManager.removeDeviceDelayed(device,3000);
+        if(device) {
+            DeviceManager.removeDeviceDelayed(device, 3000);
+        }
     });
     yield next;
 });

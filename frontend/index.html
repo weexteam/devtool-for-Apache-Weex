@@ -361,6 +361,7 @@
         device.inspectorWindow = window.open(`/devtools/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
 
     }
+
     creeateQRCode('switchQrcode',`http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
 
     if (location.search == '?gs') {

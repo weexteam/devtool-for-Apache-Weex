@@ -55,3 +55,50 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
   
   IOS: pls refer to https://github.com/alibaba/weex/blob/dev/ios/WXDevtool/README.md
 
+
+
+
+# 中文版
+## 安装
+```
+$npm install -g weex-devtool
+```
+##  usage
+
+ weex debug [options] [we_file|bundles_dir]
+            
+  Options:
+
+    -h, --help           显示帮助
+    -V, --verbose        显示debug服务器运行时的各种log
+    -v, --version        显示版本
+    -p, --port [port]    设置debug服务器端口号 默认为8088
+    -e, --entry [entry]  debug一个目录时,这个参数指定整个目录的入口bundle文件,这个bundle文件的地址会显示在debug主页上(作为二维码)
+    -m, --mode [mode]    设置构建we文件的方式,transformer 最基础的风格适合单文件,loader:wepack风格 适合模块化的多文件.默认为transformer
+
+#### 开启调试
+```
+$weex debug
+```
+单纯启动一个调试服务器,并同时唤起chrome浏览器打开`调试主页`.
+这个`调试主页`上会有一个二维码,使用Playground App扫这个二维码可以开启Playground调试.
+开启调试后,设备列表中会出现您的设备,根据提示进行后续的调试操作
+
+#### 调试 we文件
+```
+$weex debug your_weex.we
+```
+这个命令会将your_weex.we编译成bundlejs文件 部署到debug服务器
+并启动debug服务器如上述命令那样.打开的`调试主页`会多显示一个二维码,使用playground app
+扫这个码可以加载your_weex.we.(注意要先扫描开启调试的那个码)
+这个命令会自动检测your_weex.we文件变动,如果发现内容被修改则立即重新编译部署,并刷新debugger页面
+.
+#### 调试整个bundle/we文件夹
+```
+$weex debug your/we/path  -e index.we
+``` 
+这个命令会编译你指定目录下的所有的we文件,并把编译好的bundlejs部署到debug服务器,他们的地址会映射到 http://lcoalhost:8088/weex/ 下
+比如 your/we/path/`index.we` 可以通过http://lcoalhost:8088/weex/index.js访问  
+your/we/path/`demo/test.we` 可以通过http://lcoalhost:8088/weex/demo/index.js  
+
+-e参数可以指定一个入口的we文件,这个文件的地址会显示在`调试主页`上(作为二维码)

@@ -1,13 +1,31 @@
 const Router = require('koa-router');
 const MemoryFile = require('../components/MemoryFile');
 const Fs = require('fs');
+const Http=require('http');
 const Path = require('path');
 const Config = require('../components/Config');
 const Builder = require('../components/Builder');
 const bundleWrapper=require('../util/bundleWrapper');
 const URL=require('url');
 var httpRouter = Router();
+function httpGet(url){
+    return new Promise(function(resolve, reject) {
+        Http.get(url, function(res) {
+            var chunks = [];
+            res.setEncoding('utf8');
+            res.on('data', function(chunk) {
+                chunks.push(chunk);
+            });
 
+            res.on('end', function() {
+                resolve(chunks.join(''));
+            });
+        }).on('error', function(e) {
+            reject('');
+        });
+    });
+
+}
 httpRouter.get('/source/*', function*(next) {
 
     var path = this.params[0];
@@ -19,8 +37,14 @@ httpRouter.get('/source/*', function*(next) {
         this.response.status = 200;
         this.type = 'text/javascript';
         if(file.url){
-            let content=Fs.readFileSync(Path.join(__dirname,'../../frontend/',URL.parse(file.url).path)).toString();
-            this.response.body=bundleWrapper(content);
+            let content=yield httpGet(file.url);
+            //let content=Fs.readFileSync(Path.join(__dirname,'../../frontend/',URL.parse(file.url).path)).toString();
+            if(!content){
+                this.response.body=file.getContent();
+            }
+            else{
+                this.response.body=bundleWrapper(content);
+            }
         }
         else{
             this.response.body = file.getContent();

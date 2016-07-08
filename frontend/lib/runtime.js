@@ -36,7 +36,7 @@ eventEmitter.on('WxDebug.callJS', function (data) {
     if (method == 'createInstance') {
         var url=data.params.sourceUrl;
         importScripts(url);
-        self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2]);
+        self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2],data.params.args[3]);
     }
     else {
         self[data.params.method].apply(null, data.params.args);

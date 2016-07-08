@@ -40,7 +40,11 @@ if (supportMode.indexOf(program.mode) == -1) {
 else {
     Config.buildMode = program.mode;
 }
-del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
+try {
+    del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
+}catch(e){
+
+}
 if (program.we_file) {
     resolvePath()
 }

@@ -1,7 +1,7 @@
 Weex-Devtool
 ============
 
-Weex CLI native debugger tool (https://github.com/alibaba/weex/blob/dev/doc/tools/devtools.md):
+Weex CLI native debugger tool (http://alibaba.github.io/weex/doc/tools/devtools.html):
   1. support android and ios;
   2. could debug on device and emulator;
   3. could inspect native Elements( Network, Console, Sources) and debug JS files;

@@ -7,6 +7,7 @@ var loader = require('weex-loader');
 var transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config=require('./Config');
+var Mkdirp=require('mkdirp')
 exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let basename = Path.basename(source, '.we');
@@ -43,6 +44,7 @@ exports.transformer = function (source, targetPath = '') {
             }
             var output = transformer.transform(Path.basename(source,'.we'), fileContent.toString());
             let targetDir = Path.join(__dirname, '../../frontend/',Config.bundleDir, targetPath, Path.basename(source, '.we') + '.js');
+            Mkdirp.sync(Path.dirname(targetDir));
             Fs.writeFileSync(targetDir, output.result);
             resolve(targetDir);
         });

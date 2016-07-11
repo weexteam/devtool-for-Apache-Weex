@@ -17,14 +17,14 @@ program
     .option('-v, --version', 'display version')
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
-    .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]',true)
+    .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
 program['arguments']('[we_file]')
     .action(function (we_file) {
         program.we_file = we_file;
     });
 program.parse(process.argv);
-program.watch=true;
+program.watch = true;
 if (program.version == undefined) {
     //fix tj's commander bug
     console.log(info.version);
@@ -42,9 +42,7 @@ else {
 }
 try {
     del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
-}catch(e){
-
-}
+} catch (e) {}
 if (program.we_file) {
     resolvePath()
 }
@@ -95,10 +93,8 @@ function resolvePath() {
 
 function startServerAndLaunchDevtool(entry) {
     var port = program.port;
-
-
     var ip = IP.address();
-    Config.ip=ip;
+    Config.ip = ip;
     console.info('start debugger server at http://' + ip + ':' + port);
     if (entry) {
         Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));
@@ -111,7 +107,6 @@ function startServerAndLaunchDevtool(entry) {
     }
 
     console.info('\nThe websocket address for native is ws://' + ip + ':' + port + '/debugProxy/native');
-
     startServer(port);
     launchDevTool(ip, port);
 }

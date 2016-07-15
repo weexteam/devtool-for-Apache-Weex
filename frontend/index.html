@@ -212,13 +212,15 @@
 
         .qrcode-desc {
             display: inline-block;
-            width: 65%;
+            width: 58%;
             vertical-align: middle;
             line-height: 1.4;
             margin-left: 20px;
         }
         .qrcode-section{
-            margin:20px 0;
+            margin: 20px 0;
+            width: 45%;
+            display: inline-block;
         }
         hr{
             margin: 0 20px;
@@ -249,7 +251,6 @@
     <div class="qrcode-desc">this qrcode could be used with playground to start Debugger.
     </div>
 </div>
-<hr>
 <div class="qrcode-section">
     <div id="entryQrcode" class="qrcode"></div>
     <div class="qrcode-desc" id="entryName">
@@ -278,8 +279,16 @@
                 renderDeviceList(message.params);
             }
             else if (message.method == 'WxDebug.setEntry') {
-                var match=message.params.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
-                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${message.params}">${match[1]}.we`;
+
+                var urls=message.params.split('_wx_tpl='),url;
+                if(urls.length==2){
+                    url=decodeURIComponent(urls[1]);
+                }
+                else if(urls.length==1){
+                    url=urls[0];
+                }
+                var match=url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
+                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${url}">${match[1]}.we`;
                 bundleUrl=message.params;
                 creeateQRCode('entryQrcode',message.params);
             }

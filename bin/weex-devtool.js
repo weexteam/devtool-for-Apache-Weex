@@ -19,6 +19,7 @@ program
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
+    .option('-t --taobao','set qrcode format for mobile taobao');
 program['arguments']('[we_file]')
     .action(function (we_file) {
         program.we_file = we_file;
@@ -97,7 +98,13 @@ function startServerAndLaunchDevtool(entry) {
     Config.ip = ip;
     console.info('start debugger server at http://' + ip + ':' + port);
     if (entry) {
-        Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));
+        if(program.taobao){
+            Config.entryBundleUrl = 'http://' + ip + ':' + port+'/devtool_fake.html?_wx_tpl='+encodeURIComponent('http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js')));
+
+        }
+        else {
+            Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));
+        }
         console.log('\nYou can visit we file(s) use ' + Config.entryBundleUrl);
         console.log('Also you can use Playground App to scan the qrcode on device list page.');
     }

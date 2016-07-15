@@ -5,6 +5,8 @@
 const http = require('http');
 const crypto = require('crypto');
 const Config=require('./Config');
+const Url=require('url');
+const Qs=require('querystring');
 let _memoryFileMap = {};
 class MemoryFile {
     static get(name) {
@@ -17,9 +19,16 @@ class MemoryFile {
 
     constructor(fileName, content) {
         if (fileName.indexOf('http://') == 0) {
+
             this.name = fileName.slice(7);
             if(this.name.indexOf(Config.ip)==0){
-                this.url=fileName;
+                if(this.name.indexOf('devtool_fake.html')!=-1){
+                    this.url=Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
+                    this.name=this.url.slice(7);
+                }
+                else{
+                    this.url=fileName;
+                }
             }
         }
         else this.name = fileName;
@@ -49,3 +58,4 @@ class MemoryFile {
     }
 }
 module.exports = MemoryFile;
+console.log(Qs.parse(Url.parse('30.30.28.215:8088/devtool_fake.html?_wx_tpl=http%3A%2F%2F30.30.28.215%3A8088%2Fweex%2Fhi.js').query)['_wx_tpl'].slice(7));

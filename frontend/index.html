@@ -305,8 +305,9 @@
             next = false;
             for (var j = 0; j < deviceList.length; j++) {
                 if (deviceList[j].deviceId == _deviceList[i].deviceId) {
-                    break;
                     next = true;
+                    break;
+
                 }
             }
             if (next)continue;

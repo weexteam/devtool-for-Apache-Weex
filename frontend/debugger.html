@@ -6,11 +6,12 @@
     <script src="lib/EventEmitter.js"></script>
     <script src="lib/WebsocketClient.js"></script>
     <style>
-        body{
-            font-size:large;
+        body {
+            font-size: large;
             line-height: 2;
         }
-        .shortcut{
+
+        .shortcut {
             font-family: "Monaco", monospace;
             font-size: medium;
             color: #eee;
@@ -19,62 +20,136 @@
             border-radius: 4px;
             letter-spacing: 3px;
         }
-        b{
+
+        b {
             background: #ebebeb;
             padding: 4px;
             border-radius: 4px;
         }
-        #warning{
-            color:red;
+
+        #warning {
+            color: red;
         }
     </style>
 </head>
 <body>
 <div>
     <p>Press <span class="shortcut">⌘+⌥+J</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
+
     <p id="warning"></p>
 </div>
+<div id="Document"></div>
 <script>
     var worker;
     var timer;
-    var websocket=new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/'+location.search.split('?sessionId=')[1]);
-    websocket.on('WxDebug.callJS',function(message){
-        if(worker){
+    var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' + location.search.split('?sessionId=')[1]);
+    websocket.on('WxDebug.callJS', function (message) {
+        if (worker) {
             worker.postMessage(message);
         }
-        else{
+        else {
         }
 
     });
-    websocket.on('socketOpened',function(){
+    websocket.on('socketOpened', function () {
         clearTimeout(timer);
-        timer=setTimeout(function(){
-            document.getElementById('warning').innerHTML='Warning:The session with native was closed,please restart your native app!'
-        },2000)
+        timer = setTimeout(function () {
+            document.getElementById('warning').innerHTML = 'Warning:The session with native was closed,please restart your native app!'
+        }, 2000)
     });
-    websocket.on('WxDebug.initJSRuntime',function(message){
+    websocket.on('WxDebug.initJSRuntime', function (message) {
         clearTimeout(timer);
-        document.getElementById('warning').innerHTML="";
+        document.getElementById('warning').innerHTML = "";
         destroyJSRuntime();
         initJSRuntime(message);
 
     })
 
-    function destroyJSRuntime(){
-        if(worker){
+    function destroyJSRuntime() {
+        if (worker) {
             worker.terminate();
-            worker.onmessage=null;
-            worker=null;
+            worker.onmessage = null;
+            worker = null;
         }
     }
     function initJSRuntime(message) {
         worker = new Worker('/lib/runtime.js');
-        worker.onmessage=function(message){
-            websocket.send(message.data);
+        worker.onmessage = function (message) {
+            message = message.data;
+            var domain = message.method.split('.')[0];
+            if (domain == 'WxRuntime') {
+                document.getElementById('Document').innerHTML = resolve(message.params);
+            }
+            else {
+                websocket.send(message);
+            }
         }
         worker.postMessage(message)
     }
     //initJSRuntime();
+
+
+    function resolve(root) {
+        var html = `<${root.type} ${resolveStyle(root.style)}`;
+        var value='';
+        for (var key in root.attr) {
+            if (root.attr.hasOwnProperty(key)) {
+                if(root.type=='text'&&key=='value'){
+                    value=root.attr[key];
+                }
+                html += ` ${key}="${root.attr[key]}"`;
+            }
+        }
+        html += '>';
+        if(value){
+            html+=value;
+        }
+        else {
+            for (var i = 0; root.children && i < root.children.length; i++) {
+                html += resolve(root.children[i]);
+            }
+        }
+        html += `</${root.type}>`;
+        return html;
+    }
+    function resolveStyle(styles) {
+        var styleText = '';
+
+
+        for (var key in styles) {
+            if (styles.hasOwnProperty(key)) {
+                styleText += key.replace(/([a-z])([A-Z])/g, function (m, a, b) {
+                            return a + '-' + b.toLowerCase();
+                        }) + ':' + resolveStyleValue(styles[key]) + ';';
+            }
+        }
+        if (styleText) {
+            styleText = ` style="${styleText}"`;
+        }
+        return styleText;
+    }
+    var cssNumber = {
+        columnCount: true,
+        fillOpacity: true,
+        flexGrow: true,
+        flexShrink: true,
+        fontWeight: true,
+        lineHeight: true,
+        opacity: true,
+        order: true,
+        orphans: true,
+        widows: true,
+        zIndex: true,
+        zoom: true
+    };
+    function resolveStyleValue(value) {
+        if (isNaN(value) || cssNumber[value]) {
+            return value;
+        }
+        else {
+            return value + 'px';
+        }
+    }
 </script>
 </body>
 </html>

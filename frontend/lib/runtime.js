@@ -42,3 +42,11 @@ eventEmitter.on('WxDebug.callJS', function (data) {
         self[data.params.method].apply(null, data.params.args);
     }
 });
+function dump(id){
+    postMessage({
+        method:'WxRuntime.dom',
+        params:getRoot(id)
+    })
+
+}
+

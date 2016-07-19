@@ -99,7 +99,7 @@ class P2PSession extends Emitter {
             }
         }
         else {
-            Logger.error('Error:can not find the peer : ', this.websocket._info);
+            Logger.error('Error:can not find the peer : ', websocket._info);
         }
     }
 

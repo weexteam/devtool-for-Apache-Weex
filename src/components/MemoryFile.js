@@ -58,4 +58,3 @@ class MemoryFile {
     }
 }
 module.exports = MemoryFile;
-console.log(Qs.parse(Url.parse('30.30.28.215:8088/devtool_fake.html?_wx_tpl=http%3A%2F%2F30.30.28.215%3A8088%2Fweex%2Fhi.js').query)['_wx_tpl'].slice(7));

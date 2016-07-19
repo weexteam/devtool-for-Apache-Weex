@@ -18,7 +18,8 @@ function httpGet(url){
             });
 
             res.on('end', function() {
-                resolve(chunks.join(''));
+                resolve(Buffer.concat(chunks).toString());
+                chunks=null;
             });
         }).on('error', function(e) {
             reject('');

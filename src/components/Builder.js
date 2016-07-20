@@ -6,14 +6,14 @@ var webpack = require('webpack');
 var loader = require('weex-loader');
 var transformer = require('weex-transformer');
 var Fs = require('fs');
-var Config=require('./Config');
-var Mkdirp=require('mkdirp')
+var Config = require('./Config');
+var Mkdirp = require('mkdirp')
 exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let basename = Path.basename(source, '.we');
-        let targetDir = Path.join(__dirname, '../../frontend/',Config.bundleDir, targetPath);
+        let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
         webpack({
-            entry: source+'?entry=true',
+            entry: source + '?entry=true',
             output: {
                 path: targetDir,
                 filename: basename + '.js'
@@ -36,17 +36,31 @@ exports.loader = function (source, targetPath = '') {
     });
 };
 exports.transformer = function (source, targetPath = '') {
-    return new Promise((resolve,reject )=> {
+    return new Promise((resolve, reject)=> {
         Fs.readFile(source, function (err, fileContent) {
             if (err) {
                 console.error(err);
                 return reject(err);
             }
-            var output = transformer.transform(Path.basename(source,'.we'), fileContent.toString());
-            let targetDir = Path.join(__dirname, '../../frontend/',Config.bundleDir, targetPath, Path.basename(source, '.we') + '.js');
+            var output = transformer.transform(Path.basename(source, '.we'), fileContent.toString());
+            let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath, Path.basename(source, '.we') + '.js');
             Mkdirp.sync(Path.dirname(targetDir));
             Fs.writeFileSync(targetDir, output.result);
             resolve(targetDir);
         });
+    });
+};
+exports.copy = function (source, targetPath = '') {
+    return new Promise((resolve, reject)=> {
+        let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath, Path.basename(source));
+        let input = Fs.createReadStream(source);
+        let output = Fs.createWriteStream(targetDir);
+        input.pipe(output, {
+            end: false
+        });
+        input.on('end', function () {
+            output.end();
+            resolve(targetDir);
+        })
     });
 };

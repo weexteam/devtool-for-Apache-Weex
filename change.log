@@ -1,0 +1,12 @@
+0.2.18
+* add support for debug a compiled bundle js (and watch it)
+* add sourcemap function (Depend on weex-loader@0.3.0-alpha)
+* change default
+* refactor bin/weex-devtool.js
+* add dump in runtime
+* fix bugs
+0.2.17
+* fix bugs
+0.2.16
+* add taobao qrcode format support
+* add WxDebug.enable when first click debugger button

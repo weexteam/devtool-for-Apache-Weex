@@ -12,7 +12,7 @@ function httpGet(url){
     return new Promise(function(resolve, reject) {
         Http.get(url, function(res) {
             var chunks = [];
-            res.setEncoding('utf8');
+            //res.setEncoding('utf8');
             res.on('data', function(chunk) {
                 chunks.push(chunk);
             });

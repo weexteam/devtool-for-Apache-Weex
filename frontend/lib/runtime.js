@@ -19,6 +19,7 @@ self.callNative = function (instance, tasks, callback) {
         }
     })
 };
+
 self.__logger=function(level,msg){
     console[level]('native:',msg);
 };

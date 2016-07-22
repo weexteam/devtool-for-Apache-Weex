@@ -15,4 +15,3 @@ exports.findRealHost=function (domain){
     }
     return domain;
 }
-console.log(exports.findRealHost('www.hhh.com'));

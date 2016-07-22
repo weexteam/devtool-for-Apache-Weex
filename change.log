@@ -1,3 +1,5 @@
+0.2.22
+* Orz forgot add dependency and remove a debug log
 0.2.19
 * add support for debug a bundle url
 * add support for file source map(when debug a bundle url)

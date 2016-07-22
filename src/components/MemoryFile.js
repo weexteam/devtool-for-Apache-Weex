@@ -2,8 +2,7 @@
  * Created by godsong on 16/6/30.
  */
 
-const http = require('http');
-const crypto = require('crypto');
+const Crypto = require('crypto');
 const Config=require('./Config');
 const Url=require('url');
 const Qs=require('querystring');
@@ -32,7 +31,7 @@ class MemoryFile {
             }
         }
         else this.name = fileName;
-        var md5 = crypto.createHash('md5');
+        var md5 = Crypto.createHash('md5');
         md5.update(content);
         var md5Str = md5.digest('hex');
         var key = this.name.split('?')[0] + '|' + md5Str;

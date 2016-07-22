@@ -2,7 +2,7 @@
  * Created by godsong on 16/6/24.
  */
 const Emitter = require('events').EventEmitter;
-const uuid = require('../util/uuid');
+const Uuid = require('../util/Uuid');
 const Logger = require('./Logger');
 class Peer extends Emitter {
     constructor(websocket) {
@@ -47,7 +47,7 @@ class P2PSession extends Emitter {
     constructor() {
         super();
         this.peerList = [];
-        this.id = uuid();
+        this.id = Uuid();
         this.fresh = true;
     }
 

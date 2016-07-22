@@ -288,7 +288,7 @@
                     url=urls[0];
                 }
                 var match=url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
-                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${url}">${match[1]}.we`;
+                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${url}">${match[1]}`;
                 bundleUrl=message.params;
                 creeateQRCode('entryQrcode',message.params);
             }

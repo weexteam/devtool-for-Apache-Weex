@@ -1,9 +1,9 @@
 /**
  * Created by godsong on 16/7/4.
  */
-var config = require('./Config');
+var Config = require('./Config');
 function _log(level, args) {
-    if (config.verbose) {
+    if (Config.verbose) {
         let e = new Error();
         console[level].apply(console, args.concat('\n' + '(@' + e.stack.split('\n')[3].split('(')[1]));
     }
@@ -15,7 +15,7 @@ exports.error = function (...args) {
     _log('error', args);
 };
 exports.printMessage = function (message, prefix) {
-    if (config.verbose) {
+    if (Config.verbose) {
         if (message.method == 'WxDebug.callJS') {
             console.log(`[${prefix}] callJS:`, message.params.method);
         }

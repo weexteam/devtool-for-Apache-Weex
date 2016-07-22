@@ -2,9 +2,9 @@
  * Created by godsong on 16/7/6.
  */
 var Path = require('path');
-var webpack = require('webpack');
-var loader = require('weex-loader');
-var transformer = require('weex-transformer');
+var Webpack = require('webpack');
+var Loader = require('weex-loader');
+var Transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config = require('./Config');
 var Mkdirp = require('mkdirp')
@@ -12,7 +12,7 @@ exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let basename = Path.basename(source, '.we');
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
-        webpack({
+        Webpack({
             entry: source + '?entry=true',
             output: {
                 path: targetDir,
@@ -28,7 +28,9 @@ exports.loader = function (source, targetPath = '') {
                 ]
             }
         }, function (err, stats) {
+            console.log(err,stats);
             if (err) {
+
                 return reject(err);
             }
             resolve(targetDir + '/' + basename + '.js');
@@ -42,7 +44,7 @@ exports.transformer = function (source, targetPath = '') {
                 console.error(err);
                 return reject(err);
             }
-            var output = transformer.transform(Path.basename(source, '.we'), fileContent.toString());
+            var output = Transformer.transform(Path.basename(source, '.we'), fileContent.toString());
             let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath, Path.basename(source, '.we') + '.js');
             Mkdirp.sync(Path.dirname(targetDir));
             Fs.writeFileSync(targetDir, output.result);

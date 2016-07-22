@@ -7,7 +7,7 @@
     <style>
         body {
             background: #f1f2f3;
-            font-family: "STHeiti","Microsoft YaHei",monospace;
+            font-family: "STHeiti", "Microsoft YaHei", monospace;
         }
 
         #container {
@@ -176,7 +176,7 @@
 
         .help-ctn {
             padding-left: 50px;
-            display:none;
+            display: none;
         }
 
         .help-ctn section {
@@ -201,7 +201,6 @@
         }
 
         .qrcode {
-            margin-left: 50px;
             display: inline-block;
             vertical-align: middle;
         }
@@ -211,18 +210,20 @@
         }
 
         .qrcode-desc {
-            display: inline-block;
-            width: 58%;
-            vertical-align: middle;
+
             line-height: 1.4;
-            margin-left: 20px;
+            margin-top: 20px;
         }
-        .qrcode-section{
+
+        .qrcode-section {
             margin: 20px 0;
-            width: 45%;
+            width: 23%;
             display: inline-block;
+            padding: 0 50px;
+            vertical-align: top;
         }
-        hr{
+
+        hr {
             margin: 0 20px;
         }
     </style>
@@ -246,30 +247,28 @@
         </div>
     </section>
 </div>
-<div class="qrcode-section">
-    <div id="switchQrcode" class="qrcode"></div>
-    <div class="qrcode-desc">this qrcode could be used with playground to start Debugger.
+<div id="qrcode_container">
+    <div class="qrcode-section">
+        <div id="switchQrcode" class="qrcode"></div>
+        <div class="qrcode-desc">this qrcode could be used with playground to start Debugger.
+        </div>
     </div>
 </div>
-<div class="qrcode-section">
-    <div id="entryQrcode" class="qrcode"></div>
-    <div class="qrcode-desc" id="entryName">
-    </div>
-</div>
+
 <script>
     var bundleUrl;
-    function creeateQRCode(id,content,width,height){
-        var el=document.getElementById(id);
-        el.innerHTML='';
+    function creeateQRCode(id, content, width, height) {
+        var el = document.getElementById(id);
+        el.innerHTML = '';
         var qrcode = new QRCode(el, {
             text: content,
-            width: width||150,
-            height: height||150,
+            width: width || 150,
+            height: height || 150,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.L
         });
-        el.title='';
+        el.title = '';
     }
     function connect() {
         var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
@@ -279,23 +278,31 @@
                 renderDeviceList(message.params);
             }
             else if (message.method == 'WxDebug.setEntry') {
+                message.params.forEach(function (bundleUrl, i) {
+                    var urls = bundleUrl.split('_wx_tpl='), url, name;
+                    if (urls.length == 2) {
+                        url = decodeURIComponent(urls[1]);
+                        name = url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)[1] + '(for taobao)';
+                    }
+                    else if (urls.length == 1) {
+                        url = urls[0];
+                        name = url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)[1];
+                    }
+                    var ctn = document.createElement('div');
+                    ctn.className = 'qrcode-section';
+                    ctn.innerHTML = `<div id="entryQrcode${i}" class="qrcode"></div>
+                                <div class="qrcode-desc">
+                                <a target="_blank" href="${url}">${name}</a>
+                                </div>`;
+                    document.getElementById('qrcode_container').appendChild(ctn);
+                    creeateQRCode('entryQrcode' + i, bundleUrl);
+                })
 
-                var urls=message.params.split('_wx_tpl='),url;
-                if(urls.length==2){
-                    url=decodeURIComponent(urls[1]);
-                }
-                else if(urls.length==1){
-                    url=urls[0];
-                }
-                var match=url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)
-                document.getElementById('entryName').innerHTML=`<a target="_blank" href="${url}">${match[1]}`;
-                bundleUrl=message.params;
-                creeateQRCode('entryQrcode',message.params);
             }
-            else if(message.method=='WxDebug.refreshPage'){
-                _deviceList.forEach(function(device){
-                    device.inspectorWindow&&device.inspectorWindow.location.reload();
-                    device.debuggerWindow&&device.debuggerWindow.location.reload();
+            else if (message.method == 'WxDebug.refreshPage') {
+                _deviceList.forEach(function (device) {
+                    device.inspectorWindow && device.inspectorWindow.location.reload();
+                    device.debuggerWindow && device.debuggerWindow.location.reload();
                 })
 
             }
@@ -329,11 +336,11 @@
     function renderDeviceList(deviceList) {
         diff(deviceList);
         _deviceList = deviceList;
-        if(deviceList.length>0){
-            document.getElementById('help_ctn').style.display='block';
+        if (deviceList.length > 0) {
+            document.getElementById('help_ctn').style.display = 'block';
         }
-        else{
-            document.getElementById('help_ctn').style.display='none';
+        else {
+            document.getElementById('help_ctn').style.display = 'none';
         }
         var html = deviceList.map(function (device, i) {
             return `
@@ -372,7 +379,7 @@
 
     }
 
-    creeateQRCode('switchQrcode',`http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
+    creeateQRCode('switchQrcode', `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
 
     if (location.search == '?gs') {
         setTimeout(function () {

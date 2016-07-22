@@ -19,7 +19,7 @@ var LaunchDevTool = require('../lib/util/LaunchDevTool');
 var Del = require('del');
 var Watch = require('node-watch');
 var MessageBus = require('../lib/components/MessageBus');
-
+var Hosts=require('../lib/util/Hosts');
 var packageInfo = require('../package.json');
 
 Program
@@ -67,9 +67,18 @@ else {
 
 
 ////////////////////////////////////////////////////////////////////////////
+
 function buildAndStart() {
     if (Program.file.indexOf('http') == 0) {
-        Config.entryBundleUrl = Program.file;
+        var url=Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/,function(m,a,b){
+            if(!/\d+\.\d+\.\d+\.\d+/.test(a)){
+                return a+Hosts.findRealHost(b);
+            }
+            else{
+                return m;
+            }
+        });
+        Config.entryBundleUrl = url;
         startServerAndLaunchDevtool();
     }
     else {

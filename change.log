@@ -2,6 +2,8 @@
 * add support for debug a bundle url
 * add support for file source map(when debug a bundle url)
 * normalize code style
+* display two qrcode at the same time one for playground one for taobao
+* read local hosts file for replacing entry url domain to real ip
 0.2.18
 * add support for debug a compiled bundle js (and watch it)
 * add sourcemap function (Depend on weex-loader@0.3.0-alpha)

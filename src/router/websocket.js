@@ -5,11 +5,11 @@ const Router = require('koa-router');
 const P2PSession = require('../components/P2PSession');
 const DeviceManager = require('../components/DeviceManager');
 const MemoryFile = require('../components/MemoryFile');
-const uuid = require('../util/uuid');
+const Uuid = require('../util/Uuid');
 const Logger=require('../components/Logger');
 const Config=require('../components/Config');
 const MessageBus=require('../components/MessageBus');
-const bundleWrapper=require('../util/bundleWrapper');
+const bundleWrapper=require('../util/BundleWrapper');
 let wsRouter = Router();
 let chromeWsIndex=2;
 let nativeWsIndex=1;
@@ -64,7 +64,7 @@ wsRouter.all('/debugProxy/list', function*(next) {
         listPageWebsocket=listPageWebsocket.filter(ws=>ws!==this);
     });
     this.websocket.send(JSON.stringify({method:"WxDebug.pushDeviceList",params:DeviceManager.getDeviceList()}));
-    if(Config.entryBundleUrl)this.websocket.send(JSON.stringify({method:"WxDebug.setEntry",params:Config.entryBundleUrl}));
+    if(Config.entryBundleUrl)this.websocket.send(JSON.stringify({method:"WxDebug.setEntry",params:[Config.entryBundleUrl,Config.entryBundleUrlForTaobao]}));
 });
 
 
@@ -93,7 +93,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     }
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
-                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (uuid() + '.js'), bundleWrapper( message.params.args[1])).getUrl();
+                    message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (Uuid() + '.js'), bundleWrapper( message.params.args[1])).getUrl();
                     device.debuggerSession.postMessage(this, message);
                 }
                 else {

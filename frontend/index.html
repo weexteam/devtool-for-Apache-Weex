@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Weex Devtool - Device List</title>
+    <title>Weex Devtool - App List</title>
     <script src="lib/qrcode.min.js"></script>
     <style>
         body {
@@ -231,7 +231,7 @@
 
 <body>
 <fieldset>
-    <legend>Device List</legend>
+    <legend>App List</legend>
     <div id="container"></div>
 </fieldset>
 <div class="help-ctn" id="help_ctn">
@@ -270,6 +270,7 @@
         });
         el.title = '';
     }
+    var maxReconnectCount=5;
     function connect() {
         var websocket = new WebSocket('ws://' + location.host + '/debugProxy/list');
         websocket.onmessage = function (event) {
@@ -311,7 +312,13 @@
         };
         websocket.onclose = function () {
             renderDeviceList([]);
-            setTimeout(connect, 5000);
+            if(maxReconnectCount-->0){
+                setTimeout(connect, 1000);
+            }
+            else{
+                alert('Websocket error!Maybe the debug server crashed!')
+            }
+
         }
     }
     connect();
@@ -370,7 +377,9 @@
     function openDebugger(deviceId) {
         var device = findDevice(deviceId);
         device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
-
+        device.debuggerWindow.onload = function () {
+            device.debuggerWindow.document.body.firstElementChild.innerHTML = 'Debugee App: ' + device.name;
+        }
     }
     function openInspector(deviceId) {
         var device = findDevice(deviceId);

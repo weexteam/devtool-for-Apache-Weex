@@ -6,13 +6,14 @@ const Emitter = require('events').EventEmitter;
 const Logger = require('./Logger');
 class Device {
     constructor(deviceInfo, websocket) {
-        this.deviceId = deviceInfo.deviceId;
+        this.deviceId = deviceInfo.deviceId+'|'+deviceInfo.name;
 
         this.inspectorSession = P2PSession.newSession(websocket);
         this.debuggerSession = P2PSession.newSession(websocket);
         let index = websocket._info.split(' ')[0];
         websocket._info = `native[${ this.inspectorSession.id}+${this.debuggerSession.id}:0x${index % 2 == 1 ? '0' + index : index}]`;
         this.deviceInfo = Object.assign(deviceInfo, {
+            deviceId:this.deviceId,
             inspectorSessionId: this.inspectorSession.id,
             debuggerSessionId: this.debuggerSession.id
         });
@@ -51,7 +52,7 @@ class DeviceManager extends Emitter {
     }
 
     registerDevice(deviceInfo, websocket) {
-        let existDevice = this.deviceList.filter(dvc=>dvc.deviceId == deviceInfo.deviceId)[0];
+        let existDevice = this.deviceList.filter(dvc=>dvc.deviceId == deviceInfo.deviceId+'|'+deviceInfo.name)[0];
         if (existDevice) {
             existDevice.reconnect(websocket);
             clearTimeout(existDevice.removeTimer);

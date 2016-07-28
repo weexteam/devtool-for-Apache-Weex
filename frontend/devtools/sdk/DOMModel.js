@@ -1132,7 +1132,7 @@ WebInspector.DOMModel.instances = function()
 WebInspector.DOMModel.hideDOMNodeHighlight = function()
 {
     for (var domModel of WebInspector.DOMModel.instances())
-        domModel.highlightDOMNode(0);
+        domModel.highlightDOMNode(-1);//fixme GS_MODIFY
 }
 
 WebInspector.DOMModel.cancelSearch = function()

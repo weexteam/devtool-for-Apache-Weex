@@ -430,7 +430,8 @@ WebInspector.ScreencastView.prototype = {
          */
         function callback(model)
         {
-            if (!model || !this._pageScaleFactor) {
+            //fixme GS_MODIFY
+            if (!model ||Object.keys(model).length==0|| !this._pageScaleFactor) {
                 this._repaint();
                 return;
             }
@@ -764,7 +765,8 @@ WebInspector.ScreencastView.prototype = {
 
     _onNavigationHistory: function(error, currentIndex, entries)
     {
-        if (error)
+        //fixme GS_MODIFY
+        if (error||!entries)
           return;
 
         this._historyIndex = currentIndex;

@@ -1,3 +1,7 @@
+0.2.23
+* fix bugs of highlight
+* add the last protect for device is undefined
+* suppress some chrome devtool error
 0.2.22
 * Orz forgot add dependency and remove a debug log
 * change device list to app list

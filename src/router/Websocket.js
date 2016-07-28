@@ -57,7 +57,7 @@ MessageBus.on('page.refresh',function(){
     listPageWebsocket.forEach(ws=>{
         ws.send(JSON.stringify({method:"WxDebug.refreshPage"}));
     })
-})
+});
 wsRouter.all('/debugProxy/list', function*(next) {
     listPageWebsocket.push(this.websocket);
     this.websocket.on('close', function () {
@@ -104,8 +104,12 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 }
             }
             else {
-                if (device)
+                if (device) {
+                    if(message.method=='Page.screencastFrame'){
+                        message.params.sessionId=1;
+                    }
                     device.inspectorSession.postMessage(this, message);
+                }
                 else
                     Logger.error('Fatal Error:native device unregistered before send inspector protocol ['+message.method+']');
             }

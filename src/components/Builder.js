@@ -7,7 +7,7 @@ var Loader = require('weex-loader');
 var Transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config = require('./Config');
-var Mkdirp = require('mkdirp')
+var Mkdirp = require('mkdirp');
 exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let basename = Path.basename(source, '.we');
@@ -28,7 +28,6 @@ exports.loader = function (source, targetPath = '') {
                 ]
             }
         }, function (err, stats) {
-            console.log(err,stats);
             if (err) {
 
                 return reject(err);

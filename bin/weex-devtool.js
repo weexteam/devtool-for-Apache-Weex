@@ -44,6 +44,7 @@ if (Program.version == undefined) {
     process.exit(0);
 }
 var supportMode = ['loader', 'transformer'];
+
 Config.verbose = Program.verbose;
 Config.port = Program.port;
 if (supportMode.indexOf(Program.mode) == -1) {
@@ -58,6 +59,8 @@ try {
     Del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
 } catch (e) {
 }
+
+
 if (Program.file) {
     buildAndStart()
 }

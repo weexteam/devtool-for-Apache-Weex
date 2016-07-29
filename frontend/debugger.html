@@ -34,6 +34,7 @@
 </head>
 <body>
 <h2></h2>
+
 <div>
     <p>Press <span class="shortcut">⌘+⌥+J</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
 
@@ -64,7 +65,7 @@
         destroyJSRuntime();
         initJSRuntime(message);
 
-    })
+    });
 
     function destroyJSRuntime() {
         if (worker) {
@@ -92,18 +93,18 @@
 
     function resolve(root) {
         var html = `<${root.type} ${resolveStyle(root.style)}`;
-        var value='';
+        var value = '';
         for (var key in root.attr) {
             if (root.attr.hasOwnProperty(key)) {
-                if(root.type=='text'&&key=='value'){
-                    value=root.attr[key];
+                if (root.type == 'text' && key == 'value') {
+                    value = root.attr[key];
                 }
                 html += ` ${key}="${root.attr[key]}"`;
             }
         }
         html += '>';
-        if(value){
-            html+=value;
+        if (value) {
+            html += value;
         }
         else {
             for (var i = 0; root.children && i < root.children.length; i++) {

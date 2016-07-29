@@ -21,8 +21,8 @@ function _toFixed(num){
     else return s;
 }
 wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
-    Logger.log('new inspector client connected,join[' + this.params.sessionId + ']');
-    this.websocket._info=`chrome-inspector[${this.params.sessionId}0x${_toFixed(chromeWsIndex++)}]`;
+    Logger.debug(`new inspector client connected,join[${this.params.sessionId} -0x${_toFixed(chromeWsIndex)}]`);
+    this.websocket._info=`chrome-inspector[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
     if (P2PSession.join(this.params.sessionId, this.websocket));
     this.websocket.on('message', function (message) {
         message = JSON.parse(message);
@@ -31,8 +31,8 @@ wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
     yield next;
 });
 wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
-    Logger.log('new debugger client connected,join[' + this.params.sessionId + ']');
-    this.websocket._info=`chrome-debugger[${this.params.sessionId}0x${_toFixed(chromeWsIndex++)}]`;
+    Logger.debug(`new debugger client connected,join[${this.params.sessionId}-0x${_toFixed(chromeWsIndex)}]`);
+    this.websocket._info=`chrome-debugger[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
     if(!P2PSession.join(this.params.sessionId, this.websocket)){
         P2PSession.postMessage(this.websocket, {method:"WxDebug.reload"});
     }
@@ -69,7 +69,7 @@ wsRouter.all('/debugProxy/list', function*(next) {
 
 
 wsRouter.all('/debugProxy/native', function*(next) {
-    Logger.log('new native  client connected');
+    Logger.debug('new native  client connected');
     this.websocket._info=nativeWsIndex.toString(16)+' unregistered';
     nativeWsIndex++;
     this.websocket.on('message', function (messageText) {

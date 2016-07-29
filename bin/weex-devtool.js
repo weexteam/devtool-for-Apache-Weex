@@ -12,6 +12,7 @@ var Program = require('commander');
 var DebugServer = require('../lib/DebugServer');
 var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
+var LogStyle = require('../Common/LogStyle');
 var Fs = require('fs');
 var Path = require('path');
 var IP = require('ip');
@@ -19,7 +20,7 @@ var LaunchDevTool = require('../lib/util/LaunchDevTool');
 var Del = require('del');
 var Watch = require('node-watch');
 var MessageBus = require('../lib/components/MessageBus');
-var Hosts=require('../lib/util/Hosts');
+var Hosts = require('../lib/util/Hosts');
 var packageInfo = require('../package.json');
 
 Program
@@ -28,7 +29,7 @@ Program
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
-    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
+    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
 
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
@@ -73,11 +74,11 @@ else {
 
 function buildAndStart() {
     if (Program.file.indexOf('http') == 0) {
-        var url=Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/,function(m,a,b){
-            if(!/\d+\.\d+\.\d+\.\d+/.test(a)){
-                return a+Hosts.findRealHost(b);
+        var url = Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/, function (m, a, b) {
+            if (!/\d+\.\d+\.\d+\.\d+/.test(a)) {
+                return a + Hosts.findRealHost(b);
             }
-            else{
+            else {
                 return m;
             }
         });
@@ -142,7 +143,7 @@ function startServerAndLaunchDevtool(entry) {
     var port = Program.port;
     var ip = IP.address();
     Config.ip = ip;
-    console.info('start debugger server at http://' + ip + ':' + port);
+    console.info('start debugger server at '+LogStyle.dressUp('http://' + ip + ':' + port,LogStyle.FG_YELLOW,LogStyle.BRIGHT));
     if (entry) {
         Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));
         console.log('\nYou can visit we file(s) use ' + Config.entryBundleUrl);
@@ -155,7 +156,7 @@ function startServerAndLaunchDevtool(entry) {
         console.log('\nDirectory[' + Program.file + '] has been mapped to http://' + ip + ':' + port + '/' + Config.bundleDir + '/');
     }
 
-    console.info('\nThe websocket address for native is ws://' + ip + ':' + port + '/debugProxy/native');
+    console.info('\nThe websocket address for native is '+LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native',LogStyle.FG_YELLOW,LogStyle.BRIGHT));
     DebugServer.start(port);
     LaunchDevTool(ip, port);
 }

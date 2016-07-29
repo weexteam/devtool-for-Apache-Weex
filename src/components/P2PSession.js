@@ -10,7 +10,7 @@ class Peer extends Emitter {
         this.messageBuffer = [];
         this.websocket = websocket;
         this.websocket.on('close', ()=> {
-            Logger.log('socket close:', this.websocket._info);
+            Logger.debug('socket close:', this.websocket._info);
             if (this.oppositePeer) {
                 this.oppositePeer.oppositePeer = null;
             }
@@ -24,13 +24,20 @@ class Peer extends Emitter {
     }
 
     send(message) {
-        if (Array.isArray(message)) {
-            message.forEach((m)=> {
-                this.websocket.send(JSON.stringify(m));
-            });
+        if (this.websocket.readyState == 1) {
+            if (Array.isArray(message)) {
+                message.forEach((m)=> {
+                    this.websocket.send(JSON.stringify(m));
+                });
+            }
+            else {
+
+                this.websocket.send(JSON.stringify(message));
+            }
+
         }
         else {
-            this.websocket.send(JSON.stringify(message));
+            Logger.error('websocket not opend!');
         }
     }
 
@@ -115,7 +122,7 @@ class P2PSession extends Emitter {
             }
         }
         else {
-            Logger.error('Error:can not find the peer : ', this.websocket._info);
+            Logger.error('Error:can not find the peer : ', websocket._info);
         }
     }
 
@@ -133,31 +140,44 @@ class P2PSession extends Emitter {
 
     addPeer(websocket) {
         let peer = new Peer(websocket);
+
         if (this.peerList.length == 0) {
             this.peerList.push(peer);
 
         }
         else if (this.peerList.length == 1) {
-            peer.setOppositePeer(this.peerList[0]);
-            this.peerList.push(peer);
-            this.peerList[0].setOppositePeer(peer);
+            if (this.peerList[0].websocket === websocket) {
+                this.peerList[0] = peer;
+            }
+            else {
+                peer.setOppositePeer(this.peerList[0]);
+                this.peerList.push(peer);
+                this.peerList[0].setOppositePeer(peer);
+            }
         }
         else {
-            this.peerList.forEach(peer=>Logger.log('state:', peer.websocket.readyState));
-            Logger.log('Peer session can not add the third peer!');
+            this.peerList = this.peerList.map((p)=> {
+                if (p.websocket === websocket)return peer;
+                else {
+                    return p;
+                }
+            });
+            this.peerList.forEach(peer=>Logger.debug('state:', peer.websocket._info));
+            Logger.debug('Peer session can not add the third peer!');
             return;
         }
         peer.on('close', ()=> {
-            if(this.peerList) {
-                this.peerList = this.peerList.filter(p=>p !== peer);
+
+            if (this.peerList) {
+                this.peerList = this.peerList.filter(p=>p !== peer&&p.websocket!==peer.websocket);
+                Logger.debug('peer removed:', this.peerList.length);
             }
 
         });
-        Logger.log('addPeer', this.id, this.peerList.length);
+        Logger.debug('addPeer', this.id, this.peerList.length);
         if (this.peerList.length == 2) {
             this.fresh = false;
         }
-        clearInterval(this.idleTimer);
     }
 
 }

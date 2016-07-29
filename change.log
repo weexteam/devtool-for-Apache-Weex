@@ -1,3 +1,8 @@
+0.2.24
+* fix bugs
+* add color for log
+* restart devtool wouldn't open a new tab now
+* change default buld mode to transformer
 0.2.23
 * fix bugs of highlight
 * add the last protect for device is undefined

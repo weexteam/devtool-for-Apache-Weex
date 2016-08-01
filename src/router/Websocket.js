@@ -34,7 +34,8 @@ wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
     Logger.debug(`new debugger client connected,join[${this.params.sessionId}-0x${_toFixed(chromeWsIndex)}]`);
     this.websocket._info=`chrome-debugger[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
     if(!P2PSession.join(this.params.sessionId, this.websocket)){
-        P2PSession.postMessage(this.websocket, {method:"WxDebug.reload"});
+        //P2PSession.postMessage(this.websocket, {method:"WxDebug.reload"});
+        P2PSession.postMessage(this.websocket, {method:"WxDebug.enable"});
     }
     else {
         console.log('enable remote debug');

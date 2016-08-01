@@ -13,9 +13,10 @@ function _log(level, args) {
         args.push(LogStyle.LEVEL_COLOR['#end']);
         if (traceLevel[level]) {
             let e = new Error();
-            args.push('\n' + LogStyle.LEVEL_COLOR['#underline'] + '@(' + e.stack.split('\n')[3].split('(')[1] + LogStyle.LEVEL_COLOR['#end']);
+            let stack=e.stack.split('\n')[3].split('(');
+            args.push('\n' + LogStyle.LEVEL_COLOR['#underline'] + '@(' + (stack[1]||stack[0]) + LogStyle.LEVEL_COLOR['#end']);
         }
-        (console[level]||console.log).apply(console, args);
+        (console[level]||console.log).call(console, args.join(' '));
     }
 }
 exports.log = function (...args) {

@@ -1,3 +1,6 @@
+0.2.25
+* send WxDebug.enable for every time when click the debugger button
+* fix weex-loader dependency problem
 0.2.24
 * fix bugs
 * add color for log

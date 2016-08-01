@@ -14,6 +14,7 @@ var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
 var LogStyle = require('../Common/LogStyle');
 var Fs = require('fs');
+var Exit=require('exit');
 var Path = require('path');
 var IP = require('ip');
 var LaunchDevTool = require('../lib/util/LaunchDevTool');
@@ -29,8 +30,7 @@ Program
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
-    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'transformer')
-
+    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader');
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
     .action(function (file) {
@@ -42,7 +42,7 @@ Program.watch = true;
 if (Program.version == undefined) {
     //fix tj's commander bug
     console.log(packageInfo.version);
-    process.exit(0);
+    Exit(0);
 }
 var supportMode = ['loader', 'transformer'];
 
@@ -50,7 +50,7 @@ Config.verbose = Program.verbose;
 Config.port = Program.port;
 if (supportMode.indexOf(Program.mode) == -1) {
     console.log('unsupported build mode:', Program.mode);
-    process.exit(0);
+    Exit(0);
 }
 else {
     Config.buildMode = Program.mode;
@@ -90,7 +90,7 @@ function buildAndStart() {
         var ext = Path.extname(filePath);
         if (!Fs.existsSync(filePath)) {
             console.error(filePath + ': No such file or directory');
-            return process.exit(0);
+            return Exit(0);
         }
         if (ext == '.we') {
             console.log('building...');
@@ -99,8 +99,10 @@ function buildAndStart() {
                 console.timeEnd('Build completed!');
                 startServerAndLaunchDevtool(Program.file);
             }, function (err) {
-                console.log(err, err.stack);
-                process.exit(0);
+                if(err){
+                    console.log(err, err.stack);
+                }
+                Exit(0);
             })
 
         }
@@ -117,12 +119,12 @@ function buildAndStart() {
             }
             else {
                 console.error(Program.file + ' is not a directory!');
-                process.exit(0);
+                Exit(0);
             }
         }
         else {
             console.error('Error:unsupported file type: ', ext);
-            return process.exit(0);
+            return Exit(0);
         }
     }
 }

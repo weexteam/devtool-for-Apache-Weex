@@ -4,6 +4,7 @@
 var Path = require('path');
 var Webpack = require('webpack');
 var Loader = require('weex-loader');
+var Logger = require('./Logger');
 var Transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config = require('./Config');
@@ -26,11 +27,22 @@ exports.loader = function (source, targetPath = '') {
                         loader: 'weex'
                     }
                 ]
+            },
+            resolveLoader: {
+                root: Path.join(__dirname, "../../node_modules")
             }
+
         }, function (err, stats) {
             if (err) {
-
                 return reject(err);
+            }
+            var jsonStats = stats.toJson();
+            if (jsonStats.errors.length > 0) {
+                Logger.error('[webpack errors]\n', jsonStats.errors.join('\n'));
+                return reject('');
+            }
+            if (jsonStats.warnings.length > 0) {
+                Logger.warn('[webpack warnings]', jsonStats.warnings.join('\n'));
             }
             resolve(targetDir + '/' + basename + '.js');
         });

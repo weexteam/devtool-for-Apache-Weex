@@ -25,24 +25,42 @@ self.__logger=function(level,msg){
 };
 self.nativeLog=function(text){
     console.log(text);
-}
+};
 eventEmitter.on('WxDebug.initJSRuntime',function(message){
     importScripts(message.params.url);
     for(var key in message.params.env){
         self[key]=message.params.env[key];
     }
-})
+});
+eventEmitter.on('WxDebug.changeLogLevel',function(message){
+   self.WXEnvironment.logLevel=message.params;
+});
+eventEmitter.on('Console.messageAdded',function(message){
+    console.error('[Native Error]',message.params.message.text);
+});
+var instanceMap={};
 eventEmitter.on('WxDebug.callJS', function (data) {
     var method = data.params.method;
-    if (method == 'createInstance') {
+    if (method === 'createInstance') {
         var url=data.params.sourceUrl;
         importScripts(url);
         self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2],data.params.args[3]);
+        instanceMap[data.params.args[0]]=true;
+    }
+    else if(method==='destroyInstance'){
+        if(instanceMap[data.params.args[0]]){
+            self.destroyInstance(data.params.args[0]);
+            delete instanceMap[data.params.args[0]];
+        }
+        else{
+            console.warn('invalid destroyInstance['+data.params.args[0]+'] because runtime has been refreshed');
+        }
     }
     else {
         self[data.params.method].apply(null, data.params.args);
     }
 });
+
 function dump(id){
     postMessage({
         method:'WxRuntime.dom',

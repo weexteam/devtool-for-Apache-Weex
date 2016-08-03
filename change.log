@@ -1,3 +1,8 @@
+0.2.26
+* add log level select on debugger page
+* debugger page console would display native error log now
+* separate script in standalone js file.
+* remove unused js file
 0.2.25
 * send WxDebug.enable for every time when click the debugger button
 * fix weex-loader dependency problem

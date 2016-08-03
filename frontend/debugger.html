@@ -30,6 +30,14 @@
         #warning {
             color: red;
         }
+        p label{
+            vertical-align: middle;
+            margin-right:12px;
+        }
+        p select{
+            vertical-align: middle;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -37,7 +45,16 @@
 
 <div>
     <p>Press <span class="shortcut">⌘+⌥+J</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
-
+    <p>
+        <label>Log Level</label>
+        <select name="" id="logLevel">
+            <option value="log">log</option>
+            <option value="info">info</option>
+            <option value="debug">debug</option>
+            <option value="warn">warn</option>
+            <option value="error">error</option>
+        </select>
+    </p>
     <p id="warning"></p>
 </div>
 <div id="Document"></div>
@@ -45,15 +62,20 @@
     var worker;
     var timer;
     var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' + location.search.split('?sessionId=')[1]);
-    websocket.on('WxDebug.callJS', function (message) {
+    websocket.on('*', function (message) {
         if (worker) {
             worker.postMessage(message);
         }
-        else {
-        }
-
     });
     websocket.on('socketOpened', function () {
+        var debuggerFlag=sessionStorage.getItem('debuggerFlag');
+        if(debuggerFlag){
+            websocket.send({method:'WxDebug.reload'});
+        }
+        else{
+            websocket.send({method:'WxDebug.enable'});
+            sessionStorage.setItem('debuggerFlag',true);
+        }
         clearTimeout(timer);
         timer = setTimeout(function () {
             document.getElementById('warning').innerHTML = 'Warning:The session with native was closed,please restart your native app!'
@@ -63,10 +85,14 @@
         clearTimeout(timer);
         document.getElementById('warning').innerHTML = "";
         destroyJSRuntime();
+        var logLevel=localStorage.getItem('logLevel');
+        if(logLevel){
+            message.params.env.WXEnvironment.logLevel=logLevel;
+        }
+        document.getElementById('logLevel').value=message.params.env.WXEnvironment.logLevel;
         initJSRuntime(message);
 
     });
-
     function destroyJSRuntime() {
         if (worker) {
             worker.terminate();
@@ -75,7 +101,7 @@
         }
     }
     function initJSRuntime(message) {
-        worker = new Worker('/lib/runtime.js');
+        worker = new Worker('/lib/Runtime.js');
         worker.onmessage = function (message) {
             message = message.data;
             var domain = message.method.split('.')[0];
@@ -85,11 +111,20 @@
             else {
                 websocket.send(message);
             }
-        }
+        };
         worker.postMessage(message)
     }
     //initJSRuntime();
-
+    var debugee=sessionStorage.getItem('debugee');
+    if(debugee){
+        document.body.firstElementChild.innerHTML=debugee;
+    }
+    document.getElementById('logLevel').onchange=function(evt){
+        localStorage.setItem('logLevel',evt.target.value);
+        if(worker){
+            worker.postMessage({method:'WxDebug.changeLogLevel',params:evt.target.value});
+        }
+    }
 
     function resolve(root) {
         var html = `<${root.type} ${resolveStyle(root.style)}`;

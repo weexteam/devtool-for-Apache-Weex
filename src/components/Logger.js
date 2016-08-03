@@ -13,10 +13,10 @@ function _log(level, args) {
         args.push(LogStyle.LEVEL_COLOR['#end']);
         if (traceLevel[level]) {
             let e = new Error();
-            let stack=e.stack.split('\n')[3].split('(');
-            args.push('\n' + LogStyle.LEVEL_COLOR['#underline'] + '@(' + (stack[1]||stack[0]) + LogStyle.LEVEL_COLOR['#end']);
+            let stack = e.stack.split('\n')[3].split('(');
+            args.push('\n' + LogStyle.LEVEL_COLOR['#underline'] + '@(' + (stack[1] || stack[0]) + LogStyle.LEVEL_COLOR['#end']);
         }
-        (console[level]||console.log).call(console, args.join(' '));
+        (console[level] || console.log).apply(console, args);
     }
 }
 exports.log = function (...args) {
@@ -33,7 +33,7 @@ exports.printMessage = function (message, prefix) {
         exports.log(`[${prefix}] callJS:`, message.params.method);
     }
     else if (message.method == 'WxDebug.callNative') {
-        exports.log(`[${prefix}] callNative:(${message.params.instance}`, message.params.tasks.map(task=>task.module + '.' + task.method));
+        exports.log(`[${prefix}] callNative:(${message.params.instance}`, message.params.tasks.map(task=>task.module + '.' + task.method),')');
     }
     else if (message.method == 'WxDebug.registerDevice') {
         exports.log(`[${prefix}]`, message);

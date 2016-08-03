@@ -23,7 +23,7 @@ function _toFixed(num) {
 wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
     Logger.debug(`new inspector client connected,join[${this.params.sessionId} -0x${_toFixed(chromeWsIndex)}]`);
     this.websocket._info = `chrome-inspector[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
-    if (P2PSession.join(this.params.sessionId, this.websocket));
+    P2PSession.join(this.params.sessionId, this.websocket);
     this.websocket.on('message', function (message) {
         message = JSON.parse(message);
         P2PSession.postMessage(this, message);
@@ -112,7 +112,6 @@ wsRouter.all('/debugProxy/native', function*(next) {
                         message.params.sessionId = 1;
                     }
                     if (message.method == 'Console.messageAdded' && message.params.message.level === 'error') {
-                        console.log(111);
                         device.debuggerSession.postMessage(this, message);
                     }
                     device.inspectorSession.postMessage(this, message);

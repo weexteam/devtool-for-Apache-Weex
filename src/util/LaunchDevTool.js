@@ -1,8 +1,8 @@
 /**
  * Created by godsong on 16/6/13.
  */
-const opn=require('opn');
-const Path=require('path');
+const opn = require('opn');
+const Path = require('path');
 const ExecSync = require('child_process').execSync;
 function getChromeAppName() {
     switch (process.platform) {
@@ -14,9 +14,9 @@ function getChromeAppName() {
             return 'google-chrome';
     }
 }
-let launchDevTools=module.exports= function (ip,port) {
-    return new Promise(function(resolve,reject){
-        var debuggerURL = 'http://'+(ip||'localhost') +':'+ port + '/';
+let launchDevTools = module.exports = function (ip, port) {
+    return new Promise(function (resolve, reject) {
+        var debuggerURL = 'http://' + (ip || 'localhost') + ':' + port + '/';
         console.log('Launching Dev Tools...');
         if (process.platform === 'darwin') {
             try {
@@ -26,14 +26,14 @@ let launchDevTools=module.exports= function (ip,port) {
                 ExecSync(
                     'osascript ' +
                     Path.resolve(__dirname, '../../common/chrome.applescript') +
-                    ' '+debuggerURL
+                    ' ' + debuggerURL
                 );
                 return;
             } catch (err) {
                 // Ignore errors.
             }
         }
-        opn(debuggerURL, {app: [getChromeAppName()]}, function(err) {
+        opn(debuggerURL, {app: [getChromeAppName()]}, function (err) {
             if (err) {
                 console.error('Google Chrome exited with error:', err);
                 reject(err);

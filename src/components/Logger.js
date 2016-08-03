@@ -27,13 +27,13 @@ exports.error = function (...args) {
 };
 exports.debug = function (...args) {
     _log('debug', args);
-}
+};
 exports.printMessage = function (message, prefix) {
     if (message.method == 'WxDebug.callJS') {
         exports.log(`[${prefix}] callJS:`, message.params.method);
     }
     else if (message.method == 'WxDebug.callNative') {
-        exports.log(`[${prefix}] callNative:(${message.params.instance}`, message.params.tasks.map(task=>task.module + '.' + task.method),')');
+        exports.log(`[${prefix}] callNative:(${message.params.instance}`, message.params.tasks.map(task=>task.module + '.' + task.method), ')');
     }
     else if (message.method == 'WxDebug.registerDevice') {
         exports.log(`[${prefix}]`, message);

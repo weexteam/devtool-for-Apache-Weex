@@ -1,3 +1,4 @@
+var Path=require('path');
 class DebugTarget{
     constructor(targetName){
         this.targetName=target;
@@ -12,4 +13,4 @@ let TargetResolver={
     registerResolver(){
 
     }
-}
+};

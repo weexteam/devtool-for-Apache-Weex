@@ -14,7 +14,7 @@ var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
 var LogStyle = require('../Common/LogStyle');
 var Fs = require('fs');
-var Exit=require('exit');
+var Exit = require('exit');
 var Path = require('path');
 var IP = require('ip');
 var LaunchDevTool = require('../lib/util/LaunchDevTool');
@@ -99,7 +99,7 @@ function buildAndStart() {
                 console.timeEnd('Build completed!');
                 startServerAndLaunchDevtool(Program.file);
             }, function (err) {
-                if(err){
+                if (err) {
                     console.log(err, err.stack);
                 }
                 Exit(0);
@@ -145,7 +145,7 @@ function startServerAndLaunchDevtool(entry) {
     var port = Program.port;
     var ip = IP.address();
     Config.ip = ip;
-    console.info('start debugger server at '+LogStyle.dressUp('http://' + ip + ':' + port,LogStyle.FG_YELLOW,LogStyle.BRIGHT));
+    console.info('start debugger server at ' + LogStyle.dressUp('http://' + ip + ':' + port, LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     if (entry) {
         Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js'));
         console.log('\nYou can visit we file(s) use ' + Config.entryBundleUrl);
@@ -158,7 +158,7 @@ function startServerAndLaunchDevtool(entry) {
         console.log('\nDirectory[' + Program.file + '] has been mapped to http://' + ip + ':' + port + '/' + Config.bundleDir + '/');
     }
 
-    console.info('\nThe websocket address for native is '+LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native',LogStyle.FG_YELLOW,LogStyle.BRIGHT));
+    console.info('\nThe websocket address for native is ' + LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native', LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     DebugServer.start(port);
     LaunchDevTool(ip, port);
 }

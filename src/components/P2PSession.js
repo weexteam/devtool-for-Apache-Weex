@@ -37,7 +37,7 @@ class Peer extends Emitter {
 
         }
         else {
-            Logger.error('websocket not opend!');
+            Logger.error('websocket not opened!');
         }
     }
 

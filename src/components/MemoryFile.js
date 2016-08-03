@@ -3,9 +3,9 @@
  */
 
 const Crypto = require('crypto');
-const Config=require('./Config');
-const Url=require('url');
-const Qs=require('querystring');
+const Config = require('./Config');
+const Url = require('url');
+const Qs = require('querystring');
 let _memoryFileMap = {};
 class MemoryFile {
     static get(name) {
@@ -20,13 +20,13 @@ class MemoryFile {
         if (fileName.indexOf('http://') == 0) {
 
             this.name = fileName.slice(7);
-            if(this.name.indexOf(Config.ip)==0){
-                if(this.name.indexOf('devtool_fake.html')!=-1){
-                    this.url=Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
-                    this.name=this.url.slice(7);
+            if (this.name.indexOf(Config.ip) == 0) {
+                if (this.name.indexOf('devtool_fake.html') != -1) {
+                    this.url = Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
+                    this.name = this.url.slice(7);
                 }
-                else{
-                    this.url=fileName;
+                else {
+                    this.url = fileName;
                 }
             }
         }

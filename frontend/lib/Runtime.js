@@ -7,7 +7,7 @@ var eventEmitter = new EventEmitter();
 onmessage = function (message) {
     eventEmitter.emit(message.data.method, message.data)
 };
-var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__);"
+var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__);";
 
 self.callNative = function (instance, tasks, callback) {
     postMessage({
@@ -20,40 +20,42 @@ self.callNative = function (instance, tasks, callback) {
     })
 };
 
-self.__logger=function(level,msg){
-    console[level]('native:',msg);
+self.__logger = function (level, msg) {
+    console[level]('native:', msg);
 };
-self.nativeLog=function(text){
+self.nativeLog = function (text) {
     console.log(text);
 };
-eventEmitter.on('WxDebug.initJSRuntime',function(message){
+eventEmitter.on('WxDebug.initJSRuntime', function (message) {
     importScripts(message.params.url);
-    for(var key in message.params.env){
-        self[key]=message.params.env[key];
+    for (var key in message.params.env) {
+        if(message.params.env.hasOwnProperty(key)) {
+            self[key] = message.params.env[key];
+        }
     }
 });
-eventEmitter.on('WxDebug.changeLogLevel',function(message){
-   self.WXEnvironment.logLevel=message.params;
+eventEmitter.on('WxDebug.changeLogLevel', function (message) {
+    self.WXEnvironment.logLevel = message.params;
 });
-eventEmitter.on('Console.messageAdded',function(message){
-    console.error('[Native Error]',message.params.message.text);
+eventEmitter.on('Console.messageAdded', function (message) {
+    console.error('[Native Error]', message.params.message.text);
 });
-var instanceMap={};
+var instanceMap = {};
 eventEmitter.on('WxDebug.callJS', function (data) {
     var method = data.params.method;
     if (method === 'createInstance') {
-        var url=data.params.sourceUrl;
+        var url = data.params.sourceUrl;
         importScripts(url);
-        self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2],data.params.args[3]);
-        instanceMap[data.params.args[0]]=true;
+        self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2], data.params.args[3]);
+        instanceMap[data.params.args[0]] = true;
     }
-    else if(method==='destroyInstance'){
-        if(instanceMap[data.params.args[0]]){
+    else if (method === 'destroyInstance') {
+        if (instanceMap[data.params.args[0]]) {
             self.destroyInstance(data.params.args[0]);
             delete instanceMap[data.params.args[0]];
         }
-        else{
-            console.warn('invalid destroyInstance['+data.params.args[0]+'] because runtime has been refreshed');
+        else {
+            console.warn('invalid destroyInstance[' + data.params.args[0] + '] because runtime has been refreshed');
         }
     }
     else {
@@ -61,10 +63,10 @@ eventEmitter.on('WxDebug.callJS', function (data) {
     }
 });
 
-function dump(id){
+function dump(id) {
     postMessage({
-        method:'WxRuntime.dom',
-        params:getRoot(id)
+        method: 'WxRuntime.dom',
+        params: getRoot(id)
     })
 
 }

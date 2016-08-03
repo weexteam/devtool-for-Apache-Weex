@@ -30,11 +30,13 @@
         #warning {
             color: red;
         }
-        p label{
+
+        p label {
             vertical-align: middle;
-            margin-right:12px;
+            margin-right: 12px;
         }
-        p select{
+
+        p select {
             vertical-align: middle;
             font-size: 16px;
         }
@@ -45,6 +47,7 @@
 
 <div>
     <p>Press <span class="shortcut">⌘+⌥+J</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
+
     <p>
         <label>Log Level</label>
         <select name="" id="logLevel">
@@ -68,13 +71,13 @@
         }
     });
     websocket.on('socketOpened', function () {
-        var debuggerFlag=sessionStorage.getItem('debuggerFlag');
-        if(debuggerFlag){
-            websocket.send({method:'WxDebug.reload'});
+        var debuggerFlag = sessionStorage.getItem('debuggerFlag');
+        if (debuggerFlag) {
+            websocket.send({method: 'WxDebug.reload'});
         }
-        else{
-            websocket.send({method:'WxDebug.enable'});
-            sessionStorage.setItem('debuggerFlag',true);
+        else {
+            websocket.send({method: 'WxDebug.enable'});
+            sessionStorage.setItem('debuggerFlag', true);
         }
         clearTimeout(timer);
         timer = setTimeout(function () {
@@ -85,11 +88,11 @@
         clearTimeout(timer);
         document.getElementById('warning').innerHTML = "";
         destroyJSRuntime();
-        var logLevel=localStorage.getItem('logLevel');
-        if(logLevel){
-            message.params.env.WXEnvironment.logLevel=logLevel;
+        var logLevel = localStorage.getItem('logLevel');
+        if (logLevel) {
+            message.params.env.WXEnvironment.logLevel = logLevel;
         }
-        document.getElementById('logLevel').value=message.params.env.WXEnvironment.logLevel;
+        document.getElementById('logLevel').value = message.params.env.WXEnvironment.logLevel;
         initJSRuntime(message);
 
     });
@@ -115,14 +118,14 @@
         worker.postMessage(message)
     }
     //initJSRuntime();
-    var debugee=sessionStorage.getItem('debugee');
-    if(debugee){
-        document.body.firstElementChild.innerHTML=debugee;
+    var debugee = sessionStorage.getItem('debugee');
+    if (debugee) {
+        document.body.firstElementChild.innerHTML = debugee;
     }
-    document.getElementById('logLevel').onchange=function(evt){
-        localStorage.setItem('logLevel',evt.target.value);
-        if(worker){
-            worker.postMessage({method:'WxDebug.changeLogLevel',params:evt.target.value});
+    document.getElementById('logLevel').onchange = function (evt) {
+        localStorage.setItem('logLevel', evt.target.value);
+        if (worker) {
+            worker.postMessage({method: 'WxDebug.changeLogLevel', params: evt.target.value});
         }
     }
 

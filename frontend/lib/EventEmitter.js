@@ -64,4 +64,4 @@ EventEmitter.prototype = {
         this._emit('$finally', args, context);
         return context;
     }
-}
+};

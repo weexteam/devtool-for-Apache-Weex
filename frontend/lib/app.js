@@ -1,4 +1,4 @@
-var bundleUrl, websocket;
+var  websocket;
 var maxReconnectCount = 5;
 var _deviceList = [];
 function connect() {
@@ -26,7 +26,7 @@ function connect() {
                                 <a target="_blank" href="${url}">${name}</a>
                                 </div>`;
                 document.getElementById('qrcode_container').appendChild(ctn);
-                creeateQRCode('entryQrcode' + i, bundleUrl);
+                createQRCode('entryQrcode' + i, bundleUrl);
             })
 
         }
@@ -78,7 +78,7 @@ function renderDeviceList(deviceList) {
     else {
         document.getElementById('help_ctn').style.display = 'none';
     }
-    var html = deviceList.map(function (device, i) {
+    var html = deviceList.map(function (device) {
         return `
             <div class="device-wrap">
                 <div class="line"><span>AppName</span><b>${device.name}</b></div>
@@ -111,8 +111,8 @@ function openDebugger(deviceId) {
     device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
 
     device.debuggerWindow.onload = function () {
-        device.debuggerWindow.sessionStorage.setItem('debugee','Debugee App: ' + device.name)
-        device.debuggerWindow.document.body.firstElementChild.innerHTML ='Debugee App: ' + device.name ;
+        device.debuggerWindow.sessionStorage.setItem('debugee', 'Debugee App: ' + device.name);
+        device.debuggerWindow.document.body.firstElementChild.innerHTML = 'Debugee App: ' + device.name;
     }
 }
 function openInspector(deviceId) {
@@ -120,7 +120,7 @@ function openInspector(deviceId) {
     device.inspectorWindow = window.open(`/devtools/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
 
 }
-function creeateQRCode(id, content, width, height) {
+function createQRCode(id, content, width, height) {
     var el = document.getElementById(id);
     el.innerHTML = '';
     new QRCode(el, {
@@ -134,5 +134,5 @@ function creeateQRCode(id, content, width, height) {
     el.title = '';
 }
 connect();
-creeateQRCode('switchQrcode', `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
+createQRCode('switchQrcode', `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
 

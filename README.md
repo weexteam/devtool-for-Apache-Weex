@@ -25,7 +25,6 @@ $npm install -g weex-devtool
     -v, --version        display version
     -p, --port [port]    set debugger server port
     -e, --entry [entry]  set the entry bundlejs path when you specific the bundle server root path
-    -m, --mode [mode]    set build mode [transformer|loader]
 
 #### start debugger
 ```
@@ -61,8 +60,9 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
 # 中文版
 ## 安装
 ```
-$npm install -g weex-devtool
+$npm install -g weex-toolkit
 ```
+(建议用weex-toolkit这个入口。weex debug其实就是调用的weex-devtool)
 ##  usage
 
  weex debug [options] [we_file|bundles_dir]
@@ -74,7 +74,6 @@ $npm install -g weex-devtool
     -v, --version        显示版本
     -p, --port [port]    设置debug服务器端口号 默认为8088
     -e, --entry [entry]  debug一个目录时,这个参数指定整个目录的入口bundle文件,这个bundle文件的地址会显示在debug主页上(作为二维码)
-    -m, --mode [mode]    设置构建we文件的方式,transformer 最基础的风格适合单文件,loader:wepack风格 适合模块化的多文件.默认为transformer
 
 #### 开启调试
 ```

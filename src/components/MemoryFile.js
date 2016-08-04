@@ -17,17 +17,21 @@ class MemoryFile {
     }
 
     constructor(fileName, content) {
-        if (fileName.indexOf('http://') == 0) {
+        let rHttpHeader = /^https?:\/\//;
+        if (rHttpHeader.test(fileName)) {
 
-            this.name = fileName.slice(7);
+            this.name = fileName.replace(rHttpHeader, '');
             if (this.name.indexOf(Config.ip) == 0) {
                 if (this.name.indexOf('devtool_fake.html') != -1) {
                     this.url = Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
-                    this.name = this.url.slice(7);
+                    this.name = this.url.replace(rHttpHeader, '');
                 }
                 else {
                     this.url = fileName;
                 }
+            }
+            else {
+                this.url = fileName;
             }
         }
         else this.name = fileName;
@@ -36,9 +40,11 @@ class MemoryFile {
         var md5Str = md5.digest('hex');
         var key = this.name.split('?')[0] + '|' + md5Str;
         if (_memoryFileMap[this.name]) {
+            _memoryFileMap[this.name].content = content;
             return _memoryFileMap[this.name];
         }
         else if (_memoryFileMap[key]) {
+            _memoryFileMap[key].content = content;
             return _memoryFileMap[key];
         }
         else

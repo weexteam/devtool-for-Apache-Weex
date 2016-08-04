@@ -73,7 +73,7 @@ else {
 ////////////////////////////////////////////////////////////////////////////
 
 function buildAndStart() {
-    if (Program.file.indexOf('http') == 0) {
+    if (/^https?:\/\//.test(Program.file)) {
         var url = Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/, function (m, a, b) {
             if (!/\d+\.\d+\.\d+\.\d+/.test(a)) {
                 return a + Hosts.findRealHost(b);
@@ -82,6 +82,7 @@ function buildAndStart() {
                 return m;
             }
         });
+        console.log(url);
         Config.entryBundleUrl = url;
         startServerAndLaunchDevtool();
     }
@@ -152,7 +153,10 @@ function startServerAndLaunchDevtool(entry) {
         console.log('Also you can use Playground App to scan the qrcode on device list page.');
     }
     if (Config.entryBundleUrl) {
-        Config.entryBundleUrlForTaobao = 'http://' + ip + ':' + port + '/devtool_fake.html?_wx_tpl=' + encodeURIComponent(Config.entryBundleUrl);
+        //fixme ugly 与具体耦合的逻辑 易变！
+        if (!/wh_weex=true/.test(Config.entryBundleUrl)) {
+            Config.entryBundleUrlForTaobao = 'http://' + ip + ':' + port + '/devtool_fake.html?_wx_tpl=' + encodeURIComponent(Config.entryBundleUrl);
+        }
     }
     if (Config.root) {
         console.log('\nDirectory[' + Program.file + '] has been mapped to http://' + ip + ':' + port + '/' + Config.bundleDir + '/');

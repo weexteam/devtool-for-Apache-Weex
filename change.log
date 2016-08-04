@@ -1,3 +1,9 @@
+0.2.27
+* format code
+* upgrade koa-websocket
+* fix bundle cache bug
+* support https bundle url
+* support another taobao url rule
 0.2.26
 * add log level select on debugger page
 * debugger page console would display native error log now

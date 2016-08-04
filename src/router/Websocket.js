@@ -64,10 +64,16 @@ wsRouter.all('/debugProxy/list', function*(next) {
         listPageWebsocket = listPageWebsocket.filter(ws=>ws !== this);
     });
     this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceList()}));
-    if (Config.entryBundleUrl)this.websocket.send(JSON.stringify({
-        method: "WxDebug.setEntry",
-        params: [Config.entryBundleUrl, Config.entryBundleUrlForTaobao]
-    }));
+    if (Config.entryBundleUrl) {
+        let entry = [Config.entryBundleUrl];
+        if (Config.entryBundleUrlForTaobao) {
+            entry.push(Config.entryBundleUrlForTaobao);
+        }
+        this.websocket.send(JSON.stringify({
+            method: "WxDebug.setEntry",
+            params: entry
+        }));
+    }
 });
 
 

@@ -1,4 +1,4 @@
-var  websocket;
+var websocket;
 var maxReconnectCount = 5;
 var _deviceList = [];
 function connect() {
@@ -17,7 +17,8 @@ function connect() {
                 }
                 else if (urls.length == 1) {
                     url = urls[0];
-                    name = url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)[1];
+                    name = url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/);
+                    name = name ? name[1] : url;
                 }
                 var ctn = document.createElement('div');
                 ctn.className = 'qrcode-section';

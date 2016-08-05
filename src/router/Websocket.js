@@ -54,16 +54,19 @@ DeviceManager.on('update', function (deviceList) {
 });
 let listPageWebsocket = [];
 MessageBus.on('page.refresh', function () {
-    listPageWebsocket.forEach(ws=> {
-        ws.send(JSON.stringify({method: "WxDebug.refreshPage"}));
-    })
+    DeviceManager.getDeviceList().forEach(function (device) {
+        device.debuggerSession.postMessage(device.websocket, {method: 'WxDebug.refresh'})
+    });
+    /* listPageWebsocket.forEach(ws=> {
+     ws.send(JSON.stringify({method: "WxDebug.refreshPage"}));
+     })*/
 });
 wsRouter.all('/debugProxy/list', function*(next) {
     listPageWebsocket.push(this.websocket);
     this.websocket.on('close', function () {
         listPageWebsocket = listPageWebsocket.filter(ws=>ws !== this);
     });
-    this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceList()}));
+    this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceListInfo()}));
     if (Config.entryBundleUrl) {
         let entry = [Config.entryBundleUrl];
         if (Config.entryBundleUrlForTaobao) {

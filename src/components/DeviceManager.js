@@ -18,6 +18,7 @@ class Device {
             debuggerSessionId: this.debuggerSession.id
         });
         websocket._deviceId = this.deviceId;
+        this.websocket = websocket;
     }
 
     destroy() {
@@ -32,6 +33,7 @@ class Device {
         this.inspectorSession.join(websocket);
         this.debuggerSession.join(websocket);
         websocket._deviceId = this.deviceId;
+        this.websocket = websocket;
     }
 }
 class DeviceManager extends Emitter {
@@ -50,7 +52,7 @@ class DeviceManager extends Emitter {
     removeDevice(device) {
         device.destroy();
         this.deviceList = this.deviceList.filter(dvc=>dvc !== device);
-        this.emit('update', this.getDeviceList());
+        this.emit('update', this.getDeviceListInfo());
     }
 
     registerDevice(deviceInfo, websocket) {
@@ -63,7 +65,7 @@ class DeviceManager extends Emitter {
         else {
             let device = new Device(deviceInfo, websocket);
             this.deviceList.push(device);
-            this.emit('update', this.getDeviceList());
+            this.emit('update', this.getDeviceListInfo());
         }
     }
 
@@ -72,6 +74,10 @@ class DeviceManager extends Emitter {
     }
 
     getDeviceList() {
+        return this.deviceList;
+    }
+
+    getDeviceListInfo() {
         return this.deviceList.map(device=>device.deviceInfo);
     }
 

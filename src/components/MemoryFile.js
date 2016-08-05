@@ -17,18 +17,13 @@ class MemoryFile {
     }
 
     constructor(fileName, content) {
-        let rHttpHeader = /^https?:\/\//;
+        //fixme ugly! your_current_ip playground default bundle url
+        let rHttpHeader = /^https?:\/\/(?!.*your_current_ip)/i;
         if (rHttpHeader.test(fileName)) {
-
             this.name = fileName.replace(rHttpHeader, '');
-            if (this.name.indexOf(Config.ip) == 0) {
-                if (this.name.indexOf('devtool_fake.html') != -1) {
-                    this.url = Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
-                    this.name = this.url.replace(rHttpHeader, '');
-                }
-                else {
-                    this.url = fileName;
-                }
+            if (this.name.indexOf('devtool_fake.html') != -1) {
+                this.url = Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
+                this.name = this.url.replace(rHttpHeader, '');
             }
             else {
                 this.url = fileName;

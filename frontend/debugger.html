@@ -84,6 +84,9 @@
             document.getElementById('warning').innerHTML = 'Warning:The session with native was closed,please restart your native app!'
         }, 2000)
     });
+    websocket.on('WxDebug.refresh', function () {
+        location.reload();
+    });
     websocket.on('WxDebug.initJSRuntime', function (message) {
         clearTimeout(timer);
         document.getElementById('warning').innerHTML = "";

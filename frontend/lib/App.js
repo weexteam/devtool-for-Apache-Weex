@@ -11,9 +11,10 @@ function connect() {
         else if (message.method == 'WxDebug.setEntry') {
             message.params.forEach(function (bundleUrl, i) {
                 var urls = bundleUrl.split('_wx_tpl='), url, name;
-                if (urls.length == 2) {
+                if (urls.length >= 2) {
                     url = decodeURIComponent(urls[1]);
-                    name = url.match(/\/([^\/?#]+)\.js(?:$|#|\?)/)[1] + '(for taobao)';
+                    name = url.match(/\/([^\/?#]+)\.(js|we)(?:$|#|\?)/);
+                    name = name ? name[1] : url;
                 }
                 else if (urls.length == 1) {
                     url = urls[0];
@@ -24,7 +25,7 @@ function connect() {
                 ctn.className = 'qrcode-section';
                 ctn.innerHTML = `<div id="entryQrcode${i}" class="qrcode"></div>
                                 <div class="qrcode-desc">
-                                <a target="_blank" href="${url}">${name}</a>
+                                <a target="_blank" href="${bundleUrl}">${name}</a>
                                 </div>`;
                 document.getElementById('qrcode_container').appendChild(ctn);
                 createQRCode('entryQrcode' + i, bundleUrl);

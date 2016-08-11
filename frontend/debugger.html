@@ -111,8 +111,14 @@
         worker.onmessage = function (message) {
             message = message.data;
             var domain = message.method.split('.')[0];
+            var method = message.method.split('.')[1];
             if (domain == 'WxRuntime') {
-                document.getElementById('Document').innerHTML = resolve(message.params);
+                if (method === 'clearLog') {
+                    console.clear();
+                }
+                else if (method === 'dom') {
+                    document.getElementById('Document').innerHTML = resolve(message.params);
+                }
             }
             else {
                 websocket.send(message);

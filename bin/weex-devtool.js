@@ -22,6 +22,7 @@ var Del = require('del');
 var Watch = require('node-watch');
 var MessageBus = require('../lib/components/MessageBus');
 var Hosts = require('../lib/util/Hosts');
+var UpgradeNotice = require('../lib/util/UpgradeNotice');
 var packageInfo = require('../package.json');
 
 Program
@@ -68,7 +69,7 @@ if (Program.file) {
 else {
     startServerAndLaunchDevtool()
 }
-
+UpgradeNotice.run();
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -82,7 +83,6 @@ function buildAndStart() {
                 return m;
             }
         });
-        console.log(url);
         Config.entryBundleUrl = url;
         startServerAndLaunchDevtool();
     }
@@ -153,9 +153,10 @@ function startServerAndLaunchDevtool(entry) {
         console.log('Also you can use Playground App to scan the qrcode on device list page.');
     }
     if (Config.entryBundleUrl) {
+        Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
         //fixme ugly 与具体耦合的逻辑 易变！
         if (!/wh_weex=true/.test(Config.entryBundleUrl)) {
-            Config.entryBundleUrlForTaobao = 'http://' + ip + ':' + port + '/devtool_fake.html?_wx_tpl=' + encodeURIComponent(Config.entryBundleUrl);
+            Config.entryBundleUrl = Config.entryBundleUrl + '?_wx_tpl=' + encodeURIComponent(Config.entryBundleUrl);
         }
     }
     if (Config.root) {

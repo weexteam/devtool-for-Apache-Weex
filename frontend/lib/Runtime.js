@@ -2,12 +2,12 @@
  * Created by godsong on 16/6/14.
  */
 importScripts('/lib/EventEmitter.js');
-
+var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__);";
+var clearConsole=self.console.clear.bind(self.console);
 var eventEmitter = new EventEmitter();
 onmessage = function (message) {
     eventEmitter.emit(message.data.method, message.data)
 };
-var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__);";
 
 self.callNative = function (instance, tasks, callback) {
     postMessage({
@@ -45,6 +45,9 @@ eventEmitter.on('WxDebug.callJS', function (data) {
     var method = data.params.method;
     if (method === 'createInstance') {
         var url = data.params.sourceUrl;
+        postMessage({
+            method: 'WxRuntime.clearLog',
+        })
         importScripts(url);
         self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2], data.params.args[3]);
         instanceMap[data.params.args[0]] = true;
@@ -55,7 +58,7 @@ eventEmitter.on('WxDebug.callJS', function (data) {
             delete instanceMap[data.params.args[0]];
         }
         else {
-            console.warn('invalid destroyInstance[' + data.params.args[0] + '] because runtime has been refreshed');
+            console.warn('invalid destroyInstance[' + data.params.args[0] + '] because runtime has been refreshed(It does not impact your code. )');
         }
     }
     else {

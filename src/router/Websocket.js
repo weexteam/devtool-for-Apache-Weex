@@ -68,13 +68,9 @@ wsRouter.all('/debugProxy/list', function*(next) {
     });
     this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceListInfo()}));
     if (Config.entryBundleUrl) {
-        let entry = [Config.entryBundleUrl];
-        if (Config.entryBundleUrlForTaobao) {
-            entry.push(Config.entryBundleUrlForTaobao);
-        }
         this.websocket.send(JSON.stringify({
             method: "WxDebug.setEntry",
-            params: entry
+            params: [Config.entryBundleUrl]
         }));
     }
 });

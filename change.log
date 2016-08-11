@@ -1,3 +1,9 @@
+0.2.29
+* add auto upgrade notice
+* clear log when createInstance
+* fix remote url bundle bug
+* merge bundle qrcode
+* replace 127.0.0.1 to local ip
 0.2.28
 * fix watch and reload bug
 * fix source proxy bug

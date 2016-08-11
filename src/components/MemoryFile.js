@@ -21,8 +21,9 @@ class MemoryFile {
         let rHttpHeader = /^https?:\/\/(?!.*your_current_ip)/i;
         if (rHttpHeader.test(fileName)) {
             this.name = fileName.replace(rHttpHeader, '');
-            if (this.name.indexOf('devtool_fake.html') != -1) {
-                this.url = Qs.parse(Url.parse(this.name).query)['_wx_tpl'];
+            let query = Qs.parse(Url.parse(this.name).query);
+            if (query['_wx_tpl']) {
+                this.url = query['_wx_tpl'];
                 this.name = this.url.replace(rHttpHeader, '');
             }
             else {

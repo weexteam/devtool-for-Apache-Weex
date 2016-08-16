@@ -1,3 +1,6 @@
+0.2.30
+* fix npm bug on windows
+* support set native log level
 0.2.29
 * add auto upgrade notice
 * clear log when createInstance

@@ -10,6 +10,17 @@ onmessage = function (message) {
 };
 
 self.callNative = function (instance, tasks, callback) {
+    for(var i=0;i<tasks.length;i++){
+        var task=tasks[i];
+        if(task.method=='addElement'){
+            for(var key in task.args[1].style){
+                if(Number.isNaN(task.args[1].style[key])){
+                    console.error('invalid value [NaN] for style ['+key+']',task);
+                    //task.args[1].style[key]=0;
+                }
+            }
+        }
+    }
     postMessage({
         method: 'WxDebug.callNative',
         params: {

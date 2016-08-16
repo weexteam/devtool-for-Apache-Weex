@@ -83,10 +83,11 @@ function renderDeviceList(deviceList) {
     var html = deviceList.map(function (device) {
         return `
             <div class="device-wrap">
-                <div class="line"><span>AppName</span><b>${device.name}</b></div>
+                <div class="line"><span>AppName</span><b>${device.name.replace(/\s*:\s*(.*)$/,'<br/>[$1]')}</b></div>
                 <div class="line"><span>DeviceModel</span><b>${device.model}</b></div>
                 <div class="line"><span>platform</span><b>${device.platform}</b></div>
                 <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
+                <div class="line"><span>LogLevel</span><b><select class="log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="log">log</option><option value="info">info</option><option value="debug">debug</option><option value="warn">warn</option><option value="error">error</option></select></b></div>
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
                 <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
@@ -98,7 +99,24 @@ function renderDeviceList(deviceList) {
             `;
 
     });
-    document.getElementById('container').innerHTML = html.join('\n');
+    if(html.length>0) {
+        document.getElementById('container').innerHTML = html.join('\n');
+        var logLevels = document.querySelectorAll('.log-level');
+        logLevels.forEach(function(loglevelSelector){
+            loglevelSelector.value=loglevelSelector.getAttribute('x-data-value');
+            loglevelSelector.onchange=function(evt){
+                var message={
+                    method:'WxDebug.setLogLevel',
+                    params:{
+                        deviceId:evt.target.getAttribute('x-data-device'),
+                        logLevel:evt.target.value
+                    }
+                }
+                websocket.send(JSON.stringify(message));
+            }
+        })
+
+    }
 }
 function findDevice(deviceId) {
     return _deviceList.filter(function (device) {

@@ -66,6 +66,21 @@ wsRouter.all('/debugProxy/list', function*(next) {
     this.websocket.on('close', function () {
         listPageWebsocket = listPageWebsocket.filter(ws=>ws !== this);
     });
+    this.websocket.on('message', function (messageText) {
+        let message = JSON.parse(messageText);
+        if (message.method == 'WxDebug.setLogLevel') {
+
+            let device = DeviceManager.getDeviceById(message.params.deviceId);
+            if (device) {
+                device.deviceInfo.logLevel = message.params.logLevel;
+                let targetMsg = {method: 'WxDebug.setLogLevel', params: {logLevel: message.params.logLevel}};
+                device.websocket.send(JSON.stringify(targetMsg));
+            }
+            else {
+                Logger.debug(message.params.deviceId);
+            }
+        }
+    });
     this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceListInfo()}));
     if (Config.entryBundleUrl) {
         this.websocket.send(JSON.stringify({
@@ -94,6 +109,9 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 else if (method == 'initJSRuntime') {
                     if (device) {
                         message.params.url = new MemoryFile('js-framework.js', message.params.source).getUrl();
+                        if (device.deviceInfo.logLevel) {
+                            message.params.env.WXEnvironment.logLevel = device.deviceInfo.logLevel;
+                        }
                         device.debuggerSession.postMessage(this, message);
                     }
                     else {

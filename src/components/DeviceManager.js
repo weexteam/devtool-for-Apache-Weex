@@ -68,7 +68,9 @@ class DeviceManager extends Emitter {
             this.emit('update', this.getDeviceListInfo());
         }
     }
-
+    getDeviceById(deviceId){
+        return this.deviceList.filter((dvc)=>dvc.deviceId === deviceId)[0];
+    }
     getDevice(websocket) {
         return this.deviceList.filter((dvc)=>dvc.deviceId === websocket._deviceId)[0];
     }

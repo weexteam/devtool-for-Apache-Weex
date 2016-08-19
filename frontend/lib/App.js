@@ -67,8 +67,7 @@ function diff(deviceList) {
         if (next)continue;
         _deviceList[i].inspectorWindow && _deviceList[i].inspectorWindow.close();
         _deviceList[i].debuggerWindow && _deviceList[i].debuggerWindow.close();
-
-    }
+   }
 }
 
 function renderDeviceList(deviceList) {
@@ -82,12 +81,13 @@ function renderDeviceList(deviceList) {
     }
     var html = deviceList.map(function (device) {
         return `
-            <div class="device-wrap">
+            <div class="device-wrap" id="device_${device.deviceId}">
                 <div class="line"><span>AppName</span><b>${device.name.replace(/\s*:\s*(.*)$/,'<br/>[$1]')}</b></div>
                 <div class="line"><span>DeviceModel</span><b>${device.model}</b></div>
                 <div class="line"><span>platform</span><b>${device.platform}</b></div>
                 <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
-                <div class="line"><span>LogLevel</span><b><select class="log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="log">log</option><option value="info">info</option><option value="debug">debug</option><option value="warn">warn</option><option value="error">error</option></select></b></div>
+                <div class="line mr-bottom-10"><span>LogLevel</span><b><select class="log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="all">all</option><option value="log">verbose</option><option value="info">info</option><option value="debug">debug</option><option value="warn">warn</option><option value="error">error</option><option value="off">off</option></select></b></div>
+                <div class="line mr-top-10"><span>RemoteDebug</span><b>${switchComponent(device)}</b></div>
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
                 <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
@@ -101,8 +101,9 @@ function renderDeviceList(deviceList) {
     });
     if(html.length>0) {
         document.getElementById('container').innerHTML = html.join('\n');
-        var logLevels = document.querySelectorAll('.log-level');
-        logLevels.forEach(function(loglevelSelector){
+        var logLevelList = document.querySelectorAll('.log-level');
+        var switchList=document.querySelectorAll('.switch');
+        logLevelList.forEach(function(loglevelSelector){
             loglevelSelector.value=loglevelSelector.getAttribute('x-data-value');
             loglevelSelector.onchange=function(evt){
                 var message={
@@ -113,6 +114,23 @@ function renderDeviceList(deviceList) {
                     }
                 }
                 websocket.send(JSON.stringify(message));
+            }
+        })
+        switchList.forEach(function(swt){
+            swt.onchange=function(evt){
+                var el=evt.target;
+                var deviceId=el.getAttribute('x-data');
+                websocket.send(JSON.stringify({method:'WxDebug.setRemoteDebug',params:{
+                    deviceId:deviceId,
+                    flag:el.checked
+                }}));
+                if(!el.checked){
+                    var device=findDevice(deviceId);
+                    if(device&&device.debuggerWindow) {
+                        device.debuggerWindow.close();
+                    }
+                }
+                console.log(el.getAttribute('x-data'),evt.target.checked);
             }
         })
 
@@ -128,6 +146,7 @@ function openDebugger(deviceId) {
     if (device.debuggerWindow) {
         device.debuggerWindow.close();
     }
+    document.getElementById('device_'+deviceId).querySelector('.switch-checkbox').checked=true;
     device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
 
     device.debuggerWindow.onload = function () {
@@ -137,7 +156,7 @@ function openDebugger(deviceId) {
 }
 function openInspector(deviceId) {
     var device = findDevice(deviceId);
-    device.inspectorWindow = window.open(`/devtools/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
+    device.inspectorWindow = window.open(`/inspector/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
 
 }
 function createQRCode(id, content, width, height) {
@@ -153,6 +172,18 @@ function createQRCode(id, content, width, height) {
     });
     el.title = '';
 }
-connect();
+var switchComponent=function(device){
+    return `<div class="switch">
+    <input type="checkbox" id="switch_${device.deviceId}" x-data="${device.deviceId}" ${device.remoteDebug?'checked':''} name="switch" class="switch-checkbox" id="myswitch">
+    <label class="switch-label" for="switch_${device.deviceId}">
+        <div class="switch-inner">
+            <div class="switch-active">ON</div>
+            <div class="switch-inactive">OFF</div>
+        </div>
+        <div class="switch-switch"></div>
+    </label>
+</div>`;
+}
+    connect();
 createQRCode('switchQrcode', `http:\/\/${location.host}/devtool_fake.html?_wx_devtool=ws:\/\/${location.host}/debugProxy/native`);
 

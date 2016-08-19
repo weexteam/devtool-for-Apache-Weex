@@ -13,6 +13,7 @@ var DebugServer = require('../lib/DebugServer');
 var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
 var LogStyle = require('../Common/LogStyle');
+var Url = require('url');
 var Fs = require('fs');
 var Exit = require('exit');
 var Path = require('path');
@@ -156,7 +157,11 @@ function startServerAndLaunchDevtool(entry) {
         Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
         //fixme ugly 与具体耦合的逻辑 易变！
         if (!/wh_weex=true/.test(Config.entryBundleUrl)) {
-            Config.entryBundleUrl = Config.entryBundleUrl + '?_wx_tpl=' + encodeURIComponent(Config.entryBundleUrl);
+            var urlObj = Url.parse(Config.entryBundleUrl, true);
+            urlObj.query['_wx_tpl'] = Config.entryBundleUrl;
+            urlObj.search = '';
+
+            Config.entryBundleUrl = Url.format(urlObj);
         }
     }
     if (Config.root) {

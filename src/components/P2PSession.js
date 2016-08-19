@@ -89,7 +89,18 @@ class P2PSession extends Emitter {
         this.addPeer(websocket);
         return this.fresh;
     }
-
+    static findOppositePeer(websocket){
+        let session = _sessionMap[websocket._p2pSessionId];
+        if (!session) {
+            Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
+            return;
+        }
+        let peer = session.findPeer(websocket);
+        if (peer) {
+            return peer.oppositePeer;
+        }
+        return null;
+    }
     static postMessage(websocket, message) {
         let session = _sessionMap[websocket._p2pSessionId];
         if (!session) {

@@ -1,3 +1,9 @@
+0.2.32
+* fix _wx_tpl arguments bug
+* fix UpgradeNotice bug on windows
+* fix Logger.warn undefined
+* add switch for enable/disable remote debug
+* renew log level
 0.2.30
 * fix npm bug on windows
 * support set native log level

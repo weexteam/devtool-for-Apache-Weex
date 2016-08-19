@@ -28,6 +28,9 @@ exports.error = function (...args) {
 exports.debug = function (...args) {
     _log('debug', args);
 };
+exports.warn=function(...args){
+    _log('warn',args)
+}
 exports.printMessage = function (message, prefix) {
     if (message.method == 'WxDebug.callJS') {
         exports.log(`[${prefix}] callJS:`, message.params.method);

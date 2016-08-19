@@ -7,13 +7,13 @@ const Logger = require('./Logger');
 class Device {
     constructor(deviceInfo, websocket) {
         this.deviceId = deviceInfo.deviceId + '|' + deviceInfo.name;
-
         this.inspectorSession = P2PSession.newSession(websocket);
         this.debuggerSession = P2PSession.newSession(websocket);
         let index = websocket._info.split(' ')[0];
         websocket._info = `native[${ this.inspectorSession.id}+${this.debuggerSession.id}:0x${index % 2 == 1 ? '0' + index : index}]`;
         this.deviceInfo = Object.assign(deviceInfo, {
             deviceId: this.deviceId,
+            remoteDebug:deviceInfo.remoteDebug||false,
             inspectorSessionId: this.inspectorSession.id,
             debuggerSessionId: this.debuggerSession.id
         });

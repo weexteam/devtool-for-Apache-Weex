@@ -130,6 +130,9 @@ function renderDeviceList(deviceList) {
                         device.debuggerWindow.close();
                     }
                 }
+                else{
+                    //openDebugger(deviceId);
+                }
                 console.log(el.getAttribute('x-data'),evt.target.checked);
             }
         })

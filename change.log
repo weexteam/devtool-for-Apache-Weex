@@ -1,3 +1,6 @@
+0.2.33
+* fix file name case bug (for linux)
+* switch on remote debug will auto open debugger page now
 0.2.32
 * fix _wx_tpl arguments bug
 * fix UpgradeNotice bug on windows

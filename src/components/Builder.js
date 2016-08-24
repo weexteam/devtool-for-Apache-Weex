@@ -13,6 +13,10 @@ exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let basename = Path.basename(source, '.we');
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
+        let weexLoaderRoot=Path.join(__dirname, "../../node_modules");
+        if(!Fs.existsSync(Path.join(weexLoaderRoot,'weex-loader'))){
+            weexLoaderRoot=Path.join(__dirname, "../../..");
+        }
         Webpack({
             entry: source + '?entry=true',
             output: {
@@ -29,7 +33,7 @@ exports.loader = function (source, targetPath = '') {
                 ]
             },
             resolveLoader: {
-                root: Path.join(__dirname, "../../node_modules")
+                root:weexLoaderRoot
             }
 
         }, function (err, stats) {

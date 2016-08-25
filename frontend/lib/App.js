@@ -159,7 +159,7 @@ function openDebugger(deviceId) {
 }
 function openInspector(deviceId) {
     var device = findDevice(deviceId);
-    device.inspectorWindow = window.open(`/inspector/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`, `inspector${device.inspectorSessionId}`);
+    device.inspectorWindow = window.open(`/inspector/inspector.html?ws=${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}&remoteFrontend=1`, `inspector${device.inspectorSessionId}`);
 
 }
 function createQRCode(id, content, width, height) {

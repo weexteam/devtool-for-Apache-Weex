@@ -97,6 +97,12 @@ wsRouter.all('/debugProxy/list', function*(next) {
                 device.websocket.send(JSON.stringify({method:'WxDebug.'+(message.params.flag?'enable':'disable')}));
             }
         }
+        else if(message.method=='WxDebug.refreshDevice'){
+            let device = DeviceManager.getDeviceById(message.params.deviceId);
+            if (device) {
+                device.websocket.send(JSON.stringify({method:'WxDebug.reload'}));
+            }
+        }
     });
     this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceListInfo()}));
     if (Config.entryBundleUrl) {

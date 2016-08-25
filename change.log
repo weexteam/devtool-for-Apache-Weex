@@ -1,4 +1,10 @@
-0.2.33
+0.2.35
+* fix the screencast bug
+* add WxDebug.refreshDevice
+* add different shortcut prompt on different platform
+* add a manual mode which will not auto open chrome when start
+* add CORS header on source map response
+0.2.34
 * fix file name case bug (for linux)
 * switch on remote debug will auto open debugger page now
 0.2.32

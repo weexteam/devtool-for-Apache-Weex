@@ -52,6 +52,7 @@ httpRouter.get('/source/*', function*(next) {
         }
         else {
             this.response.status = 200;
+            this.set('Access-Control-Allow-Origin','*');
             this.type = 'text/javascript';
             this.response.body = content;
         }

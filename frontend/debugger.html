@@ -44,9 +44,8 @@
 </head>
 <body>
 <h2></h2>
-
 <div>
-    <p>Press <span class="shortcut">⌘+⌥+J</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
+    <p>Press <span class="shortcut" id="shortcut">Inspect Element</span> to open Developer Tools. Please select <b>Sources</b> tag to start!</p>
 
     <p>
         <label>Log Level</label>
@@ -62,6 +61,15 @@
 </div>
 <div id="Document"></div>
 <script>
+    if(/mac/i.test(navigator.platform)){
+        document.getElementById('shortcut').innerHTML='⌘+⌥+J';
+    }
+    else if(/win/i.test(navigator.platform)){
+        document.getElementById('shortcut').innerHTML='F12';
+    }
+    else if(/linux/i.test(navigator.platform)){
+        document.getElementById('shortcut').innerHTML='Ctrl+shift+I';
+    }
     var worker;
     var timer;
     var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' + location.search.split('?sessionId=')[1]);

@@ -12,7 +12,7 @@ var Program = require('commander');
 var DebugServer = require('../lib/DebugServer');
 var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
-var LogStyle = require('../Common/LogStyle');
+var LogStyle = require('../common/LogStyle');
 var Url = require('url');
 var Fs = require('fs');
 var Exit = require('exit');
@@ -32,7 +32,8 @@ Program
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
-    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader');
+    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
+    .option('-M, --manual','manual mode,this mode will not auto open chrome');
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
     .action(function (file) {
@@ -170,5 +171,7 @@ function startServerAndLaunchDevtool(entry) {
 
     console.info('\nThe websocket address for native is ' + LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native', LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     DebugServer.start(port);
-    LaunchDevTool(ip, port);
+    if(!Program.manual) {
+        LaunchDevTool(ip, port);
+    }
 }

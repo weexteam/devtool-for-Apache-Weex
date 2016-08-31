@@ -27,13 +27,15 @@ var UpgradeNotice = require('../lib/util/UpgradeNotice');
 var packageInfo = require('../package.json');
 
 Program
+    .option('-h, --host [host]', 'set the host ip of debugger server')
+    .option('-H, --help', 'display help')
     .option('-V, --verbose', 'display logs of debugger server')
     .option('-v, --version', 'display version')
     .option('-p, --port [port]', 'set debugger server port', '8088')
     .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
-    .option('-M, --manual','manual mode,this mode will not auto open chrome');
+    .option('-M, --manual', 'manual mode,this mode will not auto open chrome');
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
     .action(function (file) {
@@ -42,12 +44,22 @@ Program['arguments']('[file]')
 Program.parse(process.argv);
 //默认watch功能开启
 Program.watch = true;
+//fix tj's commander bug overwrite --help
+if (Program.help == undefined) {
+    Program.outputHelp();
+    Exit(0);
+}
+//fix tj's commander bug overwrite --version
 if (Program.version == undefined) {
-    //fix tj's commander bug
     console.log(packageInfo.version);
     Exit(0);
 }
 var supportMode = ['loader', 'transformer'];
+
+if(Program.host&&!Hosts.isValidLocalHost(Program.host)){
+    console.log('['+Program.host+'] is not your local address!');
+    Exit(0);
+}
 
 Config.verbose = Program.verbose;
 Config.port = Program.port;
@@ -146,7 +158,7 @@ function buildFileAndWatchIt(buildMode, filePath) {
 }
 function startServerAndLaunchDevtool(entry) {
     var port = Program.port;
-    var ip = IP.address();
+    var ip = Program.host || IP.address();
     Config.ip = ip;
     console.info('start debugger server at ' + LogStyle.dressUp('http://' + ip + ':' + port, LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     if (entry) {
@@ -171,7 +183,7 @@ function startServerAndLaunchDevtool(entry) {
 
     console.info('\nThe websocket address for native is ' + LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native', LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     DebugServer.start(port);
-    if(!Program.manual) {
+    if (!Program.manual) {
         LaunchDevTool(ip, port);
     }
 }

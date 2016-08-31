@@ -138,6 +138,9 @@ function renderDeviceList(deviceList) {
         })
 
     }
+    else{
+        document.getElementById('container').innerHTML ='';
+    }
 }
 function findDevice(deviceId) {
     return _deviceList.filter(function (device) {

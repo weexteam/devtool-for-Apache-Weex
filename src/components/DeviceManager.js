@@ -13,7 +13,7 @@ class Device {
         websocket._info = `native[${ this.inspectorSession.id}+${this.debuggerSession.id}:0x${index % 2 == 1 ? '0' + index : index}]`;
         this.deviceInfo = Object.assign(deviceInfo, {
             deviceId: this.deviceId,
-            remoteDebug:deviceInfo.remoteDebug||false,
+            remoteDebug: deviceInfo.remoteDebug || false,
             inspectorSessionId: this.inspectorSession.id,
             debuggerSessionId: this.debuggerSession.id
         });
@@ -30,10 +30,14 @@ class Device {
     }
 
     reconnect(websocket) {
+        websocket._deviceId = this.deviceId;
+        let index = websocket._info.split(' ')[0];
+        websocket._info = `native[${ this.inspectorSession.id}+${this.debuggerSession.id}:0x${index % 2 == 1 ? '0' + index : index}] reconnected`;
+        this.websocket = websocket;
         this.inspectorSession.join(websocket);
         this.debuggerSession.join(websocket);
-        websocket._deviceId = this.deviceId;
-        this.websocket = websocket;
+
+
     }
 }
 class DeviceManager extends Emitter {
@@ -58,8 +62,8 @@ class DeviceManager extends Emitter {
     registerDevice(deviceInfo, websocket) {
         let existDevice = this.deviceList.filter(dvc=>dvc.deviceId == deviceInfo.deviceId + '|' + deviceInfo.name)[0];
         if (existDevice) {
-            existDevice.reconnect(websocket);
             clearTimeout(existDevice.removeTimer);
+            existDevice.reconnect(websocket);
             return existDevice;
         }
         else {
@@ -68,9 +72,11 @@ class DeviceManager extends Emitter {
             this.emit('update', this.getDeviceListInfo());
         }
     }
-    getDeviceById(deviceId){
+
+    getDeviceById(deviceId) {
         return this.deviceList.filter((dvc)=>dvc.deviceId === deviceId)[0];
     }
+
     getDevice(websocket) {
         return this.deviceList.filter((dvc)=>dvc.deviceId === websocket._deviceId)[0];
     }

@@ -43,10 +43,9 @@ wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
     this.websocket.on('message', function (message) {
         message = JSON.parse(message);
         Logger.printMessage(message, 'chrome');
-        if(message.method==='WxDebug.enable'||message.method==='WxDebug.disable'){
-            var peer=P2PSession.findOppositePeer(this);
-            Logger.debug(peer);
-            if(peer) {
+        if (message.method === 'WxDebug.enable' || message.method === 'WxDebug.disable') {
+            var peer = P2PSession.findOppositePeer(this);
+            if (peer) {
                 let device = DeviceManager.getDeviceById(peer.websocket._deviceId);
                 if (device) {
                     device.deviceInfo.remoteDebug = message.method === 'WxDebug.enable' ? true : false;
@@ -90,17 +89,17 @@ wsRouter.all('/debugProxy/list', function*(next) {
                 Logger.debug(message.params.deviceId);
             }
         }
-        else if(message.method=='WxDebug.setRemoteDebug'){
+        else if (message.method == 'WxDebug.setRemoteDebug') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
             if (device) {
-                device.deviceInfo.remoteDebug=message.params.flag;
-                device.websocket.send(JSON.stringify({method:'WxDebug.'+(message.params.flag?'enable':'disable')}));
+                device.deviceInfo.remoteDebug = message.params.flag;
+                device.websocket.send(JSON.stringify({method: 'WxDebug.' + (message.params.flag ? 'enable' : 'disable')}));
             }
         }
-        else if(message.method=='WxDebug.refreshDevice'){
+        else if (message.method == 'WxDebug.refreshDevice') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
             if (device) {
-                device.websocket.send(JSON.stringify({method:'WxDebug.reload'}));
+                device.websocket.send(JSON.stringify({method: 'WxDebug.reload'}));
             }
         }
     });
@@ -115,8 +114,9 @@ wsRouter.all('/debugProxy/list', function*(next) {
 
 
 wsRouter.all('/debugProxy/native', function*(next) {
-    Logger.debug('new native  client connected');
+
     this.websocket._info = nativeWsIndex.toString(16) + ' unregistered';
+    Logger.debug('new native  client connected：', this.websocket._info);
     nativeWsIndex++;
     this.websocket.on('message', function (messageText) {
         let message = JSON.parse(messageText);
@@ -146,7 +146,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                         message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (Uuid() + '.js'), bundleWrapper(message.params.args[1])).getUrl();
                         device.debuggerSession.postMessage(this, message);
                     }
-                    else{
+                    else {
                         Logger.error('Fatal Error:native device unregistered before createInstance!');
                     }
                 }
@@ -179,10 +179,13 @@ wsRouter.all('/debugProxy/native', function*(next) {
         }
     });
     this.websocket.on('close', function () {
-        let device = DeviceManager.getDevice(this);
-        if (device) {
-            DeviceManager.removeDeviceDelayed(device, 3000);
+        if (!this.removed) {
+            let device = DeviceManager.getDevice(this);
+            if (device) {
+                DeviceManager.removeDeviceDelayed(device, 3000);
+            }
         }
+
     });
     yield next;
 });

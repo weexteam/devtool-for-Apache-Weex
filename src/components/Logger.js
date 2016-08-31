@@ -8,7 +8,7 @@ var traceLevel = {
     'error': true
 };
 function _log(level, args) {
-    if (Config.verbose || level == 'error') {
+    if (Config.verbose || level == 'error'||level=='warn') {
         args.unshift(LogStyle.LEVEL_COLOR[level]);
         args.push(LogStyle.LEVEL_COLOR['#end']);
         if (traceLevel[level]) {

@@ -1,3 +1,7 @@
+0.2.36
+* add -h mode for specific ip address for debug server
+* fix a websocket bug which result in "can not find the peer"
+* fix device can not removed  bug
 0.2.35
 * fix the screencast bug
 * add WxDebug.refreshDevice

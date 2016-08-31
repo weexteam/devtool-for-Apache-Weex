@@ -10,16 +10,18 @@ class Peer extends Emitter {
         this.messageBuffer = [];
         this.websocket = websocket;
         this.websocket.on('close', ()=> {
-            Logger.debug('socket close:', this.websocket._info);
-            if (this.oppositePeer) {
-                this.oppositePeer.oppositePeer = null;
+            if(!this.websocket.removed) {
+                Logger.debug('socket close:', this.websocket._info);
+                if (this.oppositePeer) {
+                    this.oppositePeer.oppositePeer = null;
+                }
+                this.oppositePeer = null;
+                this.websocket = null;
+                if (this.messageBuffer.length > 0) {
+                }
+                this.messageBuffer = [];
+                this.emit('close');
             }
-            this.oppositePeer = null;
-            this.websocket = null;
-            if (this.messageBuffer.length > 0) {
-            }
-            this.messageBuffer = [];
-            this.emit('close');
         })
     }
 
@@ -89,7 +91,8 @@ class P2PSession extends Emitter {
         this.addPeer(websocket);
         return this.fresh;
     }
-    static findOppositePeer(websocket){
+
+    static findOppositePeer(websocket) {
         let session = _sessionMap[websocket._p2pSessionId];
         if (!session) {
             Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
@@ -101,24 +104,15 @@ class P2PSession extends Emitter {
         }
         return null;
     }
+
     static postMessage(websocket, message) {
         let session = _sessionMap[websocket._p2pSessionId];
         if (!session) {
             Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
             return;
         }
-        let peer = session.findPeer(websocket);
-        if (peer) {
-            if (peer.oppositePeer) {
-                peer.oppositePeer.send(message);
-            }
-            else {
-                peer.messageBuffer.push(message);
-            }
-        }
-        else {
-            Logger.error('Error:can not find the peer : ', websocket._info);
-        }
+        session.postMessage(websocket, message);
+
     }
 
     postMessage(websocket, message) {
@@ -167,25 +161,41 @@ class P2PSession extends Emitter {
             }
         }
         else {
+            let replaced = false;
             this.peerList = this.peerList.map((p)=> {
-                if (p.websocket === websocket)return peer;
+                if(p.websocket==null){
+                    console.error('bug！');
+                }
+                if (p.websocket&&(p.websocket === websocket || p.websocket._deviceId === websocket._deviceId)) {
+                    replaced = true;
+                    peer.setOppositePeer(p.oppositePeer);
+                    p.websocket.removed = true;
+                    p.oppositePeer.setOppositePeer(peer);
+                    return peer;
+                }
                 else {
                     return p;
                 }
             });
-            this.peerList.forEach(peer=>Logger.debug('state:', peer.websocket._info));
-            Logger.debug('Peer session can not add the third peer!');
-            return;
+            if (!replaced) {
+                this.peerList.forEach(function (peer) {
+                    Logger.debug('state:', peer.websocket._info)
+                });
+                Logger.debug('Peer session can not add the third peer!');
+                return;
+            }
+            else {
+                Logger.warn('Peer replaced!');
+            }
         }
         peer.on('close', ()=> {
-
             if (this.peerList) {
-                this.peerList = this.peerList.filter(p=>p !== peer&&p.websocket!==peer.websocket);
-                Logger.debug('peer removed:', this.peerList.length);
+                this.peerList = this.peerList.filter(p=>p !== peer && p.websocket !== peer.websocket);
+                Logger.debug('peer removed:', this.id, this.peerList.length);
             }
 
         });
-        Logger.debug('addPeer', this.id, this.peerList.length);
+        Logger.debug('addPeer', this.id, this.peerList.length, peer.websocket._info);
         if (this.peerList.length == 2) {
             this.fresh = false;
         }

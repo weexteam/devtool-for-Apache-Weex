@@ -82,7 +82,7 @@ wsRouter.all('/debugProxy/list', function*(next) {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
             if (device) {
                 device.deviceInfo.logLevel = message.params.logLevel;
-                let targetMsg = {method: 'WxDebug.setLogLevel', params: {logLevel: message.params.logLevel}};
+                let targetMsg = {method: 'WxDebug.setLogLevel', params: {logLevel: message.params.data}};
                 device.websocket.send(JSON.stringify(targetMsg));
             }
             else {
@@ -92,8 +92,15 @@ wsRouter.all('/debugProxy/list', function*(next) {
         else if (message.method == 'WxDebug.setRemoteDebug') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
             if (device) {
-                device.deviceInfo.remoteDebug = message.params.flag;
-                device.websocket.send(JSON.stringify({method: 'WxDebug.' + (message.params.flag ? 'enable' : 'disable')}));
+                device.deviceInfo.remoteDebug = message.params.data;
+                device.websocket.send(JSON.stringify({method: 'WxDebug.' + (message.params.data ? 'enable' : 'disable')}));
+            }
+        }
+        else if(message.method=='WxDebug.setElementMode'){
+            let device = DeviceManager.getDeviceById(message.params.deviceId);
+            if (device) {
+                device.deviceInfo.elementMode = message.params.data;
+                device.websocket.send(JSON.stringify({method: 'WxDebug.setElementMode' ,params:{mode:message.params.data}}));
             }
         }
         else if (message.method == 'WxDebug.refreshDevice') {

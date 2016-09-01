@@ -86,7 +86,8 @@ function renderDeviceList(deviceList) {
                 <div class="line"><span>DeviceModel</span><b>${device.model}</b></div>
                 <div class="line"><span>platform</span><b>${device.platform}</b></div>
                 <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
-                <div class="line mr-bottom-10"><span>LogLevel</span><b><select class="log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="all">all</option><option value="log">verbose</option><option value="info">info</option><option value="debug">debug</option><option value="warn">warn</option><option value="error">error</option><option value="off">off</option></select></b></div>
+                <div class="line mr-bottom-10"><span>LogLevel</span><b><select class="selector log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="debug">debug</option><option value="log">log</option><option value="info">info</option><option value="warn">warn</option><option value="error">error</option></select></b></div>
+                <div class="line mr-bottom-10"><span>ElementMode</span><b><select class="selector element-mode"" x-data-device="${device.deviceId}" x-data-value="${device.elementMode||'native'}"><option value="native">native</option><option value="vdom">vdom</option></select></b></div>
                 <div class="line mr-top-10"><span>RemoteDebug</span><b>${switchComponent(device)}</b></div>
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
@@ -110,10 +111,29 @@ function renderDeviceList(deviceList) {
                     method:'WxDebug.setLogLevel',
                     params:{
                         deviceId:evt.target.getAttribute('x-data-device'),
-                        logLevel:evt.target.value
+                        data:evt.target.value
                     }
                 }
                 websocket.send(JSON.stringify(message));
+            }
+        })
+        var inspectModeList = document.querySelectorAll('.element-mode');
+        inspectModeList.forEach(function(inspectModeSelector){
+            inspectModeSelector.value=inspectModeSelector.getAttribute('x-data-value');
+            inspectModeSelector.onchange=function(evt){
+                var deviceId=evt.target.getAttribute('x-data-device');
+                var message={
+                    method:'WxDebug.setElementMode',
+                    params:{
+                        deviceId:deviceId,
+                        data:evt.target.value
+                    }
+                }
+                websocket.send(JSON.stringify(message));
+                var device=findDevice(deviceId);
+                if(device){
+                    device.inspectorWindow&&device.inspectorWindow.location.reload();
+                }
             }
         })
         switchList.forEach(function(swt){
@@ -122,7 +142,7 @@ function renderDeviceList(deviceList) {
                 var deviceId=el.getAttribute('x-data');
                 websocket.send(JSON.stringify({method:'WxDebug.setRemoteDebug',params:{
                     deviceId:deviceId,
-                    flag:el.checked
+                    data:el.checked
                 }}));
                 if(!el.checked){
                     var device=findDevice(deviceId);
@@ -180,7 +200,7 @@ function createQRCode(id, content, width, height) {
 }
 var switchComponent=function(device){
     return `<div class="switch">
-    <input type="checkbox" id="switch_${device.deviceId}" x-data="${device.deviceId}" ${device.remoteDebug?'checked':''} name="switch" class="switch-checkbox" id="myswitch">
+    <input type="checkbox" id="switch_${device.deviceId}" x-data="${device.deviceId}" ${device.remoteDebug?'checked':''} name="switch" class="switch-checkbox" >
     <label class="switch-label" for="switch_${device.deviceId}">
         <div class="switch-inner">
             <div class="switch-active">ON</div>

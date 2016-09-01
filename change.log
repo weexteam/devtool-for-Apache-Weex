@@ -1,3 +1,9 @@
+0.2.37
+* 开始用中文写changelog 对不起 英文编不下去了=。=
+* 规范化loglevel的值 以及其顺序
+* 支持最新版本的jsframework 增加了几个新的变量如__weex_viewmodel__
+* 新增elements树 native结构/vdom结构的切换功能
+* 改善下样式
 0.2.36
 * add -h mode for specific ip address for debug server
 * fix a websocket bug which result in "can not find the peer"

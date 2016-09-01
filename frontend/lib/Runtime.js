@@ -2,7 +2,7 @@
  * Created by godsong on 16/6/14.
  */
 importScripts('/lib/EventEmitter.js');
-var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__);";
+var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__,typeof __weex_document__=='undefined'?undefined:__weex_document__,typeof __weex_viewmodel__=='undefined'?undefined:__weex_viewmodel__);";
 var clearConsole=self.console.clear.bind(self.console);
 var eventEmitter = new EventEmitter();
 onmessage = function (message) {

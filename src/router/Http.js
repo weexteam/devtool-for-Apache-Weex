@@ -59,7 +59,8 @@ httpRouter.get('/source/*', function*(next) {
     }
     else {
         let query = this.request.url.split('?');
-        query = query[1] ? '?' + query[1] : '';
+
+        query = query[1] ? '?' + query.slice(1).join('?') : '';
         var file = MemoryFile.get(path + query);
         if (file) {
             this.response.status = 200;
@@ -72,7 +73,7 @@ httpRouter.get('/source/*', function*(next) {
                     this.response.body = file.getContent();
                 }
                 else {
-                    this.response.body = bundleWrapper(content);
+                    this.response.body = bundleWrapper(content,file.getUrl());
                 }
             }
             else {

@@ -1,8 +1,46 @@
 /**
  * Created by godsong on 16/6/14.
  */
+self.$$frameworkFlag={};
+var injectedGlobals = [
+    'define',
+    'require',
+    'document',
+    'bootstrap',
+    'register',
+    'render',
+    '__d',
+    '__r',
+    '__DEV__',
+    '__weex_define__',
+    '__weex_bootstrap__',
+    '__weex_document__',
+    '__weex_viewmodel__',
+    '__weex_options__',
+    '__weex_data__',
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    'babelHelpers'
+];
 importScripts('/lib/EventEmitter.js');
-var weexBundleEntry = "__weex_bundle_entry__(define, require, document, bootstrap,register, render, __weex_define__, __weex_bootstrap__,typeof __weex_document__=='undefined'?undefined:__weex_document__,typeof __weex_viewmodel__=='undefined'?undefined:__weex_viewmodel__);";
+function createWeexBundleEntry(sourceUrl){
+    var code='';
+    if(self.$$frameworkFlag[sourceUrl]){
+        code+=self.$$frameworkFlag[sourceUrl]+'\n';
+    }
+    code+='__weex_bundle_entry__(';
+    injectedGlobals.forEach(function(g,i){
+        code+='typeof '+g+'==="undefined"?undefined:'+g;
+        if(i<injectedGlobals.length-1){
+            code+=',';
+        }
+
+    });
+    code+=');'
+    return code;
+}
 var clearConsole=self.console.clear.bind(self.console);
 var eventEmitter = new EventEmitter();
 onmessage = function (message) {
@@ -69,9 +107,9 @@ eventEmitter.on('WxDebug.callJS', function (data) {
         var url = data.params.sourceUrl;
         postMessage({
             method: 'WxRuntime.clearLog',
-        })
+        });
         importScripts(url);
-        self.createInstance(data.params.args[0], weexBundleEntry, data.params.args[2], data.params.args[3]);
+        self.createInstance(data.params.args[0], createWeexBundleEntry(url), data.params.args[2], data.params.args[3]);
         instanceMap[data.params.args[0]] = true;
     }
     else if (method === 'destroyInstance') {

@@ -1,3 +1,8 @@
+0.2.41
+* 识别淘宝转发的url规则 即taobao://
+* 另外 source 资源转发 对于参数处理有点儿问题。遇到没有encode的长url(多个?)参数截取有毛病，已修复
+0.2.40
+* 支持jsframework与具体的上层库解耦，实现新的jsframework机制
 0.2.39
 * 支持callAddElement
 0.2.38

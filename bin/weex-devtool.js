@@ -169,11 +169,10 @@ function startServerAndLaunchDevtool(entry) {
     if (Config.entryBundleUrl) {
         Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
         //fixme ugly 与具体耦合的逻辑 易变！
-        if (!/wh_weex=true/.test(Config.entryBundleUrl)) {
-            var urlObj = Url.parse(Config.entryBundleUrl, true);
+        var urlObj = Url.parse(Config.entryBundleUrl, true);
+        if (!/wh_weex=true/.test(Config.entryBundleUrl)&&!urlObj.query['_wx_tpl']) {
             urlObj.query['_wx_tpl'] = Config.entryBundleUrl;
             urlObj.search = '';
-
             Config.entryBundleUrl = Url.format(urlObj);
         }
     }

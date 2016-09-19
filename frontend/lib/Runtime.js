@@ -22,7 +22,7 @@ var injectedGlobals = [
     'clearTimeout',
     'setInterval',
     'clearInterval',
-    'babelHelpers'
+    'global'
 ];
 importScripts('/lib/EventEmitter.js');
 function createWeexBundleEntry(sourceUrl){

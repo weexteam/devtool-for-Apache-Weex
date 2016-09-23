@@ -50,9 +50,9 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
 
 ##  Debug
 
-  Android: pls refer to https://github.com/alibaba/weex/blob/dev/android/inspector/README.md
+  Android: pls refer to https://github.com/weexteam/weex_devtools_android/blob/master/README.md
   
-  IOS: pls refer to https://github.com/alibaba/weex/blob/dev/ios/WXDevtool/README.md
+  IOS: pls refer to https://github.com/weexteam/weex-devtool-iOS/blob/master/README-zh.md
 
 
 

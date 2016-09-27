@@ -42,6 +42,7 @@ function createWeexBundleEntry(sourceUrl){
     return code;
 }
 var clearConsole=self.console.clear.bind(self.console);
+self.__WEEX_DEVTOOL__=true;
 var eventEmitter = new EventEmitter();
 onmessage = function (message) {
     eventEmitter.emit(message.data.method, message.data)

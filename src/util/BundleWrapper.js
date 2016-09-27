@@ -27,7 +27,7 @@ const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(','
 const rearRegexp = /\/\/#\s*sourceMappingURL|$/;
 
 module.exports = function (code,sourceUrl) {
-    var match=/(^\s*\/\/.+)\n/.exec(code);
+    var match=/^(?:\s|\n)*(\/\/.+)\n/.exec(code);
     var anno='';
     if(match){
         anno='$$frameworkFlag["'+sourceUrl+'"]="'+match[1].replace(/"/g,'\\"')+'";';

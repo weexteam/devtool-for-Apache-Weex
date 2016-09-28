@@ -15,7 +15,7 @@ const rootPath = Path.join(__dirname, '../frontend/');
  WebSocket Router
  ===================================
  */
-exports.start = function (port) {
+exports.start = function (port, cb) {
 
     app.ws.use(WsRouter.routes());
     app.on('error', function (err, ctx) {
@@ -38,5 +38,5 @@ exports.start = function (port) {
     app.use(HttpRouter.routes());
     app.use(ServeStatic(rootPath));
 
-    app.listen(port);
+    app.listen(port, cb);
 };

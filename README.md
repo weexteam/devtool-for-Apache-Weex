@@ -1,12 +1,16 @@
 Weex-Devtool
 ============
 
-Weex CLI native debugger tool [Document](http://alibaba.github.io/weex/doc/tools/devtools.html):
-  1. support android and ios;
-  2. could debug on device and emulator;
-  3. could inspect native Elements( Network, Console, Sources) and debug JS files;
-  4. could breakpoints and debug both JS files and native Java(Android)/C(IOS) files in the same active session.
-  5. support remote debugging, don't need USB connecting to PC.
+Weex-devtool is a debugging tool [Document](http://alibaba.github.io/weex/doc/tools/devtools.html) which:
+
+    1.support android and ios;
+    2.could debug on device and emulator;
+    3.could inspect native Elements, vdom, Network, Console, Resources; 
+    4.could debug on source files like JS/weex/Rx... files;
+    5.could breakpoint and debug both JS files and native Java(Android)/C(IOS) files in the same active session.
+    6.support remote debugging, don't need USB connecting to PC.
+    7.support screencast and select element
+    8.support inspect/debug multiple app the same time
 
 
 ## Install

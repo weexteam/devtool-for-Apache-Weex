@@ -1,7 +1,7 @@
 Weex-Devtool
 ============
 
-Weex-devtool is a debugging tool [Document](http://alibaba.github.io/weex/doc/tools/devtools.html) which:
+Weex-devtool is a debugging tool ([Document](http://alibaba.github.io/weex/doc/tools/devtools.html)) which:
 
     1.support android and ios;
     2.could debug on device and emulator;

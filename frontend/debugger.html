@@ -72,6 +72,20 @@
     }
     var worker;
     var timer;
+    window.$WeexInspectorProxy = sessionStorage.getItem('$WeexInspectorProxy');
+    window.device=window.device||sessionStorage.getItem('device');
+    window.setElementMode=function(mode){
+        var websocket = new WebsocketClient('ws://' + location.host + '/debugProxy/list');
+        var message={
+            method:'WxDebug.setElementMode',
+            params:{
+                deviceId:device.deviceId,
+                data:mode
+            }
+        };
+        websocket.send(message);
+        //need close
+    }
     var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' + location.search.split('?sessionId=')[1]);
     websocket.on('*', function (message) {
         if (worker) {
@@ -136,6 +150,7 @@
     }
     //initJSRuntime();
     var debugee = sessionStorage.getItem('debugee');
+
     if (debugee) {
         document.body.firstElementChild.innerHTML = debugee;
     }

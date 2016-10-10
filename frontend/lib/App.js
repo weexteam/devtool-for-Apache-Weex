@@ -174,9 +174,15 @@ function openDebugger(deviceId) {
     }
     document.getElementById('device_'+deviceId).querySelector('.switch-checkbox').checked=true;
     device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
+    var $WeexInspectorProxy=`ws://${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`;
+    device.debuggerWindow.$WeexInspectorProxy=$WeexInspectorProxy;
+    device.debuggerWindow.device=device;
+    device.debuggerWindow.sessionStorage.setItem('$WeexInspectorProxy',$WeexInspectorProxy);
+    device.debuggerWindow.sessionStorage.setItem('device',device);
 
     device.debuggerWindow.onload = function () {
         device.debuggerWindow.sessionStorage.setItem('debugee', 'Debugee App: ' + device.name);
+
         device.debuggerWindow.document.body.firstElementChild.innerHTML = 'Debugee App: ' + device.name;
     }
 }

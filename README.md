@@ -1,7 +1,7 @@
 Weex-Devtool
 ============
 
-[Weex-devtool](http://alibaba.github.io/weex/doc/tools/devtools.html)is a debugging tool which:
+[Weex-devtool] (http://alibaba.github.io/weex/doc/tools/devtools.html) is a debugging tool which:
 
     1.support android and ios;
     2.could debug on device and emulator;
@@ -17,7 +17,7 @@ Weex-Devtool
 ```
 $npm install -g weex-toolkit
 ```
-suggest to use weex-toolkit which will 
+suggest to use weex-toolkit which will call weex-devtool. 
 
 ##  usage
 
@@ -66,7 +66,7 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
 
 # 中文版
     
-[Weex-devtool](http://alibaba.github.io/weex/doc/tools/devtools.html)是一套调试工具：
+[Weex-devtool](http://alibaba.github.io/weex/doc/tools/devtools.html) 是一套调试工具：
 
     1.支持安卓和iOS调试
     2.支持真机和模拟器

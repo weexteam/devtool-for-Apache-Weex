@@ -1,3 +1,9 @@
+0.2.49
+* 抹掉window document navigator location 置为undefined
+0.2.48
+* 丰富帮助说明 并改成中文
+0.2.47
+* 尝试修服runtime的内存泄漏
 0.2.46
 * 增加对extension的支持
 0.2.45

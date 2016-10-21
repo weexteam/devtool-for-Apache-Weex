@@ -30,7 +30,6 @@ WebsocketClient.prototype = {
         ws.onmessage = function (e) {
             var message = JSON.parse(e.data);
             if (message.method) {
-                This._received.push(message);
                 This.emit(message.method, message);
             }
         };
@@ -44,12 +43,10 @@ WebsocketClient.prototype = {
     },
     send: function (data) {
         if (this.isSocketReady) {
-            this._sended.push(data);
             this.ws.send(JSON.stringify(data));
         }
         else {
             this.once('socketOpened', function () {
-                this._sended.push(data);
                 this.ws.send(JSON.stringify(data))
             }.bind(this));
         }

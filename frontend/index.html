@@ -182,16 +182,20 @@
         }
 
         .help-ctn section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .help-ctn b {
             border: 1px solid #000;
             display: inline-block;
-            vertical-align: middle;
-            width: 87px;
+            vertical-align: top;
+            width: 125px;
             padding: 5px 10px;
             text-align: center;
+        }
+        .help-ctn em{
+            color:#f60;
+            font-style: normal;
         }
 
         .help-ctn div {
@@ -329,12 +333,19 @@
     <section>
         <b>Debugger</b>
 
-        <div>click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)</div>
+        <div>点击这个按钮将会打开js debugger页面，您可以通过debugger页面调试js(诸如打断点 查看js log 和查看调用堆栈)</div>
     </section>
     <section>
         <b>Inspector</b>
 
-        <div>click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"
+        <div>点击这个按钮将会打开inspector页面，您可以通过这个页面查看weex页面的element属性结构，包含高亮元素，展示样式表，以及显示native的log。同时可以打开一个远程的手机镜像，便于查看界面。
+            <br>另外调试方块中的<em>ElementMode</em>可以用来选择element树显示<em>原始的native组件树</em>还是显示面向前端同学的<em>DSL(HTML)组件树</em>。
+        </div>
+    </section>
+    <section>
+        <b>Remote Debug</b>
+
+        <div>开启Remote Debug后weex的js将会在chrome的v8里运行（仍然会在native端渲染），只有开启Remote Debug才能断点调试js（点击Debugger按钮会自动打开Remote Debug）<br>不开启RemoteDebug 可以通过inspector页面查看weex页面elements树
         </div>
     </section>
 </div>

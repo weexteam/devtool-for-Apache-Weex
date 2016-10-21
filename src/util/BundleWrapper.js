@@ -21,7 +21,12 @@ var injectedGlobals = [
     'clearTimeout',
     'setInterval',
     'clearInterval',
-    'global'
+    'global',
+    /*override*/
+    'window',
+    'navigator',
+    'document',
+    'location'
 ];
 const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){';
 const rearRegexp = /\/\/#\s*sourceMappingURL|$/;

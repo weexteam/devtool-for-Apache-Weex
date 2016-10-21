@@ -1,7 +1,7 @@
 Weex-Devtool
 ============
 
-Weex-devtool is a debugging tool ([Document](http://alibaba.github.io/weex/doc/tools/devtools.html)) which:
+[Weex-devtool] (http://alibaba.github.io/weex/doc/tools/devtools.html) is a debugging tool which:
 
     1.support android and ios;
     2.could debug on device and emulator;
@@ -15,32 +15,34 @@ Weex-devtool is a debugging tool ([Document](http://alibaba.github.io/weex/doc/t
 
 ## Install
 ```
-$npm install -g weex-devtool
+$npm install -g weex-toolkit
 ```
+suggest to use weex-toolkit which will call weex-devtool. 
 
 ##  usage
 
- weex-devtool [options] [we_file|bundles_dir]
+ weex debug [options] [we_file|bundles_dir]
             
   Options:
-
--h, --host [host]    set the host ip of debugger server
+  
+    -h, --host [host]    set the host ip of debugger server
     -H, --help           display help
     -V, --verbose        display logs of debugger server
     -v, --version        display version
-    -p, --port [port]    set debugger server port
-    -e, --entry [entry]  set the entry bundlejs path when you specific the bundle server root path
+    -p, --port [port]    set debugger server port, default is 8088
     -M, --manual         manual mode,this mode will not auto open chrome
+    -e, --entry [entry]  set the entry of bundle file when debugging a directory, the url of the bundle will show on chrome as a QR code.
+     
 #### start debugger
 ```
-$weex-devtool
+$weex debug
 ```
 this command will start debug server and launch a chrome opening `AppList` page.
 this page will display a qrcode ,you can use `Playground App` scan it for starting debug.
 
 #### start debugger with a we file
 ```
-$weex-devtool your_weex.we
+$weex debug your_weex.we
 ```
 this command will compile `your_weex.we` to `your_weex.js`  and start the debug server as upon command.
 `your_weex.js` will deploy on the server and displayed in `AppList` page as  another qrcode contain the url of your_weex.js
@@ -48,12 +50,12 @@ this command will compile `your_weex.we` to `your_weex.js`  and start the debug 
 
 #### start debugger with a directory of we files
 ```
-$weex-devtool your/we/path  -e index.we
+$weex debug your/we/path  -e index.we
 ``` 
 this command will build every file in your/we/path and deploy them on the bundle server. your directory will mapping to  http://localhost:port/weex/ 
 use -e to set the entry of these bundles. and the url of "index.we" will display on device list page as another qrcode 
 
-##  Debug
+##  How to access devtools in native
 
   Android: pls refer to [Weex Devtool Android](https://github.com/weexteam/weex_devtools_android/blob/master/README.md)
   
@@ -63,6 +65,18 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
 
 
 # 中文版
+    
+[Weex-devtool](http://alibaba.github.io/weex/doc/tools/devtools.html) 是一套调试工具：
+
+    1.支持安卓和iOS调试
+    2.支持真机和模拟器
+    3.可以检查native Elements, vdom, network, Console, Resource;
+    4.可以调试js/wx/Rx等前端源码文件
+    5.支持同时在前端文件和native(安卓／iOS)文件上断点调试
+    6.支持远程调试，不需要真机USB连接电脑
+    7.支持screencast和select element功能
+    8.支持同时调试多个应用和客户端
+    
 ## 安装
 ```
 $npm install -g weex-toolkit
@@ -72,7 +86,8 @@ $npm install -g weex-toolkit
 
  weex debug [options] [we_file|bundles_dir]
             
-  Options:
+  options:
+  
     -h, --host [host]    指定debug服务器的ip地址（必须是本机有效的地址）
     -H, --help           显示帮助
     -V, --verbose        显示debug服务器运行时的各种log

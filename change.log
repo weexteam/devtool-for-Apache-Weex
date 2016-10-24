@@ -1,3 +1,6 @@
+0.2.50
+* 增加对native refresh功能的支持（现在we文件改动只会小刷新不会大刷新了）
+* 修复 weex debug xxx.js copy js前不会补全目录的bug
 0.2.49
 * 抹掉window document navigator location 置为undefined
 0.2.48

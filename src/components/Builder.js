@@ -70,6 +70,7 @@ exports.transformer = function (source, targetPath = '') {
 exports.copy = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath, Path.basename(source));
+        Mkdirp.sync(Path.dirname(targetDir));
         let input = Fs.createReadStream(source);
         let output = Fs.createWriteStream(targetDir);
         input.pipe(output, {

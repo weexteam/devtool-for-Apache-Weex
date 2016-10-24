@@ -64,7 +64,14 @@ DeviceManager.on('update', function (deviceList) {
 let listPageWebsocket = [];
 MessageBus.on('page.refresh', function () {
     DeviceManager.getDeviceList().forEach(function (device) {
-        device.debuggerSession.postMessage(device.websocket, {method: 'WxDebug.refresh'})
+        let devicePeer=device.debuggerSession.findPeer(device.websocket);
+        if(device.deviceInfo.platform.toLowerCase()=='android'&&device.deviceInfo.devtoolVersion>='0.0.8.5'){
+            devicePeer.send({method: 'WxDebug.refresh'})
+        }
+        else {
+            devicePeer.send({method: 'WxDebug.reload'})
+        }
+        //device.debuggerSession.postMessage(device.websocket, {method: 'WxDebug.refresh'})
     });
     /* listPageWebsocket.forEach(ws=> {
      ws.send(JSON.stringify({method: "WxDebug.refreshPage"}));

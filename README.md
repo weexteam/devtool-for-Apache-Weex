@@ -1,7 +1,7 @@
 Weex-devtool
 ============
 
-[Weex Devtools] (http://alibaba.github.io/weex/doc/tools/devtools.html) is a set of weex debugging tool. The weex-devtool works with the inspect modules on [Android] (https://github.com/weexteam/weex_devtools_android) and [iOS] (https://github.com/weexteam/weex-devtool-iOS) to help inspect/debug weex source codes and project:
+[Weex Devtools] (http://alibaba.github.io/weex/doc/tools/devtools.html) is a set of weex debugging tool. The weex-devtool works as a debugging server, it cooperates with the inspect modules on [Android] (https://github.com/weexteam/weex_devtools_android) and [iOS] (https://github.com/weexteam/weex-devtool-iOS) to help user to inspect/debug weex source codes and project:
 
     1.support android and ios;
     2.could debug on device and emulator;

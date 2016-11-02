@@ -1,3 +1,9 @@
+0.2.53
+* 支持最新的Rx参数列表
+* 修复了当bundle里存在多个sourcemap时插入函数的错误。现在只会把}插在最后一个sourcemap之前。
+0.2.52
+0.2.51
+* 之前不应抹掉document 现恢复
 0.2.50
 * 增加对native refresh功能的支持（现在we文件改动只会小刷新不会大刷新了）
 * 修复 weex debug xxx.js copy js前不会补全目录的bug

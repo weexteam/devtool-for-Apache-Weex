@@ -65,7 +65,7 @@ let listPageWebsocket = [];
 MessageBus.on('page.refresh', function () {
     DeviceManager.getDeviceList().forEach(function (device) {
         let devicePeer=device.debuggerSession.findPeer(device.websocket);
-        if(device.deviceInfo.platform.toLowerCase()=='android'&&device.deviceInfo.devtoolVersion>='0.0.8.5'){
+        if(device.deviceInfo.platform.toLowerCase()=='android'&&device.deviceInfo.devtoolVersion>='0.0.8.5'||device.deviceInfo.platform.toLowerCase()=='ios'&&device.deviceInfo.devtoolVersion>='0.8.0'){
             devicePeer.send({method: 'WxDebug.refresh'})
         }
         else {

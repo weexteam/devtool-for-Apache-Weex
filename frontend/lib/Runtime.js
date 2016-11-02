@@ -3,9 +3,31 @@
  */
 self.$$frameworkFlag={};
 var injectedGlobals = [
+    'Promise',
+    // W3C
+    'window',
+    'global',
+    'screen',
+    'document',
+    'navigator',
+    'location',
+    'fetch',
+    'Headers',
+    'Response',
+    'Request',
+    'URL',
+    'URLSearchParams',
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    'requestAnimationFrame',
+    'cancelAnimationFrame',
+    'alert',
+    // ModuleJS
     'define',
     'require',
-    'document',
+    // Weex
     'bootstrap',
     'register',
     'render',
@@ -13,16 +35,13 @@ var injectedGlobals = [
     '__r',
     '__DEV__',
     '__weex_define__',
-    '__weex_bootstrap__',
-    '__weex_document__',
+    '__weex_require__',
     '__weex_viewmodel__',
+    '__weex_document__',
+    '__weex_bootstrap__',
     '__weex_options__',
     '__weex_data__',
-    'setTimeout',
-    'clearTimeout',
-    'setInterval',
-    'clearInterval',
-    'global'
+    '__weex_downgrade__'
 ];
 importScripts('/lib/EventEmitter.js');
 function createWeexBundleEntry(sourceUrl){
@@ -32,13 +51,19 @@ function createWeexBundleEntry(sourceUrl){
     }
     code+='__weex_bundle_entry__(';
     injectedGlobals.forEach(function(g,i){
-        code+='typeof '+g+'==="undefined"?undefined:'+g;
+        if(g==='location'||g==='navigator'){
+            code+='typeof '+g+'==="undefined"||'+g+'===self.'+g+'?undefined:'+g;
+        }
+        else{
+            code+='typeof '+g+'==="undefined"?undefined:'+g;
+        }
+
         if(i<injectedGlobals.length-1){
             code+=',';
         }
 
     });
-    code+=');'
+    code+=');';
     return code;
 }
 var clearConsole=self.console.clear.bind(self.console);

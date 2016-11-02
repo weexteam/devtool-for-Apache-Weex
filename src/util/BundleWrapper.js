@@ -2,9 +2,32 @@
  * Created by godsong on 16/7/7.
  */
 var injectedGlobals = [
+    // ES
+    'Promise',
+    // W3C
+    'window',
+    'global',
+    'screen',
+    'document',
+    'navigator',
+    'location',
+    'fetch',
+    'Headers',
+    'Response',
+    'Request',
+    'URL',
+    'URLSearchParams',
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    'requestAnimationFrame',
+    'cancelAnimationFrame',
+    'alert',
+    // ModuleJS
     'define',
     'require',
-    'document',
+    // Weex
     'bootstrap',
     'register',
     'render',
@@ -12,25 +35,17 @@ var injectedGlobals = [
     '__r',
     '__DEV__',
     '__weex_define__',
-    '__weex_bootstrap__',
-    '__weex_document__',
+    '__weex_require__',
     '__weex_viewmodel__',
+    '__weex_document__',
+    '__weex_bootstrap__',
     '__weex_options__',
     '__weex_data__',
-    'setTimeout',
-    'clearTimeout',
-    'setInterval',
-    'clearInterval',
-    'global',
-    /*override*/
-    'window',
-    'navigator',
-    'document',
-    'location'
+    '__weex_downgrade__'
+
 ];
 const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){';
-const rearRegexp = /\/\/#\s*sourceMappingURL|$/;
-
+const rearRegexp = /\/\/#\s*sourceMappingURL(?!.*?\s+.)|$/;
 module.exports = function (code,sourceUrl) {
     var match=/^\s*(\/\/.+)\n/.exec(code);
     var anno='';

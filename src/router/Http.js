@@ -65,7 +65,7 @@ httpRouter.get('/source/*', function*(next) {
         if (file) {
             this.response.status = 200;
             this.type = 'text/javascript';
-            if (file.url) {
+            if (file.url&&!Config.local) {
                 let content = yield getRemote(file.url).catch(function (e) {
                     Logger.error(e);
                 });

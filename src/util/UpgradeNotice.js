@@ -10,7 +10,7 @@ exports.run = function () {
     npm.stdout.on('data', (data) => {
         let latestVersion = data.toString();
         if (getVersionValue(version) < getVersionValue(latestVersion)) {
-            console.log(LogStyle.dressUp('New version['+latestVersion+'] of Weex debugger detected! Please update weex-toolkit.(npm install -g weex-toolkit)', LogStyle.FG_RED))
+            console.log(LogStyle.dressUp('New version['+latestVersion+'] of Weex debugger detected! Please update.(npm install -g weex-devtool)', LogStyle.FG_RED))
         }
     });
 }

@@ -17,6 +17,7 @@ api.startServerAndLaunchDevtool = function startServerAndLaunchDevtool(entry, ro
   port =  port || 8088; //Program.port;
   var ip = IP.address();
   Config.ip = ip;
+  Config.local=true;
   console.info('start debugger server at ' + LogStyle.dressUp('http://' + ip + ':' + port, LogStyle.FG_YELLOW, LogStyle.BRIGHT));
 
   if (entry) {

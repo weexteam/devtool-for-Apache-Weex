@@ -113,12 +113,12 @@ self.nativeLog = function (text) {
     console.log(text);
 };
 eventEmitter.on('WxDebug.initJSRuntime', function (message) {
-    importScripts(message.params.url);
     for (var key in message.params.env) {
         if(message.params.env.hasOwnProperty(key)) {
             self[key] = message.params.env[key];
         }
     }
+    importScripts(message.params.url);
 });
 eventEmitter.on('WxDebug.changeLogLevel', function (message) {
     self.WXEnvironment.logLevel = message.params;

@@ -16,7 +16,7 @@ var httpRouter = Router();
 function getRemote(url) {
     return new Promise(function (resolve, reject) {
         let urlObj = URL.parse(url);
-        (protocols[urlObj.protocol]||protocols['http']).get({
+        (protocols[urlObj.protocol]||protocols['http:']).get({
             hostname: urlObj.hostname,
             port: urlObj.port,
             path: urlObj.path,

@@ -1,3 +1,10 @@
+0.2.55
+* 修复 taobao://协议头bug
+* 增加api模式的local
+0.2.54
+* 更换了下注册WXEnvironment和执行jsframework的顺序，现在注册环境变量在前
+* 增加-l模式 即本地模式 该模式下 加载的bundle不会由devtool server进行代理。直接使用native发过来的bundle
+* 调整了下更新提醒的说明 以适应新的weex-toolkit架构
 0.2.53
 * 支持最新的Rx参数列表
 * 修复了当bundle里存在多个sourcemap时插入函数的错误。现在只会把}插在最后一个sourcemap之前。

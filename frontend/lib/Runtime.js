@@ -66,6 +66,7 @@ function createWeexBundleEntry(sourceUrl){
     code+=');';
     return code;
 }
+var origConsole=self.console;
 var clearConsole=self.console.clear.bind(self.console);
 self.__WEEX_DEVTOOL__=true;
 var eventEmitter = new EventEmitter();
@@ -85,14 +86,22 @@ self.callNative = function (instance, tasks, callback) {
             }
         }
     }
-    postMessage({
+    var payload={
         method: 'WxDebug.callNative',
         params: {
             instance: instance,
             tasks: tasks,
             callback: callback
         }
-    })
+    };
+    try {
+
+        postMessage(payload);
+    }catch(e){
+        console.warn('callNative with some non-json data:',payload);
+        payload=JSON.parse(JSON.stringify(payload));
+        postMessage(payload);
+    }
 };
 self.callAddElement=function(instance, ref, dom, index, callback){
     postMessage({
@@ -112,13 +121,41 @@ self.__logger = function (level, msg) {
 self.nativeLog = function (text) {
     console.log(text);
 };
+var _rewriteLog=function (){
+    var LEVELS = ['error', 'warn', 'info', 'log', 'debug'];
+    var backupConsole={
+        error:origConsole.error,
+        warn:origConsole.warn,
+        info:origConsole.info,
+        log:origConsole.log,
+        debug:origConsole.debug
+
+    };
+    function resetConsole(){
+        self.console.error=backupConsole.error;
+        self.console.warn=backupConsole.warn;
+        self.console.info=backupConsole.info;
+        self.console.log=backupConsole.log;
+        self.console.debug=backupConsole.debug;
+    }
+    function noop(){}
+    return function(logLevel){
+        resetConsole();
+        LEVELS.slice(LEVELS.indexOf(logLevel)+1).forEach(function(level){
+            self.console[level]=noop;
+        })
+    }
+}();
+
 eventEmitter.on('WxDebug.initJSRuntime', function (message) {
     for (var key in message.params.env) {
         if(message.params.env.hasOwnProperty(key)) {
             self[key] = message.params.env[key];
         }
+
     }
     importScripts(message.params.url);
+    _rewriteLog(message.params.env.WXEnvironment.logLevel);
 });
 eventEmitter.on('WxDebug.changeLogLevel', function (message) {
     self.WXEnvironment.logLevel = message.params;
@@ -147,8 +184,11 @@ eventEmitter.on('WxDebug.callJS', function (data) {
             console.warn('invalid destroyInstance[' + data.params.args[0] + '] because runtime has been refreshed(It does not impact your code. )');
         }
     }
-    else {
+    else if(self[data.params.method]){
         self[data.params.method].apply(null, data.params.args);
+    }
+    else{
+        console.warn('callJS['+data.params.method+'] error: jsframework has no such api');
     }
 });
 

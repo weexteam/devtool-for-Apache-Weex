@@ -18,7 +18,7 @@ class MemoryFile {
 
     constructor(fileName, content) {
         //fixme ugly! your_current_ip playground default bundle url
-        let rHttpHeader = /^(https?|taobao):\/\/(?!.*your_current_ip)/i;
+        let rHttpHeader = /^(https?|taobao|qap):\/\/(?!.*your_current_ip)/i;
         if (rHttpHeader.test(fileName)) {
             this.name = fileName.replace(rHttpHeader, '');
             let query = Qs.parse(Url.parse(this.name).query);

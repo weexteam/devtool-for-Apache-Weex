@@ -1,3 +1,10 @@
+0.2.57
+* 重写掉jsfm的log机制，使之更好用且更好定位log位置
+* 自动过滤callNative时传递的一些非法数据（不能转换成json的数据 如方法）
+* callJS 而当前jsfm并没有该方法时 现在不再报错，而是warning(本身就应该报错=。=)
+* readme 加入extension的介绍。
+0.2.56
+* 支持千牛qap:协议头
 0.2.55
 * 修复 taobao://协议头bug
 * 增加api模式的local

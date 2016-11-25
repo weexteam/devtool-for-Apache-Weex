@@ -1,3 +1,5 @@
+0.2.58
+* bug fix postMessage过滤不全面
 0.2.57
 * 重写掉jsfm的log机制，使之更好用且更好定位log位置
 * 自动过滤callNative时传递的一些非法数据（不能转换成json的数据 如方法）

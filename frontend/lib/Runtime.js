@@ -94,17 +94,19 @@ self.callNative = function (instance, tasks, callback) {
             callback: callback
         }
     };
+    postData(payload);
+};
+function postData(payload){
     try {
-
         postMessage(payload);
     }catch(e){
         console.warn('callNative with some non-json data:',payload);
         payload=JSON.parse(JSON.stringify(payload));
         postMessage(payload);
     }
-};
+}
 self.callAddElement=function(instance, ref, dom, index, callback){
-    postMessage({
+    var payload={
         method: 'WxDebug.callAddElement',
         params: {
             instance: instance,
@@ -113,7 +115,8 @@ self.callAddElement=function(instance, ref, dom, index, callback){
             index:index,
             callback: callback
         }
-    })
+    };
+    postData(payload);
 };
 self.__logger = function (level, msg) {
     console[level]('native:', msg);

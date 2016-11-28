@@ -1,3 +1,6 @@
+0.2.59
+* fix framework判断丢失
+* add weex全局变量
 0.2.58
 * bug fix postMessage过滤不全面
 0.2.57

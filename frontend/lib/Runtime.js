@@ -41,13 +41,15 @@ var injectedGlobals = [
     '__weex_bootstrap__',
     '__weex_options__',
     '__weex_data__',
-    '__weex_downgrade__'
+    '__weex_downgrade__',
+    '__weex_require_module__',
+    'Vue'
 ];
 importScripts('/lib/EventEmitter.js');
 function createWeexBundleEntry(sourceUrl){
     var code='';
-    if(self.$$frameworkFlag[sourceUrl]){
-        code+=self.$$frameworkFlag[sourceUrl]+'\n';
+    if(self.$$frameworkFlag[sourceUrl]||self.$$frameworkFlag['@']){
+        code+=(self.$$frameworkFlag[sourceUrl]||self.$$frameworkFlag['@'])+'\n';
     }
     code+='__weex_bundle_entry__(';
     injectedGlobals.forEach(function(g,i){

@@ -33,7 +33,7 @@ let launchDevTools = module.exports = function (ip, port) {
                 // Ignore errors.
             }
         }
-        opn(debuggerURL, {app: [getChromeAppName()]}, function (err) {
+        opn(debuggerURL, {app: [getChromeAppName(),'-remote-debugging-port=9222']}, function (err) {
             if (err) {
                 console.error('Google Chrome exited with error:', err);
                 reject(err);

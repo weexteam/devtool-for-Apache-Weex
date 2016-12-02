@@ -65,8 +65,8 @@ function diff(deviceList) {
             }
         }
         if (next)continue;
-        _deviceList[i].inspectorWindow && _deviceList[i].inspectorWindow.close();
-        _deviceList[i].debuggerWindow && _deviceList[i].debuggerWindow.close();
+        //_deviceList[i].inspectorWindow && _deviceList[i].inspectorWindow.close();
+        //_deviceList[i].debuggerWindow && _deviceList[i].debuggerWindow.close();
    }
 }
 

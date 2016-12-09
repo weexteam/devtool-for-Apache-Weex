@@ -47,6 +47,7 @@
     "node-watch": "^0.3.5",
     "opn": "^4.0.2",
     "parse-hosts": "^1.0.1",
+    "uuid": "^3.0.1",
     "webpack": "^1.13.1",
     "weex-loader": "^0.2.3",
     "weex-transformer": "^0.3.1"

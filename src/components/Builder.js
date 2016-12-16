@@ -17,13 +17,13 @@ exports.loader = function (source, targetPath = '') {
         if(!Fs.existsSync(Path.join(weexLoaderRoot,'weex-loader'))){
             weexLoaderRoot=Path.join(__dirname, "../../..");
         }
-        Webpack({
+        let webpackConfig={
             entry: source + '?entry=true',
             output: {
                 path: targetDir,
                 filename: basename + '.js'
             },
-            devtool: '#inline-source-map',
+            devtool: Config.min?'source-map':'#inline-source-map',
             module: {
                 loaders: [
                     {
@@ -36,7 +36,17 @@ exports.loader = function (source, targetPath = '') {
                 root:weexLoaderRoot
             }
 
-        }, function (err, stats) {
+        };
+        if(Config.min){
+            webpackConfig.plugins=[
+                new Webpack.optimize.UglifyJsPlugin({
+                    compress: {
+                        warnings: false
+                    }
+                })
+            ]
+        }
+        Webpack(webpackConfig, function (err, stats) {
             if (err) {
                 return reject(err);
             }

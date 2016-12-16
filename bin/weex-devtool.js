@@ -36,6 +36,7 @@ Program
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
     .option('-M, --manual', 'manual mode,this mode will not auto open chrome')
+    .option('--min','')
     .option('-l, --local', '');
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
@@ -65,6 +66,7 @@ if(Program.host&&!Hosts.isValidLocalHost(Program.host)){
 Config.verbose = Program.verbose;
 Config.port = Program.port;
 Config.local=Program.local;
+Config.min=Program.min;
 if (supportMode.indexOf(Program.mode) == -1) {
     console.log('unsupported build mode:', Program.mode);
     Exit(0);

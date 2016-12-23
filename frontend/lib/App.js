@@ -88,7 +88,8 @@ function renderDeviceList(deviceList) {
                 <div class="line"><span>WeexVersion</span><b>${device.weexVersion}</b></div>
                 <div class="line mr-bottom-10"><span>LogLevel</span><b><select class="selector log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="debug">debug</option><option value="log">log</option><option value="info">info</option><option value="warn">warn</option><option value="error">error</option></select></b></div>
                 <div class="line mr-bottom-10"><span>ElementMode</span><b><select class="selector element-mode"" x-data-device="${device.deviceId}" x-data-value="${device.elementMode||'native'}"><option value="native">native</option><option value="vdom">vdom</option></select></b></div>
-                <div class="line mr-top-10"><span>RemoteDebug</span><b>${switchComponent(device)}</b></div>
+                <div class="line mr-top-10"><span>RemoteDebug</span><b>${switchComponent(device,'remoteDebug')}</b></div>
+                ${device.devtoolVersion>='0.8.3'&&device.platform==='iOS'?`<div class="line mr-top-10"><span>NetworkMonitor</span><b>${switchComponent(device,'network')}</b></div>`:''}
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
                 <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
@@ -103,7 +104,6 @@ function renderDeviceList(deviceList) {
     if(html.length>0) {
         document.getElementById('container').innerHTML = html.join('\n');
         var logLevelList = document.querySelectorAll('.log-level');
-        var switchList=document.querySelectorAll('.switch');
         logLevelList.forEach(function(loglevelSelector){
             loglevelSelector.value=loglevelSelector.getAttribute('x-data-value');
             loglevelSelector.onchange=function(evt){
@@ -136,7 +136,7 @@ function renderDeviceList(deviceList) {
                 }
             }
         })
-        switchList.forEach(function(swt){
+            document.querySelectorAll('.switch-remoteDebug').forEach(function(swt){
             swt.onchange=function(evt){
                 var el=evt.target;
                 var deviceId=el.getAttribute('x-data');
@@ -154,6 +154,16 @@ function renderDeviceList(deviceList) {
                     openDebugger(deviceId);
                 }
                 console.log(el.getAttribute('x-data'),evt.target.checked);
+            }
+        })
+        document.querySelectorAll('.switch-network').forEach(function(swt){
+            swt.onchange=function(evt){
+                var el=evt.target;
+                var deviceId=el.getAttribute('x-data');
+                websocket.send(JSON.stringify({method:'WxDebug.network',params:{
+                    deviceId:deviceId,
+                    enable:el.checked
+                }}));
             }
         })
 
@@ -204,10 +214,10 @@ function createQRCode(id, content, width, height) {
     });
     el.title = '';
 }
-var switchComponent=function(device){
-    return `<div class="switch">
-    <input type="checkbox" id="switch_${device.deviceId}" x-data="${device.deviceId}" ${device.remoteDebug?'checked':''} name="switch" class="switch-checkbox" >
-    <label class="switch-label" for="switch_${device.deviceId}">
+var switchComponent=function(device,label){
+    return `<div class="switch switch-${label}">
+    <input type="checkbox" id="${label+'_switch_'+device.deviceId}" x-data="${device.deviceId}" ${device[label]?'checked':''} name="${label+'_switch'}" class="switch-checkbox" >
+    <label class="switch-label" for="${label+'_switch_'+device.deviceId}">
         <div class="switch-inner">
             <div class="switch-active">ON</div>
             <div class="switch-inactive">OFF</div>

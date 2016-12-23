@@ -1,3 +1,7 @@
+0.2.64
+* 增加network开关 但是只有特定devtool Version(>=0.8.3)才会显示
+0.2.63
+*增加对websocket的保护，只有在open状态下才会发送消息
 0.2.62
 * 增加--min选项 此选项会压缩编译的bundle并去掉内联的sourcemap
 0.2.61

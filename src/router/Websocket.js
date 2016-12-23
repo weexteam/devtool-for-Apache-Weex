@@ -118,6 +118,16 @@ wsRouter.all('/debugProxy/list', function*(next) {
                 device.websocket.send(JSON.stringify({method: 'WxDebug.reload'}));
             }
         }
+        else if(message.method == 'WxDebug.network'){
+            let device = DeviceManager.getDeviceById(message.params.deviceId);
+            if (device&&device.websocket.readyState==1) {
+                console.log(message);
+                device.deviceInfo.network = message.params.enable;
+                device.websocket.send(JSON.stringify({method: 'WxDebug.network',params:{
+                    enable:message.params.enable
+                }}));
+            }
+        }
     });
     if(this.websocket.readyState==1) {
         this.websocket.send(JSON.stringify({
@@ -151,7 +161,6 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     try {
                         this.send(JSON.stringify({id: message.id, result: 'ready'}));
                     }catch(e){
-
                     }
                 }
                 else if (method == 'initJSRuntime') {

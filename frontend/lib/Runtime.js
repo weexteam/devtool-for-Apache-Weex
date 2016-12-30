@@ -2,6 +2,7 @@
  * Created by godsong on 16/6/14.
  */
 self.$$frameworkFlag={};
+var sessionId;
 var injectedGlobals = [
     'Promise',
     // W3C
@@ -75,7 +76,28 @@ var eventEmitter = new EventEmitter();
 onmessage = function (message) {
     eventEmitter.emit(message.data.method, message.data)
 };
-
+self.callNativeModule=function(){
+    let message={
+        method:'WxDebug.syncCall',
+        params:{
+            method:'callNativeModule',
+            args:Array.prototype.slice.call(arguments)
+        },
+        sessionId:sessionId
+    }
+    return syncRequest(message);
+}
+self.callNativeComponent=function(){
+    let message={
+        method:'WxDebug.syncCall',
+        params:{
+            method:'callNativeComponent',
+            args:Array.prototype.slice.call(arguments)
+        },
+        sessionId:sessionId
+    }
+    return syncRequest(message);
+};
 self.callNative = function (instance, tasks, callback) {
     for(var i=0;i<tasks.length;i++){
         var task=tasks[i];
@@ -142,6 +164,8 @@ var _rewriteLog=function (){
         self.console.info=backupConsole.info;
         self.console.log=backupConsole.log;
         self.console.debug=backupConsole.debug;
+        self.console.time=origConsole.time;
+        self.console.timeEnd=origConsole.timeEnd;
     }
     function noop(){}
     return function(logLevel){
@@ -153,6 +177,7 @@ var _rewriteLog=function (){
 }();
 
 eventEmitter.on('WxDebug.initJSRuntime', function (message) {
+    sessionId=message.sessionId;
     for (var key in message.params.env) {
         if(message.params.env.hasOwnProperty(key)) {
             self[key] = message.params.env[key];
@@ -172,6 +197,7 @@ var instanceMap = {};
 eventEmitter.on('WxDebug.callJS', function (data) {
     var method = data.params.method;
     if (method === 'createInstance') {
+
         var url = data.params.sourceUrl;
         postMessage({
             method: 'WxRuntime.clearLog',
@@ -205,3 +231,15 @@ function dump(id) {
 
 }
 
+function syncRequest(data){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/syncApi', false);  // `false` makes the request synchronous
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.send(JSON.stringify(data));
+    if (request.status === 200) {
+        return JSON.parse(request.responseText);
+    }
+    else{
+        throw Error('sync request failed:['+request.status+']'+request.responseText);
+    }
+}

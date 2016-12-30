@@ -11,7 +11,8 @@ const URL = require('url');
 const Config = require('../components/Config');
 const Builder = require('../components/Builder');
 const bundleWrapper = require('../util/BundleWrapper');
-
+const MessageBus=require('../components/MessageBus');
+const DeviceManager=require('../components/DeviceManager');
 var httpRouter = Router();
 function getRemote(url) {
     return new Promise(function (resolve, reject) {
@@ -119,5 +120,26 @@ httpRouter.get('/' + Config.bundleDir + '/*', function*(next) {
     else {
         this.response.status = 404;
     }
+});
+let syncApiIndex=0;
+httpRouter.post('/syncApi',function*(){
+    let idx=syncApiIndex++;
+    let payload=this.request.body;
+    let device=DeviceManager.getDeviceBySessionId(payload.sessionId);
+    if(device){
+        delete payload.sessionId;
+        payload.params.syncId=idx;
+        device.send(payload);
+        let data=yield MessageBus.waitFor('sync.return.'+idx);
+        this.response.status = 200;
+        this.type = 'application/json';
+        this.response.body=JSON.stringify(data);
+    }
+    else{
+         this.response.status=500;
+        this.response.body='device not found!';
+    }
+
+
 });
 module.exports = httpRouter;

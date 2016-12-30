@@ -1,3 +1,5 @@
+0.2.65
+* 支持同步接口callNativeModule 和callNativeComponent
 0.2.64
 * 增加network开关 但是只有特定devtool Version(>=0.8.3)才会显示
 0.2.63

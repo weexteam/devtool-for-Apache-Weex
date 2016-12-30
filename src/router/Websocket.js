@@ -58,7 +58,7 @@ wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
 });
 DeviceManager.on('update', function (deviceList) {
     listPageWebsocket.forEach(ws=> {
-        if(ws.readyState==1) {
+        if (ws.readyState == 1) {
             ws.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: deviceList}));
         }
     })
@@ -66,8 +66,8 @@ DeviceManager.on('update', function (deviceList) {
 let listPageWebsocket = [];
 MessageBus.on('page.refresh', function () {
     DeviceManager.getDeviceList().forEach(function (device) {
-        let devicePeer=device.debuggerSession.findPeer(device.websocket);
-        if(device.deviceInfo.platform.toLowerCase()=='android'&&device.deviceInfo.devtoolVersion>='0.0.8.5'||device.deviceInfo.platform.toLowerCase()=='ios'&&device.deviceInfo.devtoolVersion>='0.8.0'){
+        let devicePeer = device.debuggerSession.findPeer(device.websocket);
+        if (device.deviceInfo.platform.toLowerCase() == 'android' && device.deviceInfo.devtoolVersion >= '0.0.8.5' || device.deviceInfo.platform.toLowerCase() == 'ios' && device.deviceInfo.devtoolVersion >= '0.8.0') {
             devicePeer.send({method: 'WxDebug.refresh'})
         }
         else {
@@ -89,7 +89,7 @@ wsRouter.all('/debugProxy/list', function*(next) {
         if (message.method == 'WxDebug.setLogLevel') {
 
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device&&device.websocket.readyState==1) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.logLevel = message.params.logLevel;
                 let targetMsg = {method: 'WxDebug.setLogLevel', params: {logLevel: message.params.data}};
                 device.websocket.send(JSON.stringify(targetMsg));
@@ -100,36 +100,41 @@ wsRouter.all('/debugProxy/list', function*(next) {
         }
         else if (message.method == 'WxDebug.setRemoteDebug') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device&&device.websocket.readyState==1) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.remoteDebug = message.params.data;
                 device.websocket.send(JSON.stringify({method: 'WxDebug.' + (message.params.data ? 'enable' : 'disable')}));
             }
         }
-        else if(message.method=='WxDebug.setElementMode'){
+        else if (message.method == 'WxDebug.setElementMode') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device&&device.websocket.readyState==1) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.elementMode = message.params.data;
-                device.websocket.send(JSON.stringify({method: 'WxDebug.setElementMode' ,params:{mode:message.params.data}}));
+                device.websocket.send(JSON.stringify({
+                    method: 'WxDebug.setElementMode',
+                    params: {mode: message.params.data}
+                }));
             }
         }
         else if (message.method == 'WxDebug.refreshDevice') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device&&device.websocket.readyState==1) {
+            if (device && device.websocket.readyState == 1) {
                 device.websocket.send(JSON.stringify({method: 'WxDebug.reload'}));
             }
         }
-        else if(message.method == 'WxDebug.network'){
+        else if (message.method == 'WxDebug.network') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device&&device.websocket.readyState==1) {
+            if (device && device.websocket.readyState == 1) {
                 console.log(message);
                 device.deviceInfo.network = message.params.enable;
-                device.websocket.send(JSON.stringify({method: 'WxDebug.network',params:{
-                    enable:message.params.enable
-                }}));
+                device.websocket.send(JSON.stringify({
+                    method: 'WxDebug.network', params: {
+                        enable: message.params.enable
+                    }
+                }));
             }
         }
     });
-    if(this.websocket.readyState==1) {
+    if (this.websocket.readyState == 1) {
         this.websocket.send(JSON.stringify({
             method: "WxDebug.pushDeviceList",
             params: DeviceManager.getDeviceListInfo()
@@ -160,7 +165,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     DeviceManager.registerDevice(message.params, this);
                     try {
                         this.send(JSON.stringify({id: message.id, result: 'ready'}));
-                    }catch(e){
+                    } catch (e) {
                     }
                 }
                 else if (method == 'initJSRuntime') {
@@ -183,6 +188,9 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     else {
                         Logger.error('Fatal Error:native device unregistered before createInstance!');
                     }
+                }
+                else if(method=='syncReturn'){
+                    MessageBus.emit('sync.return.'+message.params.syncId,message.params.ret);
                 }
                 else {
                     if (device)

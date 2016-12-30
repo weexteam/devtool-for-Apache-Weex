@@ -86,7 +86,8 @@
         websocket.send(message);
         //need close
     }
-    var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' + location.search.split('?sessionId=')[1]);
+    var sessionId=new URLSearchParams(location.search).get('sessionId');
+    var websocket = new WebsocketClient('ws://' + window.location.host + '/debugProxy/debugger/' +sessionId );
     websocket.on('*', function (message) {
         if (worker) {
             worker.postMessage(message);
@@ -118,6 +119,7 @@
             message.params.env.WXEnvironment.logLevel = logLevel;
         }
         document.getElementById('logLevel').value = message.params.env.WXEnvironment.logLevel;
+        message.sessionId=sessionId;
         initJSRuntime(message);
 
     });

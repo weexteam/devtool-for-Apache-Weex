@@ -9,14 +9,23 @@ var Transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config = require('./Config');
 var Mkdirp = require('mkdirp');
+const ext2Name={
+    '.we':'Weex',
+    '.vue':'Vue'
+}
 exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
-        let basename = Path.basename(source, '.we');
+        let ext=Path.extname(source);
+        let basename = Path.basename(source, ext);
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
         let weexLoaderRoot=Path.join(__dirname, "../../node_modules");
         if(!Fs.existsSync(Path.join(weexLoaderRoot,'weex-loader'))){
             weexLoaderRoot=Path.join(__dirname, "../../..");
         }
+        var bannerPlugin = new Webpack.BannerPlugin(
+            '// { "framework": "'+ext2Name[ext]+'" }\n',
+            { raw: true }
+        )
         let webpackConfig={
             entry: source + '?entry=true',
             output: {
@@ -29,22 +38,27 @@ exports.loader = function (source, targetPath = '') {
                     {
                         test: /\.we(\?[^?]+)?$/,
                         loader: 'weex'
+                    },
+                    {
+                        test: /\.vue(\?[^?]+)?$/,
+                        loader: 'weex'
                     }
                 ]
             },
             resolveLoader: {
                 root:weexLoaderRoot
-            }
+            },
+            plugins:[bannerPlugin]
 
         };
         if(Config.min){
-            webpackConfig.plugins=[
+            webpackConfig.plugins.push(
                 new Webpack.optimize.UglifyJsPlugin({
                     compress: {
                         warnings: false
                     }
-                })
-            ]
+                }));
+
         }
         Webpack(webpackConfig, function (err, stats) {
             if (err) {

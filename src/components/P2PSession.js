@@ -95,7 +95,7 @@ class P2PSession extends Emitter {
     static findOppositePeer(websocket) {
         let session = _sessionMap[websocket._p2pSessionId];
         if (!session) {
-            Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
+            //Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
             return;
         }
         let peer = session.findPeer(websocket);
@@ -108,7 +108,7 @@ class P2PSession extends Emitter {
     static postMessage(websocket, message) {
         let session = _sessionMap[websocket._p2pSessionId];
         if (!session) {
-            Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
+            //Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
             return;
         }
         session.postMessage(websocket, message);

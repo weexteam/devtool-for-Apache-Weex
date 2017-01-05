@@ -190,7 +190,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                     }
                 }
                 else if(method=='syncReturn'){
-                    MessageBus.emit('sync.return.'+message.params.syncId,message.params.ret);
+                    MessageBus.emit('sync.return.'+message.params.syncId,{error:message.error,ret:message.params.ret});
                 }
                 else {
                     if (device)
@@ -214,8 +214,14 @@ wsRouter.all('/debugProxy/native', function*(next) {
             }
         }
         else {
-            if (device)
-                device.inspectorSession.postMessage(this, message);
+            if (device){
+                if(message.result.method==='WxDebug.syncReturn'){
+                    MessageBus.emit('sync.return.'+message.id,{error:message.error,ret:message.result.params.ret});
+                }
+                else {
+                    device.inspectorSession.postMessage(this, message);
+                }
+            }
             else
                 Logger.error('Fatal Error:native device unregistered before send inspector protocol');
         }

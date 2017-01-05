@@ -36,7 +36,7 @@ Program
     .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
     .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
     .option('-M, --manual', 'manual mode,this mode will not auto open chrome')
-    .option('--min','')
+    .option('--min', '')
     .option('-l, --local', '');
 //支持命令后跟一个file/directory参数
 Program['arguments']('[file]')
@@ -58,15 +58,15 @@ if (Program.version == undefined) {
 }
 var supportMode = ['loader', 'transformer'];
 
-if(Program.host&&!Hosts.isValidLocalHost(Program.host)){
-    console.log('['+Program.host+'] is not your local address!');
+if (Program.host && !Hosts.isValidLocalHost(Program.host)) {
+    console.log('[' + Program.host + '] is not your local address!');
     Exit(0);
 }
 
 Config.verbose = Program.verbose;
 Config.port = Program.port;
-Config.local=Program.local;
-Config.min=Program.min;
+Config.local = Program.local;
+Config.min = Program.min;
 if (supportMode.indexOf(Program.mode) == -1) {
     console.log('unsupported build mode:', Program.mode);
     Exit(0);
@@ -111,7 +111,7 @@ function buildAndStart() {
             console.error(filePath + ': No such file or directory');
             return Exit(0);
         }
-        if (ext == '.we') {
+        if (ext == '.we' || ext == '.vue') {
             console.log('building...');
             console.time('Build completed!');
             buildFileAndWatchIt(Program.mode, filePath).then(function () {
@@ -166,7 +166,7 @@ function startServerAndLaunchDevtool(entry) {
     Config.ip = ip;
     console.info('start debugger server at ' + LogStyle.dressUp('http://' + ip + ':' + port, LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     if (entry) {
-        Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.we$/, '.js')).replace(/\\/g,'/');
+        Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
         console.log('\nYou can visit we file(s) use ' + Config.entryBundleUrl);
         console.log('Also you can use Playground App to scan the qrcode on device list page.');
     }
@@ -174,7 +174,7 @@ function startServerAndLaunchDevtool(entry) {
         Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
         //fixme ugly 与具体耦合的逻辑 易变！
         var urlObj = Url.parse(Config.entryBundleUrl, true);
-        if (!/wh_weex=true/.test(Config.entryBundleUrl)&&!urlObj.query['_wx_tpl']) {
+        if (!/wh_weex=true/.test(Config.entryBundleUrl) && !urlObj.query['_wx_tpl']) {
             urlObj.query['_wx_tpl'] = Config.entryBundleUrl;
             urlObj.search = '';
             Config.entryBundleUrl = Url.format(urlObj);

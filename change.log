@@ -1,3 +1,10 @@
+0.2.77
+* 支持vue2.0
+* 升级weex-loader以支持编译.vue
+* 去除clearLog
+* 支持android 同步调用接口
+0.2.66
+* 丢失依赖 fix
 0.2.65
 * 支持同步接口callNativeModule 和callNativeComponent
 0.2.64

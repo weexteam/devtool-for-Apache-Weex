@@ -77,7 +77,7 @@ onmessage = function (message) {
     eventEmitter.emit(message.data.method, message.data)
 };
 self.callNativeModule=function(){
-    let message={
+    var message={
         method:'WxDebug.syncCall',
         params:{
             method:'callNativeModule',
@@ -85,10 +85,14 @@ self.callNativeModule=function(){
         },
         sessionId:sessionId
     }
-    return syncRequest(message);
+    var result=  syncRequest(message);
+    if(result.error){
+        throw new Error(result.error);
+    }
+    else return result.ret;
 }
 self.callNativeComponent=function(){
-    let message={
+    var message={
         method:'WxDebug.syncCall',
         params:{
             method:'callNativeComponent',
@@ -96,7 +100,12 @@ self.callNativeComponent=function(){
         },
         sessionId:sessionId
     }
-    return syncRequest(message);
+    var result= syncRequest(message);
+    if(result.error){
+        throw new Error(result.error);
+    }
+
+    else return result.ret;
 };
 self.callNative = function (instance, tasks, callback) {
     for(var i=0;i<tasks.length;i++){

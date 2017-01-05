@@ -128,9 +128,10 @@ httpRouter.post('/syncApi',function*(){
     let device=DeviceManager.getDeviceBySessionId(payload.sessionId);
     if(device){
         delete payload.sessionId;
-        payload.params.syncId=idx;
+        payload.params.syncId=100000+idx;
+        payload.id=100000+idx;
         device.send(payload);
-        let data=yield MessageBus.waitFor('sync.return.'+idx);
+        let data=yield MessageBus.waitFor('sync.return.'+payload.id);
         this.response.status = 200;
         this.type = 'application/json';
         this.response.body=JSON.stringify(data);

@@ -1,4 +1,6 @@
-0.2.77
+0.2.68
+* 对旧版无同步接口的sdk进行通讯保护 防止node server挂掉
+0.2.67
 * 支持vue2.0
 * 升级weex-loader以支持编译.vue
 * 去除clearLog

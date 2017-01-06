@@ -215,7 +215,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
         }
         else {
             if (device){
-                if(message.result.method==='WxDebug.syncReturn'){
+                if(message.result&&message.result.method==='WxDebug.syncReturn'){
                     MessageBus.emit('sync.return.'+message.id,{error:message.error,ret:message.result.params.ret});
                 }
                 else {

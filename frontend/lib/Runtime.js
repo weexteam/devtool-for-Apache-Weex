@@ -203,6 +203,14 @@ eventEmitter.on('Console.messageAdded', function (message) {
     console.error('[Native Error]', message.params.message.text);
 });
 var instanceMap = {};
+eventEmitter.on('WxDebug.importScript',function(data){
+    console.log(data);
+    if(data.params.sourceUrl) {
+        importScripts(data.params.sourceUrl);
+    }else{
+        new Function('',data.params.source)();
+    }
+})
 eventEmitter.on('WxDebug.callJS', function (data) {
     var method = data.params.method;
     if (method === 'createInstance') {

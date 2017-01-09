@@ -189,6 +189,15 @@ wsRouter.all('/debugProxy/native', function*(next) {
                         Logger.error('Fatal Error:native device unregistered before createInstance!');
                     }
                 }
+                else if (method == 'importScript') {
+                    if (device) {
+                        message.params.sourceUrl = new MemoryFile('imported_'+Uuid() + '.js', message.params.source).getUrl();
+                        device.debuggerSession.postMessage(this, message);
+                    }
+                    else {
+                        Logger.error('Fatal Error:native device unregistered before createInstance!');
+                    }
+                }
                 else if(method=='syncReturn'){
                     MessageBus.emit('sync.return.'+message.params.syncId,{error:message.error,ret:message.params.ret});
                 }

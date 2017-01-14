@@ -66,7 +66,7 @@ function createWeexBundleEntry(sourceUrl){
     }
     code+='__weex_bundle_entry__(';
     injectedGlobals.forEach(function(g,i){
-        if(g==='location'||g==='navigator'){
+        if(g==='navigator'){
             code+='typeof '+g+'==="undefined"||'+g+'===self.'+g+'?undefined:'+g;
         }
         else{

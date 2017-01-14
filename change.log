@@ -1,3 +1,5 @@
+0.2.72
+*去掉对location的屏蔽 for rax
 0.2.71
 *更新weex-loader到0.4.2-beta已解决问题
 *修复jsfm setTimeout bug

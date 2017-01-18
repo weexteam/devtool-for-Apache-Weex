@@ -7,6 +7,7 @@ const Config = require('./Config');
 const Url = require('url');
 const Qs = require('querystring');
 let _memoryFileMap = {};
+
 class MemoryFile {
     static get(name) {
         return _memoryFileMap[name];
@@ -20,14 +21,14 @@ class MemoryFile {
         //fixme ugly! your_current_ip playground default bundle url
         let rHttpHeader = /^(https?|taobao|qap):\/\/(?!.*your_current_ip)/i;
         if (rHttpHeader.test(fileName)) {
-            this.name = fileName.replace(rHttpHeader, '');
-            let query = Qs.parse(Url.parse(this.name).query);
+            let query = Qs.parse(Url.parse(fileName).query);
             if (query['_wx_tpl']) {
-                this.url = query['_wx_tpl'];
+                this.url = normalize(query['_wx_tpl']);
                 this.name = this.url.replace(rHttpHeader, '');
             }
             else {
-                this.url = fileName;
+                this.url = normalize(fileName);
+                this.name = this.url.replace(rHttpHeader, '');
             }
         }
         else this.name = fileName;
@@ -59,3 +60,10 @@ class MemoryFile {
     }
 }
 module.exports = MemoryFile;
+function normalize(url){
+    let urlObj=Url.parse(url);
+    urlObj.query=Qs.stringify(Qs.parse(urlObj.query));
+    urlObj.search='?'+urlObj.query;
+    return urlObj.format();
+
+}

@@ -6,6 +6,10 @@ var injectedGlobals = [
     'Promise',
     // W3C
     'window',
+    'weex',
+    'service',
+    'Rax',
+    'services',
     'global',
     'screen',
     'document',

@@ -7,6 +7,10 @@ var injectedGlobals = [
     'Promise',
     // W3C
     'window',
+    'weex',
+    'service',
+    'Rax',
+    'services',
     'global',
     'screen',
     'document',
@@ -66,7 +70,7 @@ function createWeexBundleEntry(sourceUrl){
     }
     code+='__weex_bundle_entry__(';
     injectedGlobals.forEach(function(g,i){
-        if(g==='navigator'){
+        if(false&&g==='navigator'){
             code+='typeof '+g+'==="undefined"||'+g+'===self.'+g+'?undefined:'+g;
         }
         else{

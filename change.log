@@ -1,3 +1,7 @@
+0.2.73
+* normalize bundle url 有些人就是不想自己做url encoding 直接发带中文参数的url 没办法我这边替他做下encode
+* 去掉navigator的屏蔽,自此 仅有的一些浏览器特性的屏蔽(为减少chrome运行时和weex运行时的差异)也被Rax搞没了
+* 增加weex service全局变量
 0.2.72
 *去掉对location的屏蔽 for rax
 0.2.71

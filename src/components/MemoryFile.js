@@ -60,10 +60,12 @@ class MemoryFile {
     }
 }
 module.exports = MemoryFile;
+
 function normalize(url){
     let urlObj=Url.parse(url);
-    urlObj.query=Qs.stringify(Qs.parse(urlObj.query));
-    urlObj.search='?'+urlObj.query;
+    if(urlObj.query) {
+        urlObj.query = Qs.stringify(Qs.parse(urlObj.query));
+        urlObj.search = '?' + urlObj.query;
+    }
     return urlObj.format();
-
 }

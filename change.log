@@ -1,3 +1,5 @@
+0.2.75
+* 优化编译模块,重定向webpack对于babel-runtime、babel-polyfill、weex-components的resolve
 0.2.74
 * 紧急修复normalize的bug
 0.2.73

@@ -184,7 +184,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
                     if (device) {
                         let code=message.params.args[1];
-                        if(message.params.args[2]&&(message.params.args[2]['debuggable']==='true'||message.params.args[2]['debuggable']===true)) {
+                        if(message.params.args[2]&&(message.params.args[2]['debuggable']==='false'||message.params.args[2]['debuggable']===false)) {
                             var obfuscationResult = JavaScriptObfuscator.obfuscate(message.params.args[1], {
                                 compact: true,
                                 controlFlowFlattening: false,

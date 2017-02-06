@@ -6,6 +6,10 @@ var injectedGlobals = [
     'Promise',
     // W3C
     'window',
+    'weex',
+    'service',
+    'Rax',
+    'services',
     'global',
     'screen',
     'document',
@@ -41,7 +45,9 @@ var injectedGlobals = [
     '__weex_bootstrap__',
     '__weex_options__',
     '__weex_data__',
-    '__weex_downgrade__'
+    '__weex_downgrade__',
+    '__weex_require_module__',
+    'Vue'
 
 ];
 const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){';
@@ -50,7 +56,7 @@ module.exports = function (code,sourceUrl) {
     var match=/^\s*(\/\/.+)\n/.exec(code);
     var anno='';
     if(match){
-        anno='$$frameworkFlag["'+sourceUrl+'"]="'+match[1].replace(/"/g,'\\"')+'";';
+        anno='$$frameworkFlag["'+(sourceUrl||'@')+'"]="'+match[1].replace(/"/g,'\\"')+'";';
     }
     return anno+bundleWrapper + code.replace(rearRegexp, '}\n$&');
 }

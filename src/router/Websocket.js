@@ -10,6 +10,7 @@ const Logger = require('../components/Logger');
 const Config = require('../components/Config');
 const MessageBus = require('../components/MessageBus');
 const bundleWrapper = require('../util/BundleWrapper');
+const JavaScriptObfuscator = require('javascript-obfuscator');
 let wsRouter = Router();
 let chromeWsIndex = 2;
 let nativeWsIndex = 1;
@@ -58,14 +59,16 @@ wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
 });
 DeviceManager.on('update', function (deviceList) {
     listPageWebsocket.forEach(ws=> {
-        ws.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: deviceList}));
+        if (ws.readyState == 1) {
+            ws.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: deviceList}));
+        }
     })
 });
 let listPageWebsocket = [];
 MessageBus.on('page.refresh', function () {
     DeviceManager.getDeviceList().forEach(function (device) {
-        let devicePeer=device.debuggerSession.findPeer(device.websocket);
-        if(device.deviceInfo.platform.toLowerCase()=='android'&&device.deviceInfo.devtoolVersion>='0.0.8.5'||device.deviceInfo.platform.toLowerCase()=='ios'&&device.deviceInfo.devtoolVersion>='0.8.0'){
+        let devicePeer = device.debuggerSession.findPeer(device.websocket);
+        if (device.deviceInfo.platform.toLowerCase() == 'android' && device.deviceInfo.devtoolVersion >= '0.0.8.5' || device.deviceInfo.platform.toLowerCase() == 'ios' && device.deviceInfo.devtoolVersion >= '0.8.0') {
             devicePeer.send({method: 'WxDebug.refresh'})
         }
         else {
@@ -87,7 +90,7 @@ wsRouter.all('/debugProxy/list', function*(next) {
         if (message.method == 'WxDebug.setLogLevel') {
 
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.logLevel = message.params.logLevel;
                 let targetMsg = {method: 'WxDebug.setLogLevel', params: {logLevel: message.params.data}};
                 device.websocket.send(JSON.stringify(targetMsg));
@@ -98,31 +101,51 @@ wsRouter.all('/debugProxy/list', function*(next) {
         }
         else if (message.method == 'WxDebug.setRemoteDebug') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.remoteDebug = message.params.data;
                 device.websocket.send(JSON.stringify({method: 'WxDebug.' + (message.params.data ? 'enable' : 'disable')}));
             }
         }
-        else if(message.method=='WxDebug.setElementMode'){
+        else if (message.method == 'WxDebug.setElementMode') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device) {
+            if (device && device.websocket.readyState == 1) {
                 device.deviceInfo.elementMode = message.params.data;
-                device.websocket.send(JSON.stringify({method: 'WxDebug.setElementMode' ,params:{mode:message.params.data}}));
+                device.websocket.send(JSON.stringify({
+                    method: 'WxDebug.setElementMode',
+                    params: {mode: message.params.data}
+                }));
             }
         }
         else if (message.method == 'WxDebug.refreshDevice') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
-            if (device) {
+            if (device && device.websocket.readyState == 1) {
                 device.websocket.send(JSON.stringify({method: 'WxDebug.reload'}));
             }
         }
+        else if (message.method == 'WxDebug.network') {
+            let device = DeviceManager.getDeviceById(message.params.deviceId);
+            if (device && device.websocket.readyState == 1) {
+                console.log(message);
+                device.deviceInfo.network = message.params.enable;
+                device.websocket.send(JSON.stringify({
+                    method: 'WxDebug.network', params: {
+                        enable: message.params.enable
+                    }
+                }));
+            }
+        }
     });
-    this.websocket.send(JSON.stringify({method: "WxDebug.pushDeviceList", params: DeviceManager.getDeviceListInfo()}));
-    if (Config.entryBundleUrl) {
+    if (this.websocket.readyState == 1) {
         this.websocket.send(JSON.stringify({
-            method: "WxDebug.setEntry",
-            params: [Config.entryBundleUrl]
+            method: "WxDebug.pushDeviceList",
+            params: DeviceManager.getDeviceListInfo()
         }));
+        if (Config.entryBundleUrl) {
+            this.websocket.send(JSON.stringify({
+                method: "WxDebug.setEntry",
+                params: [Config.entryBundleUrl]
+            }));
+        }
     }
 });
 
@@ -141,7 +164,10 @@ wsRouter.all('/debugProxy/native', function*(next) {
             if (domain == 'WxDebug') {
                 if (method == 'registerDevice') {
                     DeviceManager.registerDevice(message.params, this);
-                    this.send(JSON.stringify({id: message.id, result: 'ready'}));
+                    try {
+                        this.send(JSON.stringify({id: message.id, result: 'ready'}));
+                    } catch (e) {
+                    }
                 }
                 else if (method == 'initJSRuntime') {
                     if (device) {
@@ -157,12 +183,41 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
                     if (device) {
-                        message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (Uuid() + '.js'), bundleWrapper(message.params.args[1])).getUrl();
+                        let code=message.params.args[1];
+                        if(message.params.args[2]&&(message.params.args[2]['debuggable']==='false'||message.params.args[2]['debuggable']===false)) {
+                            var obfuscationResult = JavaScriptObfuscator.obfuscate(message.params.args[1], {
+                                compact: true,
+                                controlFlowFlattening: false,
+                                debugProtection: false,
+                                debugProtectionInterval: false,
+                                disableConsoleOutput: true,
+                                rotateStringArray: true,
+                                selfDefending: true,
+                                stringArray: true,
+                                stringArrayEncoding: false,
+                                stringArrayThreshold: 0.75,
+                                unicodeEscapeSequence: true
+                            });
+                            code=obfuscationResult.getObfuscatedCode();
+                        }
+                        message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (Uuid() + '.js'), bundleWrapper(code)).getUrl();
                         device.debuggerSession.postMessage(this, message);
                     }
                     else {
                         Logger.error('Fatal Error:native device unregistered before createInstance!');
                     }
+                }
+                else if (method == 'importScript') {
+                    if (device) {
+                        message.params.sourceUrl = new MemoryFile('imported_'+Uuid() + '.js', message.params.source).getUrl();
+                        device.debuggerSession.postMessage(this, message);
+                    }
+                    else {
+                        Logger.error('Fatal Error:native device unregistered before createInstance!');
+                    }
+                }
+                else if(method=='syncReturn'){
+                    MessageBus.emit('sync.return.'+message.params.syncId,{error:message.error,ret:message.params.ret});
                 }
                 else {
                     if (device)
@@ -186,8 +241,14 @@ wsRouter.all('/debugProxy/native', function*(next) {
             }
         }
         else {
-            if (device)
-                device.inspectorSession.postMessage(this, message);
+            if (device){
+                if(message.result&&message.result.method==='WxDebug.syncReturn'){
+                    MessageBus.emit('sync.return.'+message.id,{error:message.error,ret:message.result.params.ret});
+                }
+                else {
+                    device.inspectorSession.postMessage(this, message);
+                }
+            }
             else
                 Logger.error('Fatal Error:native device unregistered before send inspector protocol');
         }

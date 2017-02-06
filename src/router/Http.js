@@ -11,12 +11,13 @@ const URL = require('url');
 const Config = require('../components/Config');
 const Builder = require('../components/Builder');
 const bundleWrapper = require('../util/BundleWrapper');
-
+const MessageBus=require('../components/MessageBus');
+const DeviceManager=require('../components/DeviceManager');
 var httpRouter = Router();
 function getRemote(url) {
     return new Promise(function (resolve, reject) {
         let urlObj = URL.parse(url);
-        (protocols[urlObj.protocol]||protocols['http']).get({
+        (protocols[urlObj.protocol]||protocols['http:']).get({
             hostname: urlObj.hostname,
             port: urlObj.port,
             path: urlObj.path,
@@ -65,7 +66,7 @@ httpRouter.get('/source/*', function*(next) {
         if (file) {
             this.response.status = 200;
             this.type = 'text/javascript';
-            if (file.url) {
+            if (file.url&&!Config.local) {
                 let content = yield getRemote(file.url).catch(function (e) {
                     Logger.error(e);
                 });
@@ -119,5 +120,27 @@ httpRouter.get('/' + Config.bundleDir + '/*', function*(next) {
     else {
         this.response.status = 404;
     }
+});
+let syncApiIndex=0;
+httpRouter.post('/syncApi',function*(){
+    let idx=syncApiIndex++;
+    let payload=this.request.body;
+    let device=DeviceManager.getDeviceBySessionId(payload.sessionId);
+    if(device){
+        delete payload.sessionId;
+        payload.params.syncId=100000+idx;
+        payload.id=100000+idx;
+        device.send(payload);
+        let data=yield MessageBus.waitFor('sync.return.'+payload.id);
+        this.response.status = 200;
+        this.type = 'application/json';
+        this.response.body=JSON.stringify(data);
+    }
+    else{
+         this.response.status=500;
+        this.response.body='device not found!';
+    }
+
+
 });
 module.exports = httpRouter;

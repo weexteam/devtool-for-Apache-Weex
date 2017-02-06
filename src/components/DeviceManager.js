@@ -20,7 +20,14 @@ class Device {
         websocket._deviceId = this.deviceId;
         this.websocket = websocket;
     }
-
+    send(data){
+        if(this.websocket.readyState == 1){
+            this.websocket.send(JSON.stringify(data));
+        }
+        else{
+            console.warn('warn:device websocket not opened,send ignored!');
+        }
+    }
     destroy() {
         this.destroyed = true;
         this.inspectorSession.destroy();
@@ -72,7 +79,11 @@ class DeviceManager extends Emitter {
             this.emit('update', this.getDeviceListInfo());
         }
     }
-
+    getDeviceBySessionId(sessionId){
+        return this.deviceList.filter((dvc)=>{
+            return dvc.deviceInfo.inspectorSessionId === sessionId||dvc.deviceInfo.debuggerSessionId === sessionId
+        })[0];
+    }
     getDeviceById(deviceId) {
         return this.deviceList.filter((dvc)=>dvc.deviceId === deviceId)[0];
     }

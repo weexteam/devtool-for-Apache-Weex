@@ -61,7 +61,9 @@ use -e to set the entry of these bundles. and the url of "index.we" will display
   
   IOS: pls refer to [Weex Devtool IOS](https://github.com/weexteam/weex-devtool-iOS/blob/master/README-zh.md)
 
-
+### chrome extension
+devtool chrome extension support you can inpect dom tree on debugger page and validate dom tree deep.  
+see [weex devtool chrome extension](https://github.com/weexteam/weex-devtool-extension)
 
 
 # 中文版
@@ -130,3 +132,7 @@ your/we/path/`demo/test.we` 可以通过http://lcoalhost:8088/weex/demo/index.js
   Android: 请参考 [Weex Devtool Android](https://github.com/weexteam/weex_devtools_android/blob/master/README.md)
   
   IOS: 请参考 [Weex Devtool IOS](https://github.com/weexteam/weex-devtool-iOS/blob/master/README-zh.md)
+
+### chrome extension
+devtool chrome extension提供了在debugger页面下查看页面dom结构以及对dom节点深度检查的功能  
+具体使用方法请参照[weex devtool chrome extension](https://github.com/weexteam/weex-devtool-extension)

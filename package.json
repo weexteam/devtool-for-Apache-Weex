@@ -1,7 +1,7 @@
 {
   "name": "weex-devtool",
   "description": "weex developer tool for debugging weex app with chrome devtool",
-  "version": "0.2.53",
+  "version": "0.2.76",
   "author": "exolution <exolution@163.com>",
   "license": "GPL-3.0",
   "main": "index.js",
@@ -38,7 +38,9 @@
     "eventemitter2": "^2.2.1",
     "exit": "^0.1.2",
     "ip": "^1.1.3",
+    "javascript-obfuscator": "^0.8.6",
     "koa": "^1.2.0",
+    "koa-bodyparser": "^2.3.0",
     "koa-router": "~5.2.3",
     "koa-serve": "~0.1.6",
     "koa-serve-static": "0.0.1",
@@ -49,7 +51,8 @@
     "parse-hosts": "^1.0.1",
     "uuid": "^3.0.1",
     "webpack": "^1.13.1",
-    "weex-loader": "^0.2.3",
+    "weex-components": "^0.2.0",
+    "weex-loader": "^0.4.2-beta",
     "weex-transformer": "^0.3.1"
   },
   "bin": {

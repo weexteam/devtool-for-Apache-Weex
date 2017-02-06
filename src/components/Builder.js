@@ -9,34 +9,73 @@ var Transformer = require('weex-transformer');
 var Fs = require('fs');
 var Config = require('./Config');
 var Mkdirp = require('mkdirp');
+const ext2Name={
+    '.we':'Weex',
+    '.vue':'Vue'
+};
+function loadModulePath(moduleName,extra) {
+    try {
+        var path = require.resolve(Path.join(moduleName,extra||''));
+        return path.slice(0, path.indexOf(moduleName) + moduleName.length);
+    } catch (e) {
+        return moduleName;
+    }
+}
 exports.loader = function (source, targetPath = '') {
     return new Promise((resolve, reject)=> {
-        let basename = Path.basename(source, '.we');
+        let ext=Path.extname(source);
+        let basename = Path.basename(source, ext);
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
         let weexLoaderRoot=Path.join(__dirname, "../../node_modules");
         if(!Fs.existsSync(Path.join(weexLoaderRoot,'weex-loader'))){
             weexLoaderRoot=Path.join(__dirname, "../../..");
         }
-        Webpack({
+        var bannerPlugin = new Webpack.BannerPlugin(
+            '// { "framework": "'+ext2Name[ext]+'" }\n',
+            { raw: true }
+        )
+        let webpackConfig={
             entry: source + '?entry=true',
             output: {
                 path: targetDir,
                 filename: basename + '.js'
             },
-            devtool: '#inline-source-map',
+            devtool: Config.min?'source-map':'#inline-source-map',
             module: {
                 loaders: [
                     {
                         test: /\.we(\?[^?]+)?$/,
                         loader: 'weex'
+                    },
+                    {
+                        test: /\.vue(\?[^?]+)?$/,
+                        loader: 'weex'
                     }
                 ]
             },
+            resolve: {
+                alias: {
+                    'babel-runtime': loadModulePath('babel-runtime','core-js'),
+                    'babel-polyfill':loadModulePath('babel-polyfill'),
+                    'weex-components':loadModulePath('weex-components')
+                }
+            },
             resolveLoader: {
                 root:weexLoaderRoot
-            }
+            },
+            plugins:[bannerPlugin]
 
-        }, function (err, stats) {
+        };
+        if(Config.min){
+            webpackConfig.plugins.push(
+                new Webpack.optimize.UglifyJsPlugin({
+                    compress: {
+                        warnings: false
+                    }
+                }));
+
+        }
+        Webpack(webpackConfig, function (err, stats) {
             if (err) {
                 return reject(err);
             }

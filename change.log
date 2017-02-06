@@ -1,3 +1,64 @@
+0.2.76
+* 支持千牛的调试隔离需求 对bundle做混淆(可配置)
+* 去掉升级检查里的换行
+0.2.75
+* 优化编译模块,重定向webpack对于babel-runtime、babel-polyfill、weex-components的resolve
+0.2.74
+* 紧急修复normalize的bug
+0.2.73
+* normalize bundle url 有些人就是不想自己做url encoding 直接发带中文参数的url 没办法我这边替他做下encode
+* 去掉navigator的屏蔽,自此 仅有的一些浏览器特性的屏蔽(为减少chrome运行时和weex运行时的差异)也被Rax搞没了
+* 增加weex service全局变量
+0.2.72
+*去掉对location的屏蔽 for rax
+0.2.71
+*更新weex-loader到0.4.2-beta已解决问题
+*修复jsfm setTimeout bug
+*优化计算版本比较值的函数
+0.2.70
+* 回退weex-loader版本 新版本有问题
+0.2.69
+* 支持js service
+0.2.68
+* 对旧版无同步接口的sdk进行通讯保护 防止node server挂掉
+0.2.67
+* 支持vue2.0
+* 升级weex-loader以支持编译.vue
+* 去除clearLog
+* 支持android 同步调用接口
+0.2.66
+* 丢失依赖 fix
+0.2.65
+* 支持同步接口callNativeModule 和callNativeComponent
+0.2.64
+* 增加network开关 但是只有特定devtool Version(>=0.8.3)才会显示
+0.2.63
+*增加对websocket的保护，只有在open状态下才会发送消息
+0.2.62
+* 增加--min选项 此选项会压缩编译的bundle并去掉内联的sourcemap
+0.2.61
+* 配合weex-toolkit的回滚 升级提示文字修改
+0.2.60
+* 去掉 客户端断开后自动关闭debugger页面的功能（app crash的时候需要看log）
+0.2.59
+* fix framework判断丢失
+* add weex全局变量
+0.2.58
+* bug fix postMessage过滤不全面
+0.2.57
+* 重写掉jsfm的log机制，使之更好用且更好定位log位置
+* 自动过滤callNative时传递的一些非法数据（不能转换成json的数据 如方法）
+* callJS 而当前jsfm并没有该方法时 现在不再报错，而是warning(本身就应该报错=。=)
+* readme 加入extension的介绍。
+0.2.56
+* 支持千牛qap:协议头
+0.2.55
+* 修复 taobao://协议头bug
+* 增加api模式的local
+0.2.54
+* 更换了下注册WXEnvironment和执行jsframework的顺序，现在注册环境变量在前
+* 增加-l模式 即本地模式 该模式下 加载的bundle不会由devtool server进行代理。直接使用native发过来的bundle
+* 调整了下更新提醒的说明 以适应新的weex-toolkit架构
 0.2.53
 * 支持最新的Rx参数列表
 * 修复了当bundle里存在多个sourcemap时插入函数的错误。现在只会把}插在最后一个sourcemap之前。

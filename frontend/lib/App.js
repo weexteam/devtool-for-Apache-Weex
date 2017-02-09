@@ -79,6 +79,9 @@ function renderDeviceList(deviceList) {
     else {
         document.getElementById('help_ctn').style.display = 'none';
     }
+    function networkMonitorDetect(device){
+        return device.devtoolVersion>='0.8.3'&&device.platform==='iOS'||device.platform.toLowerCase()==='android'&&device.devtoolVersion>='0.10.0'
+    }
     var html = deviceList.map(function (device) {
         return `
             <div class="device-wrap" id="device_${device.deviceId}">
@@ -89,7 +92,7 @@ function renderDeviceList(deviceList) {
                 <div class="line mr-bottom-10"><span>LogLevel</span><b><select class="selector log-level" x-data-device="${device.deviceId}" x-data-value="${device.logLevel||'log'}"><option value="debug">debug</option><option value="log">log</option><option value="info">info</option><option value="warn">warn</option><option value="error">error</option></select></b></div>
                 <div class="line mr-bottom-10"><span>ElementMode</span><b><select class="selector element-mode"" x-data-device="${device.deviceId}" x-data-value="${device.elementMode||'native'}"><option value="native">native</option><option value="vdom">vdom</option></select></b></div>
                 <div class="line mr-top-10"><span>RemoteDebug</span><b>${switchComponent(device,'remoteDebug')}</b></div>
-                ${device.devtoolVersion>='0.8.3'&&device.platform==='iOS'?`<div class="line mr-top-10"><span>NetworkMonitor</span><b>${switchComponent(device,'network')}</b></div>`:''}
+                ${networkMonitorDetect(device)?`<div class="line mr-top-10"><span>NetworkMonitor</span><b>${switchComponent(device,'network')}</b></div>`:''}
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
                 <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
@@ -189,9 +192,8 @@ function openDebugger(deviceId) {
     device.debuggerWindow.device=device;
     device.debuggerWindow.sessionStorage.setItem('$WeexInspectorProxy',$WeexInspectorProxy);
     device.debuggerWindow.sessionStorage.setItem('device',device);
-
+    device.debuggerWindow.sessionStorage.setItem('debugee', 'Debugee App: ' + device.name);
     device.debuggerWindow.onload = function () {
-        device.debuggerWindow.sessionStorage.setItem('debugee', 'Debugee App: ' + device.name);
 
         device.debuggerWindow.document.body.firstElementChild.innerHTML = 'Debugee App: ' + device.name;
     }

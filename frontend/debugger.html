@@ -72,7 +72,6 @@
     }
     var worker;
     var timer;
-    window.$WeexInspectorProxy = sessionStorage.getItem('$WeexInspectorProxy');
     window.device=window.device||sessionStorage.getItem('device');
     window.setElementMode=function(mode){
         var websocket = new WebsocketClient('ws://' + location.host + '/debugProxy/list');
@@ -94,13 +93,13 @@
         }
     });
     websocket.on('socketOpened', function () {
-        var debuggerFlag = sessionStorage.getItem('debuggerFlag');
+        var debuggerFlag = window.opener.sessionStorage.getItem(sessionId);
         if (debuggerFlag) {
             websocket.send({method: 'WxDebug.reload'});
         }
         else {
             websocket.send({method: 'WxDebug.enable'});
-            sessionStorage.setItem('debuggerFlag', true);
+            window.opener.sessionStorage.setItem(sessionId, true);
         }
         clearTimeout(timer);
         timer = setTimeout(function () {
@@ -151,11 +150,7 @@
         worker.postMessage(message)
     }
     //initJSRuntime();
-    var debugee = sessionStorage.getItem('debugee');
 
-    if (debugee) {
-        document.body.firstElementChild.innerHTML = debugee;
-    }
     document.getElementById('logLevel').onchange = function (evt) {
         localStorage.setItem('logLevel', evt.target.value);
         if (worker) {

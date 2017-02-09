@@ -1,3 +1,7 @@
+0.2.77
+* 修复极个别情况下mac用户名包含空格 导致的osascript执行报错的问题(该问题并不会引起运行问题)
+* 增加了NetworkMonitor开关 for android
+* 由于dev版chrome禁止window.open打开的页面操作sessionStorage,所以重新设计了appList页面与debugger页面的传值方式(过去是利用sessionStorage)
 0.2.76
 * 支持千牛的调试隔离需求 对bundle做混淆(可配置)
 * 去掉升级检查里的换行

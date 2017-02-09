@@ -24,9 +24,9 @@ let launchDevTools = module.exports = function (ip, port) {
                 // on OS X Google Chrome with AppleScript
                 ExecSync('ps cax | grep "Google Chrome"');
                 ExecSync(
-                    'osascript ' +
+                    'osascript "' +
                     Path.resolve(__dirname, '../../common/chrome.applescript') +
-                    ' ' + debuggerURL
+                    '" ' + debuggerURL
                 );
                 return;
             } catch (err) {

@@ -92,7 +92,6 @@ function renderDeviceList(deviceList) {
                 ${device.devtoolVersion>='0.8.3'&&device.platform==='iOS'?`<div class="line mr-top-10"><span>NetworkMonitor</span><b>${switchComponent(device,'network')}</b></div>`:''}
                 <div class="btn-ctn">
                 <a class="btn" onClick="openDebugger('${device.deviceId}')" target="debugger${device.debuggerSessionId}" >Debugger</a>
-                <a class="btn" onClick="openInspector('${device.deviceId}')" target="inspector${device.inspectorSessionId}">Inspector</a>
                 </div>
                 <div class="help">
                 Inspector: click this button to open a page to inspect "Elements"(native element), "Console", "Sources", "Network"; Debugger: click here to open a page to debug JS files (make breakpoints, watch variables, callstack etc.)
@@ -183,7 +182,9 @@ function openDebugger(deviceId) {
         device.debuggerWindow.close();
     }
     document.getElementById('device_'+deviceId).querySelector('.switch-checkbox').checked=true;
-    device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
+    var debuggerFrame=document.getElementById('debugger')
+        debuggerFrame.src=`/debugger.html?sessionId=${device.debuggerSessionId}`
+    device.debuggerWindow = debuggerFrame.contentWindow
     var $WeexInspectorProxy=`ws://${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`;
     device.debuggerWindow.$WeexInspectorProxy=$WeexInspectorProxy;
     device.debuggerWindow.device=device;
@@ -194,7 +195,12 @@ function openDebugger(deviceId) {
         device.debuggerWindow.sessionStorage.setItem('debugee', 'Debugee App: ' + device.name);
 
         device.debuggerWindow.document.body.firstElementChild.innerHTML = 'Debugee App: ' + device.name;
+
     }
+    setTimeout(function(){
+        openInspector(deviceId)
+    },500)
+
 }
 function openInspector(deviceId) {
     var device = findDevice(deviceId);

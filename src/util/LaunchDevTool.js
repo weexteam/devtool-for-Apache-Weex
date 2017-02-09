@@ -18,7 +18,7 @@ let launchDevTools = module.exports = function (ip, port) {
     return new Promise(function (resolve, reject) {
         var debuggerURL = 'http://' + (ip || 'localhost') + ':' + port + '/';
         console.log('Launching Dev Tools...');
-        if (process.platform === 'darwin') {
+        /*if (process.platform === 'darwin') {
             try {
                 // Try our best to reuse existing tab
                 // on OS X Google Chrome with AppleScript
@@ -32,7 +32,7 @@ let launchDevTools = module.exports = function (ip, port) {
             } catch (err) {
                 // Ignore errors.
             }
-        }
+        }*/
         opn(debuggerURL, {app: [getChromeAppName(),'-remote-debugging-port=9222']}, function (err) {
             if (err) {
                 console.error('Google Chrome exited with error:', err);

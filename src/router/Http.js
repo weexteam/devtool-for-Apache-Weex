@@ -2,52 +2,23 @@ const Router = require('koa-router');
 const MemoryFile = require('../components/MemoryFile');
 const Fs = require('fs');
 const Logger = require('../components/Logger');
-const protocols = {
-    'http:': require('http'),
-    'https:': require('https')
-}
+const util=require('../util')
 const Path = require('path');
-const URL = require('url');
+
 const Config = require('../components/Config');
 const Builder = require('../components/Builder');
 const bundleWrapper = require('../util/BundleWrapper');
 const MessageBus=require('../components/MessageBus');
 const DeviceManager=require('../components/DeviceManager');
 var httpRouter = Router();
-function getRemote(url) {
-    return new Promise(function (resolve, reject) {
-        let urlObj = URL.parse(url);
-        (protocols[urlObj.protocol]||protocols['http:']).get({
-            hostname: urlObj.hostname,
-            port: urlObj.port,
-            path: urlObj.path,
-            method: 'GET',
-            headers: {
-                'User-Agent': 'Weex/1.0.0'
-            }
-        }, function (res) {
-            var chunks = [];
-            res.on('data', function (chunk) {
-                chunks.push(chunk);
-            });
 
-            res.on('end', function () {
-                resolve(Buffer.concat(chunks).toString());
-                chunks = null;
-            });
-        }).on('error', function (e) {
-            reject(e);
-        });
-    });
-
-}
 let rSourceMapDetector = /\.map$/;
 httpRouter.get('/source/*', function*(next) {
 
     var path = this.params[0];
     if (rSourceMapDetector.test(path)) {
         //fixme 硬写协议头 隐患
-        let content = yield getRemote('http://' + path);
+        let content = yield util.getRemote('http://' + path);
         if (!content) {
             this.response.status = 404;
         }
@@ -67,7 +38,7 @@ httpRouter.get('/source/*', function*(next) {
             this.response.status = 200;
             this.type = 'text/javascript';
             if (file.url&&!Config.local) {
-                let content = yield getRemote(file.url).catch(function (e) {
+                let content = yield util.getRemote(file.url).catch(function (e) {
                     Logger.error(e);
                 });
                 if (!content) {

@@ -14,6 +14,7 @@ var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
 var LogStyle = require('../common/LogStyle');
 var Url = require('url');
+var util=require('../lib/util')
 var Fs = require('fs');
 var Exit = require('exit');
 var Path = require('path');
@@ -25,7 +26,7 @@ var MessageBus = require('../lib/components/MessageBus');
 var Hosts = require('../lib/util/Hosts');
 var UpgradeNotice = require('../lib/util/UpgradeNotice');
 var packageInfo = require('../package.json');
-
+var WebSocket=require('ws')
 Program
     .option('-h, --host [host]', 'set the host ip of debugger server')
     .option('-H, --help', 'display help')
@@ -187,6 +188,14 @@ function startServerAndLaunchDevtool(entry) {
     console.info('\nThe websocket address for native is ' + LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native', LogStyle.FG_YELLOW, LogStyle.BRIGHT));
     DebugServer.start(port);
     if (!Program.manual) {
-        LaunchDevTool(ip, port);
+        LaunchDevTool(ip, port)
+        setTimeout(function(){
+            util.getRemote('http://localhost:9222/json').then(function(data){
+                var targets=JSON.parse(data)
+                let websocketUrl=targets.filter(e=>e.title=='Weex Devtool - App List')[0].webSocketDebuggerUrl;
+                console.log(websocketUrl)
+                Config.ws=new WebSocket(websocketUrl);
+            }).catch((e)=>console.log(e))
+        },2000);
     }
 }

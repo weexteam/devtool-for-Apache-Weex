@@ -25,15 +25,25 @@ wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
     Logger.debug(`new inspector client connected,join[${this.params.sessionId} -0x${_toFixed(chromeWsIndex)}]`);
     this.websocket._info = `chrome-inspector[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
     P2PSession.join(this.params.sessionId, this.websocket);
-    this.websocket.on('message', function (message) {
-        message = JSON.parse(message);
-        P2PSession.postMessage(this, message);
+    Config.ws.on('message',function(msg){
+        this.websocket.send(msg);
+    })
+    this.websocket.on('message', function (messageText) {
+        let message = JSON.parse(messageText);
+        let [domain,method] = message.method.split('.');
+        if(domain=='Page'||domain=='Debugger'){
+            Config.ws.send(messageText)
+        }
+        else {
+            P2PSession.postMessage(this, message);
+        }
     });
     yield next;
 });
 wsRouter.all('/debugProxy/debugger/:sessionId', function*(next) {
     Logger.debug(`new debugger client connected,join[${this.params.sessionId}-0x${_toFixed(chromeWsIndex)}]`);
     this.websocket._info = `chrome-debugger[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
+
     if (!P2PSession.join(this.params.sessionId, this.websocket)) {
         //P2PSession.postMessage(this.websocket, {method: "WxDebug.reload"});
     }
@@ -226,6 +236,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                         Logger.error('Fatal Error:native device unregistered before [' + message.method + ']');
                 }
             }
+
             else {
                 if (device) {
                     if (message.method == 'Page.screencastFrame') {

@@ -59,6 +59,8 @@ Object.defineProperty(this,'setTimeout',{
 
     }
 });
+Object.defineProperty(navigator,'product',{get:function(){return 'weex'}});
+Object.defineProperty(navigator,'appCodeName',{get:function(){return 'weex'}});
 function EventEmitter() {
     this._handlers = {};
 }

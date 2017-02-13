@@ -11,6 +11,7 @@ const Config = require('../components/Config');
 const MessageBus = require('../components/MessageBus');
 const bundleWrapper = require('../util/BundleWrapper');
 const JavaScriptObfuscator = require('javascript-obfuscator');
+const Crypto = require('crypto');
 let wsRouter = Router();
 let chromeWsIndex = 2;
 let nativeWsIndex = 1;
@@ -183,8 +184,8 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 }
                 else if (method == 'callJS' && message.params.method == 'createInstance') {
                     if (device) {
-                        let code=message.params.args[1];
-                        if(message.params.args[2]&&(message.params.args[2]['debuggable']==='false'||message.params.args[2]['debuggable']===false)) {
+                        let code = message.params.args[1];
+                        if (message.params.args[2] && (message.params.args[2]['debuggable'] === 'false' || message.params.args[2]['debuggable'] === false)) {
                             var obfuscationResult = JavaScriptObfuscator.obfuscate(message.params.args[1], {
                                 compact: true,
                                 controlFlowFlattening: false,
@@ -198,7 +199,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
                                 stringArrayThreshold: 0.75,
                                 unicodeEscapeSequence: true
                             });
-                            code=obfuscationResult.getObfuscatedCode();
+                            code = obfuscationResult.getObfuscatedCode();
                         }
                         message.params.sourceUrl = new MemoryFile(message.params.args[2].bundleUrl || (Uuid() + '.js'), bundleWrapper(code)).getUrl();
                         device.debuggerSession.postMessage(this, message);
@@ -209,15 +210,21 @@ wsRouter.all('/debugProxy/native', function*(next) {
                 }
                 else if (method == 'importScript') {
                     if (device) {
-                        message.params.sourceUrl = new MemoryFile('imported_'+Uuid() + '.js', message.params.source).getUrl();
+                        var md5 = Crypto.createHash('md5');
+                        md5.update(message.params.source);
+                        var md5Str = md5.digest('hex');
+                        message.params.sourceUrl = new MemoryFile('imported_' + md5Str + '.js', message.params.source).getUrl();
                         device.debuggerSession.postMessage(this, message);
                     }
                     else {
                         Logger.error('Fatal Error:native device unregistered before createInstance!');
                     }
                 }
-                else if(method=='syncReturn'){
-                    MessageBus.emit('sync.return.'+message.params.syncId,{error:message.error,ret:message.params.ret});
+                else if (method == 'syncReturn') {
+                    MessageBus.emit('sync.return.' + message.params.syncId, {
+                        error: message.error,
+                        ret: message.params.ret
+                    });
                 }
                 else {
                     if (device)
@@ -241,9 +248,12 @@ wsRouter.all('/debugProxy/native', function*(next) {
             }
         }
         else {
-            if (device){
-                if(message.result&&message.result.method==='WxDebug.syncReturn'){
-                    MessageBus.emit('sync.return.'+message.id,{error:message.error,ret:message.result.params.ret});
+            if (device) {
+                if (message.result && message.result.method === 'WxDebug.syncReturn') {
+                    MessageBus.emit('sync.return.' + message.id, {
+                        error: message.error,
+                        ret: message.result.params.ret
+                    });
                 }
                 else {
                     device.inspectorSession.postMessage(this, message);

@@ -1,6 +1,7 @@
 /**
  * Created by godsong on 16/6/14.
  */
+"use strict";
 self.$$frameworkFlag={};
 var sessionId;
 var injectedGlobals = [
@@ -70,7 +71,7 @@ function createWeexBundleEntry(sourceUrl){
     if(self.$$frameworkFlag[sourceUrl]||self.$$frameworkFlag['@']){
         code+=(self.$$frameworkFlag[sourceUrl]||self.$$frameworkFlag['@'])+'\n';
     }
-    code+='__weex_bundle_entry__(';
+    code+='"use strict";\n__weex_bundle_entry__(';
     injectedGlobals.forEach(function(g,i){
         if(false&&g==='navigator'){
             code+='typeof '+g+'==="undefined"||'+g+'===self.'+g+'?undefined:'+g;

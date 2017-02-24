@@ -1,6 +1,7 @@
 0.2.78
 * 篡改掉掉navigator的product和appNameCode 防止被nuke或其他框架误判为web环境
 * jsservice的命名改成内容的md5值 以前是随机值每次刷新都变导致无法打断点
+* 加入严格模式
 0.2.77
 * 修复极个别情况下mac用户名包含空格 导致的osascript执行报错的问题(该问题并不会引起运行问题)
 * 增加了NetworkMonitor开关 for android

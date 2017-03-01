@@ -50,7 +50,7 @@ var injectedGlobals = [
     'Vue'
 
 ];
-const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){';
+const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){"use strict";';
 const rearRegexp = /\/\/#\s*sourceMappingURL(?!.*?\s+.)|$/;
 module.exports = function (code,sourceUrl) {
     var match=/^\s*(\/\/.+)\n/.exec(code);

@@ -25,13 +25,13 @@ wsRouter.all('/debugProxy/inspector/:sessionId', function*(next) {
     Logger.debug(`new inspector client connected,join[${this.params.sessionId} -0x${_toFixed(chromeWsIndex)}]`);
     this.websocket._info = `chrome-inspector[${this.params.sessionId}-0x${_toFixed(chromeWsIndex++)}]`;
     P2PSession.join(this.params.sessionId, this.websocket);
-    Config.ws.on('message',function(msg){
+    Config.ws.on('message',(msg)=>{
         this.websocket.send(msg);
     })
     this.websocket.on('message', function (messageText) {
         let message = JSON.parse(messageText);
         let [domain,method] = message.method.split('.');
-        if(domain=='Page'||domain=='Debugger'){
+        if(domain=='Page'||domain=='Debugger'||domain=='Target'){
             Config.ws.send(messageText)
         }
         else {

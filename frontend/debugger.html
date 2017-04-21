@@ -93,13 +93,12 @@
         }
     });
     websocket.on('socketOpened', function () {
-        var debuggerFlag = window.opener.sessionStorage.getItem(sessionId);
-        if (debuggerFlag) {
-            websocket.send({method: 'WxDebug.reload'});
-        }
-        else {
+        if(location.hash=='#new'){
             websocket.send({method: 'WxDebug.enable'});
-            window.opener.sessionStorage.setItem(sessionId, true);
+            location.hash=''
+        }
+        else{
+            websocket.send({method: 'WxDebug.reload'});
         }
         clearTimeout(timer);
         timer = setTimeout(function () {

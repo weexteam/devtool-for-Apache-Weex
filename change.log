@@ -1,3 +1,9 @@
+0.2.80
+* 更新判断第一次打开debugger页面的机制 以前是用opener.sessionStorage现改为hash判断
+0.2.79
+* 去掉升级检查
+* 处理bundleUrl的hash
+* 处理文件中有windows换行符的情况
 0.2.78
 * 篡改掉掉navigator的product和appNameCode 防止被nuke或其他框架误判为web环境
 * jsservice的命名改成内容的md5值 以前是随机值每次刷新都变导致无法打断点

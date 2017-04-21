@@ -56,8 +56,7 @@ exports.loader = function (source, targetPath = '') {
             resolve: {
                 alias: {
                     'babel-runtime': loadModulePath('babel-runtime','core-js'),
-                    'babel-polyfill':loadModulePath('babel-polyfill'),
-                    'weex-components':loadModulePath('weex-components')
+                    'babel-polyfill':loadModulePath('babel-polyfill')
                 }
             },
             resolveLoader: {

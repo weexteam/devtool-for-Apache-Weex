@@ -186,7 +186,7 @@ function openDebugger(deviceId) {
         device.debuggerWindow.close();
     }
     document.getElementById('device_'+deviceId).querySelector('.switch-checkbox').checked=true;
-    device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}`, `debugger${device.debuggerSessionId}`);
+    device.debuggerWindow = window.open(`/debugger.html?sessionId=${device.debuggerSessionId}#new`, `debugger${device.debuggerSessionId}`);
     var $WeexInspectorProxy=`ws://${location.host + '/debugProxy/inspector/' + device.inspectorSessionId}`;
     device.debuggerWindow.$WeexInspectorProxy=$WeexInspectorProxy;
     device.debuggerWindow.device=device;

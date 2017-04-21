@@ -29,6 +29,7 @@ class MemoryFile {
             else {
                 this.url = normalize(fileName);
                 this.name = this.url.replace(rHttpHeader, '');
+                this.name=this.name.split('#')[0]
             }
         }
         else this.name = fileName;

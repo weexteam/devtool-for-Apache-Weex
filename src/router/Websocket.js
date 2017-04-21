@@ -126,7 +126,6 @@ wsRouter.all('/debugProxy/list', function*(next) {
         else if (message.method == 'WxDebug.network') {
             let device = DeviceManager.getDeviceById(message.params.deviceId);
             if (device && device.websocket.readyState == 1) {
-                console.log(message);
                 device.deviceInfo.network = message.params.enable;
                 device.websocket.send(JSON.stringify({
                     method: 'WxDebug.network', params: {

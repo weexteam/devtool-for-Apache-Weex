@@ -126,6 +126,54 @@ self.callNativeComponent=function(){
 
     else return result.ret;
 };
+self.extendCallNative=function(map){
+    var message={
+        method:'WxDebug.syncCall',
+        params:{
+            method:'extendCallNative',
+            value: map
+        },
+        sessionId:sessionId
+    }
+    var result= syncRequest(message);
+    if(result.error){
+        throw new Error(result.error);
+    }
+
+    else return result.ret;
+};
+self.atob=function(str){
+    var message={
+        method:'WxDebug.syncCall',
+        params:{
+            method:'atob',
+            value: str
+        },
+        sessionId:sessionId
+    }
+    var result= syncRequest(message);
+    if(result.error){
+        throw new Error(result.error);
+    }
+
+    else return result.ret;
+};
+self.btoa=function(str){
+    var message={
+        method:'WxDebug.syncCall',
+        params:{
+            method:'btoa',
+            value: str
+        },
+        sessionId:sessionId
+    }
+    var result= syncRequest(message);
+    if(result.error){
+        throw new Error(result.error);
+    }
+
+    else return result.ret;
+};
 self.callNative = function (instance, tasks, callback) {
     for(var i=0;i<tasks.length;i++){
         var task=tasks[i];

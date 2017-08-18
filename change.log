@@ -1,3 +1,9 @@
+0.2.83
+* 修复 debug 目录时, vue 无法编译的问题
+0.2.82
+* 添加 .npmignore
+0.2.81
+* Runtime 添加 extendCallNative, atob, btoa 三个全局方法
 0.2.80
 * 更新判断第一次打开debugger页面的机制 以前是用opener.sessionStorage现改为hash判断
 0.2.79

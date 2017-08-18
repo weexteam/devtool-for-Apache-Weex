@@ -97,15 +97,22 @@ function exists(file) {
 let bundleDir = Path.join(__dirname, '../../frontend/', Config.bundleDir);
 httpRouter.get('/' + Config.bundleDir + '/*', function*(next) {
     let ext = Path.extname(this.params[0]);
-    if (ext == '.js' || ext == '.we') {
+    if (ext == '.js' || ext == '.we' || ext == '.vue') {
         let dir = Path.dirname(this.params[0]);
         let basename = Path.basename(this.params[0], ext);
         let bundle = Path.join(bundleDir, dir, basename + '.js');
         let we = Path.join(Config.root || bundleDir, dir, basename + '.we');
+        let vue = Path.join(Config.root || bundleDir, dir, basename + '.vue');
         if (yield exists(bundle)) {
             this.response.status = 200;
             this.type = 'text/javascript';
             this.response.body = Fs.createReadStream(bundle);
+        }
+        else if (yield exists(vue)) {
+            let targetPath = yield Builder[Config.buildMode](vue, dir);
+            this.response.status = 200;
+            this.type = 'text/javascript';
+            this.response.body = Fs.createReadStream(targetPath);
         }
         else if (yield exists(we)) {
             let targetPath = yield Builder[Config.buildMode](we, dir);

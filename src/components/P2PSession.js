@@ -161,33 +161,19 @@ class P2PSession extends Emitter {
             }
         }
         else {
-            let replaced = false;
-            this.peerList = this.peerList.map((p)=> {
-                if(p.websocket==null){
-                    console.error('bug！');
-                }
-                if (p.websocket&&(p.websocket === websocket || p.websocket._deviceId === websocket._deviceId)) {
-                    replaced = true;
-                    peer.setOppositePeer(p.oppositePeer);
-                    p.websocket.removed = true;
-                    p.oppositePeer.setOppositePeer(peer);
-                    return peer;
-                }
-                else {
-                    return p;
-                }
-            });
-            if (!replaced) {
-                this.peerList.forEach(function (peer) {
-                    Logger.debug('state:', peer.websocket._info)
-                });
-                Logger.debug('Peer session can not add the third peer!');
-                return;
+            Logger.debug('remove unused peer');
+            this.peerList = this.peerList.slice(this.peerList.length-1);
+            if (this.peerList[0].websocket === websocket) {
+                this.peerList[0] = peer;
             }
             else {
-                Logger.warn('Peer replaced!');
+                peer.setOppositePeer(this.peerList[0]);
+                this.peerList.push(peer);
+                this.peerList[0].setOppositePeer(peer);
             }
         }
+
+
         peer.on('close', ()=> {
             if (this.peerList) {
                 this.peerList = this.peerList.filter(p=>p !== peer && p.websocket !== peer.websocket);

@@ -159,11 +159,10 @@ class P2PSession extends Emitter {
                 this.peerList.push(peer);
                 this.peerList[0].setOppositePeer(peer);
             }
-        }else {
-            console.log('autofixed: remove unused link');
-
+        }
+        else {
+            Logger.debug('remove unused peer');
             this.peerList = this.peerList.slice(this.peerList.length-1);
-
             if (this.peerList[0].websocket === websocket) {
                 this.peerList[0] = peer;
             }

@@ -266,7 +266,7 @@ wsRouter.all('/debugProxy/native', function*(next) {
         if (!this.removed) {
             let device = DeviceManager.getDevice(this);
             if (device) {
-                DeviceManager.removeDeviceDelayed(device, 60 * 1000);
+                DeviceManager.removeDeviceDelayed(device, 3 * 1000);
             }
         }
 

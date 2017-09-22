@@ -89,7 +89,12 @@ class DeviceManager extends Emitter {
     }
 
     getDevice(websocket) {
-        return this.deviceList.filter((dvc)=>dvc.deviceId === websocket._deviceId)[0];
+        let ret = this.deviceList.filter((dvc)=>dvc.deviceId === websocket._deviceId && dvc.websocket === websocket);
+        if (ret.length > 0) {
+            return ret[0];
+        } else {
+            return undefined;
+        }
     }
 
     getDeviceList() {

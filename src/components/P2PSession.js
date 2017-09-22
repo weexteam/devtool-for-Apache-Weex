@@ -10,18 +10,16 @@ class Peer extends Emitter {
         this.messageBuffer = [];
         this.websocket = websocket;
         this.websocket.on('close', ()=> {
-            if(!this.websocket.removed) {
-                Logger.debug('socket close:', this.websocket._info);
-                if (this.oppositePeer) {
-                    this.oppositePeer.oppositePeer = null;
-                }
-                this.oppositePeer = null;
-                this.websocket = null;
-                if (this.messageBuffer.length > 0) {
-                }
-                this.messageBuffer = [];
-                this.emit('close');
+            Logger.debug('socket close:', this.websocket._info);
+            if (this.oppositePeer) {
+              this.oppositePeer.oppositePeer = null;
             }
+            this.oppositePeer = null;
+            this.websocket = null;
+            if (this.messageBuffer.length > 0) {
+            }
+            this.messageBuffer = [];
+            this.emit('close');
         })
     }
 
@@ -161,16 +159,33 @@ class P2PSession extends Emitter {
             }
         }
         else {
-            Logger.debug('remove unused peer');
-            this.peerList = this.peerList.slice(this.peerList.length-1);
-            if (this.peerList[0].websocket === websocket) {
-                this.peerList[0] = peer;
+          let replaced = false;
+          this.peerList = this.peerList.map((p)=> {
+            if(p.websocket==null){
+              console.error('bug！');
+            }
+            if (p.websocket&&(p.websocket === websocket || p.websocket._deviceId === websocket._deviceId)) {
+              replaced = true;
+              peer.setOppositePeer(p.oppositePeer);
+              this.peerList.push(peer);
+              p.websocket.removed = true;
+              p.oppositePeer.setOppositePeer(peer);
+              return peer;
             }
             else {
-                peer.setOppositePeer(this.peerList[0]);
-                this.peerList.push(peer);
-                this.peerList[0].setOppositePeer(peer);
+              return p;
             }
+          });
+          if (!replaced) {
+            this.peerList.forEach(function (peer) {
+              Logger.debug('state:', peer.websocket._info)
+            });
+            Logger.debug('Peer session can not add the third peer!');
+            return;
+          }
+          else {
+            Logger.debug('Peer replaced!');
+          }
         }
 
 

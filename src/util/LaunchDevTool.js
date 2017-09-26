@@ -17,7 +17,7 @@ function getChromeAppName() {
 let launchDevTools = module.exports = function (ip, port) {
     return new Promise(function (resolve, reject) {
         var debuggerURL = 'http://' + (ip || 'localhost') + ':' + port + '/';
-        console.log('Launching Dev Tools...');
+        console.log('Launching Dev Tools...\n');
         if (process.platform === 'darwin') {
             try {
                 // Try our best to reuse existing tab

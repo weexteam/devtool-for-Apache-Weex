@@ -1,6 +1,10 @@
 /**
- * Created by godsong on 16/7/4.
+ * @desc Config file for ./Builder.js
  */
-module.exports={
-    bundleDir:'weex'
+module.exports = {
+  bundleDir: 'weex',
+  webpackConfig: {
+    watch: true,
+    min: false
+  }
 };

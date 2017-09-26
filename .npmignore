@@ -1,5 +1,18 @@
-node_modules
-src
-demo
-coverage/
+src/
+
+# Node
+node_modules/
+
+# Test
+example/
+test/
+
+# Created by IDE
 .idea/
+*.iml
+.DS_Store
+.vscode
+*.sw*
+
+# Build
+frontend/weex/

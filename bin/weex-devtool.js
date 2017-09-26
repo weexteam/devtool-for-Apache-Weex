@@ -14,7 +14,7 @@ var Config = require('../lib/components/Config');
 var Builder = require('../lib/components/Builder');
 var LogStyle = require('../common/LogStyle');
 var Url = require('url');
-var Fs = require('fs');
+var Fs = require('fs-extra');
 var Exit = require('exit');
 var Path = require('path');
 var IP = require('ip');
@@ -111,10 +111,7 @@ function buildAndStart() {
             return Exit(0);
         }
         if (ext == '.we' || ext == '.vue') {
-            console.log('building...');
-            console.time('Build completed!');
             buildFileAndWatchIt(Program.mode, filePath).then(function () {
-                console.timeEnd('Build completed!');
                 startServerAndLaunchDevtool(Program.file);
             }, function (err) {
                 if (err) {
@@ -133,7 +130,14 @@ function buildAndStart() {
             //处理目录
             if (Fs.statSync(filePath).isDirectory()) {
                 Config.root = filePath;
-                startServerAndLaunchDevtool(Program.entry)
+                buildFileAndWatchIt(Program.mode, filePath).then(function () {
+                    startServerAndLaunchDevtool(Program.entry);
+                }, function (err) {
+                    if (err) {
+                        console.log(err, err.stack);
+                    }
+                    Exit(0);
+                })
             }
             else {
                 console.error(Program.file + ' is not a directory!');
@@ -147,27 +151,18 @@ function buildAndStart() {
     }
 }
 function buildFileAndWatchIt(buildMode, filePath) {
-    if (Program.watch) {
-        Watch(filePath, function () {
-            console.time('Rebuild completed! ')
-            console.log(filePath + ' updated! rebuilding...')
-            Builder[buildMode](filePath).then(function () {
-                console.timeEnd('Rebuild completed! ')
-                MessageBus.emit('page.refresh');
-            });
-        })
-    }
     return Builder[buildMode](filePath);
 }
 function startServerAndLaunchDevtool(entry) {
     var port = Program.port;
     var ip = Program.host || IP.address();
     Config.ip = ip;
-    console.info('start debugger server at ' + LogStyle.dressUp('http://' + ip + ':' + port, LogStyle.FG_YELLOW, LogStyle.BRIGHT));
+    console.info('start debugger server at ' + LogStyle.yellow('http://' + ip + ':' + port));
     if (entry) {
+        var ext = Path.extname(entry);
         Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
-        console.log('\nYou can visit we file(s) use ' + Config.entryBundleUrl);
-        console.log('Also you can use Playground App to scan the qrcode on device list page.');
+        console.log('\nYou can visit ' + (ext && ext.slice(1) || 'vue') + ' file(s) use ' + LogStyle.yellow(Config.entryBundleUrl));
+        console.log('\nAlso you can use Playground App to scan the qrcode on device list page.');
     }
     if (Config.entryBundleUrl) {
         Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
@@ -180,10 +175,10 @@ function startServerAndLaunchDevtool(entry) {
         }
     }
     if (Config.root) {
-        console.log('\nDirectory[' + Program.file + '] has been mapped to http://' + ip + ':' + port + '/' + Config.bundleDir + '/');
+        console.log('\nDirectory[' + Program.file + '] has been mapped to ' + LogStyle.yellow('http://' + ip + ':' + port + '/' + Config.bundleDir + '/'));
     }
 
-    console.info('\nThe websocket address for native is ' + LogStyle.dressUp('ws://' + ip + ':' + port + '/debugProxy/native', LogStyle.FG_YELLOW, LogStyle.BRIGHT));
+    console.info('\nThe websocket address for native is ' + LogStyle.yellow('ws://' + ip + ':' + port + '/debugProxy/native'));
     DebugServer.start(port);
     if (!Program.manual) {
         LaunchDevTool(ip, port);

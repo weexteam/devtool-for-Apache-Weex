@@ -6,5 +6,6 @@ module.exports = {
   webpackConfig: {
     watch: true,
     min: false
-  }
+  },
+  port: '8088'
 };

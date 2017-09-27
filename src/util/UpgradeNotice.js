@@ -2,7 +2,7 @@
  * Created by godsong on 16/8/8.
  */
 const spawn = require('child_process').spawn;
-const LogStyle = require('../../common/LogStyle');
+const chalk = require('chalk')
 
 let version = require('../../package.json').version;
 exports.run = function () {
@@ -10,7 +10,7 @@ exports.run = function () {
     npm.stdout.on('data', (data) => {
         let latestVersion = data.toString().trim();
         if (getVersionValue(version) < getVersionValue(latestVersion)) {
-            console.log(LogStyle.dressUp('New version['+latestVersion+'] of Weex debugger detected! Please update.(npm install -g weex-toolkit)', LogStyle.FG_RED))
+            console.log(chalk.yellow('\nNew version['+latestVersion+'] of Weex debugger detected! Please update.( weex update weex-devtool@latest )'))
         }
     });
 }

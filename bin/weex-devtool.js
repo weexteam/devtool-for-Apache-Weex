@@ -8,179 +8,200 @@
  * 像下面代码中的packageInfo由于是只读的所以不需要加_
  */
 "use strict";
-var Program = require('commander');
-var DebugServer = require('../lib/DebugServer');
-var Config = require('../lib/components/Config');
-var Builder = require('../lib/components/Builder');
-var LogStyle = require('../common/LogStyle');
-var Url = require('url');
-var Fs = require('fs-extra');
-var Exit = require('exit');
-var Path = require('path');
-var IP = require('ip');
-var LaunchDevTool = require('../lib/util/LaunchDevTool');
-var Del = require('del');
-var Watch = require('node-watch');
-var MessageBus = require('../lib/components/MessageBus');
-var Hosts = require('../lib/util/Hosts');
-var UpgradeNotice = require('../lib/util/UpgradeNotice');
-var packageInfo = require('../package.json');
+const Program = require('commander');
+const DebugServer = require('../lib/DebugServer');
+const Config = require('../lib/components/Config');
+const Builder = require('../lib/components/Builder');
+const chalk = require('chalk');
+const boxen = require('boxen')
+const Url = require('url');
+const Fs = require('fs-extra');
+const Exit = require('exit');
+const Path = require('path');
+const IP = require('ip');
+const LaunchDevTool = require('../lib/util/LaunchDevTool');
+const Del = require('del');
+const Watch = require('node-watch');
+const MessageBus = require('../lib/components/MessageBus');
+const Hosts = require('../lib/util/Hosts');
+const UpgradeNotice = require('../lib/util/UpgradeNotice');
+const packageInfo = require('../package.json');
+const detect = require('detect-port');
+const nodeVersion = require('node-version')
+
+// Throw an error if node version is too low
+if (nodeVersion.major < 6) {
+    console.error(`${chalk.red('Error!')} Serve requires at least version 6 of Node. Please upgrade!`)
+    process.exit(1)
+  }
 
 Program
-    .option('-h, --host [host]', 'set the host ip of debugger server')
-    .option('-H, --help', 'display help')
-    .option('-V, --verbose', 'display logs of debugger server')
-    .option('-v, --version', 'display version')
-    .option('-p, --port [port]', 'set debugger server port', '8088')
-    .option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
-    .option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
-    .option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
-    .option('-M, --manual', 'manual mode,this mode will not auto open chrome')
-    .option('--min', '')
-    .option('-l, --local', '');
+.option('-h, --help', 'display help')
+.option('-V, --verbose', 'display logs of debugger server')
+.option('-v, --version', 'display version')
+.option('-p, --port [port]', 'set debugger server port', Config.port)
+.option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path')
+.option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true)
+.option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader')
+.option('-M, --manual', 'manual mode,this mode will not auto open chrome')
+.option('--min', '')
+.option('-l, --local', '');
 //支持命令后跟一个file/directory参数
-Program['arguments']('[file]')
-    .action(function (file) {
-        Program.file = file;
-    });
+Program['arguments']('[file]').action(function (file) {
+  Program.file = file;
+});
 Program.parse(process.argv);
-//默认watch功能开启
-Program.watch = true;
+
 //fix tj's commander bug overwrite --help
 if (Program.help == undefined) {
-    Program.outputHelp();
-    Exit(0);
+  Program.outputHelp();
+  Exit(0);
 }
 //fix tj's commander bug overwrite --version
 if (Program.version == undefined) {
-    console.log(packageInfo.version);
-    Exit(0);
+  console.log(packageInfo.version);
+  Exit(0);
 }
-var supportMode = ['loader', 'transformer'];
-
-if (Program.host && !Hosts.isValidLocalHost(Program.host)) {
-    console.log('[' + Program.host + '] is not your local address!');
-    Exit(0);
+let supportMode = ['loader', 'transformer'];
+if (Program.host && !Hosts.isValidLocalHost(Program.host) && Program.host !== true) {
+  console.log('[' + Program.host + '] is not your local address!');
+  Exit(0);
 }
 
-Config.verbose = Program.verbose;
-Config.port = Program.port;
-Config.local = Program.local;
-Config.min = Program.min;
 if (supportMode.indexOf(Program.mode) == -1) {
-    console.log('unsupported build mode:', Program.mode);
-    Exit(0);
+  console.log('unsupported build mode:', Program.mode);
+  Exit(0);
+} else {
+  Config.buildMode = Program.mode;
 }
-else {
-    Config.buildMode = Program.mode;
-}
-//清空
+
+// Clear bundle target directory
 try {
-    Del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {force: true});
-} catch (e) {
-}
+  Del.sync(Path.join(__dirname, '../frontend/', Config.bundleDir, '/*'), {
+    force: true
+  });
+} catch (e) {}
 
-
-if (Program.file) {
-    buildAndStart()
-}
-else {
-    startServerAndLaunchDevtool()
-}
-
-////////////////////////////////////////////////////////////////////////////
-
-function buildAndStart() {
-    if (/^https?:\/\//.test(Program.file)) {
-        var url = Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/, function (m, a, b) {
-            if (!/\d+\.\d+\.\d+\.\d+/.test(a)) {
-                return a + Hosts.findRealHost(b);
-            }
-            else {
-                return m;
-            }
-        });
-        Config.entryBundleUrl = url;
-        startServerAndLaunchDevtool();
+// Check whether the port is occupied
+detect(Program.port).then(open => {
+    Config.inUse = open !== Program.port
+    if (Config.inUse) {
+      Program.port = open
+      Config.inUse = {
+        old: Program.port,
+        open
+      }
+    }
+    if (Program.file) {
+      buildAndStart()
     }
     else {
-        var filePath = Path.resolve(Program.file);
-        var ext = Path.extname(filePath);
-        if (!Fs.existsSync(filePath)) {
-            console.error(filePath + ': No such file or directory');
-            return Exit(0);
-        }
-        if (ext == '.we' || ext == '.vue') {
-            buildFileAndWatchIt(Program.mode, filePath).then(function () {
-                startServerAndLaunchDevtool(Program.file);
-            }, function (err) {
-                if (err) {
-                    console.log(err, err.stack);
-                }
-                Exit(0);
-            })
-
-        }
-        else if (ext == '.js') {
-            buildFileAndWatchIt('copy', filePath).then(function () {
-                startServerAndLaunchDevtool(Program.file);
-            })
-        }
-        else if (!ext) {
-            //处理目录
-            if (Fs.statSync(filePath).isDirectory()) {
-                Config.root = filePath;
-                buildFileAndWatchIt(Program.mode, filePath).then(function () {
-                    startServerAndLaunchDevtool(Program.entry);
-                }, function (err) {
-                    if (err) {
-                        console.log(err, err.stack);
-                    }
-                    Exit(0);
-                })
-            }
-            else {
-                console.error(Program.file + ' is not a directory!');
-                Exit(0);
-            }
-        }
-        else {
-            console.error('Error:unsupported file type: ', ext);
-            return Exit(0);
-        }
+      startServerAndLaunchDevtool()
     }
+})
+
+////////////////////////////////////////////////////////////////////////////
+function buildAndStart() {
+  if (/^https?:\/\//.test(Program.file)) {
+    let url = Program.file.replace(/^(https?:\/\/)([^/:]+)(?=:\d+|\/)/, function (m, a, b) {
+      if (!/\d+\.\d+\.\d+\.\d+/.test(a)) {
+        return a + Hosts.findRealHost(b);
+      } else {
+        return m;
+      }
+    });
+    Config.entryBundleUrl = url;
+    startServerAndLaunchDevtool();
+  } else {
+    let filePath = Path.resolve(Program.file);
+    let ext = Path.extname(filePath);
+    if (!Fs.existsSync(filePath)) {
+      console.error(filePath + ': No such file or directory');
+      return Exit(0);
+    }
+    if (ext == '.we' || ext == '.vue') {
+      buildFileAndWatchIt(Program.mode, filePath).then(function () {
+        startServerAndLaunchDevtool(Program.file);
+      }, function (err) {
+        if (err) {
+          console.log(err, err.stack);
+        }
+        Exit(0);
+      })
+    } else if (ext == '.js') {
+      buildFileAndWatchIt('copy', filePath).then(function () {
+        startServerAndLaunchDevtool(Program.file);
+      })
+    } else if (!ext) {
+      //处理目录
+      if (Fs.statSync(filePath).isDirectory()) {
+        Config.root = filePath;
+        buildFileAndWatchIt(Program.mode, filePath).then(function () {
+          startServerAndLaunchDevtool(Program.entry);
+        }, function (err) {
+          if (err) {
+            console.log(err, err.stack);
+          }
+          Exit(0);
+        })
+      } else {
+        console.error(Program.file + ' is not a directory!');
+        Exit(0);
+      }
+    } else {
+      console.error('Error:unsupported file type: ', ext);
+      return Exit(0);
+    }
+  }
 }
+
 function buildFileAndWatchIt(buildMode, filePath) {
-    return Builder[buildMode](filePath);
+  return Builder[buildMode](filePath);
 }
-function startServerAndLaunchDevtool(entry) {
-    var port = Program.port;
-    var ip = Program.host || IP.address();
-    Config.ip = ip;
-    console.info('start debugger server at ' + LogStyle.yellow('http://' + ip + ':' + port));
-    if (entry) {
-        var ext = Path.extname(entry);
-        Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
-        console.log('\nYou can visit ' + (ext && ext.slice(1) || 'vue') + ' file(s) use ' + LogStyle.yellow(Config.entryBundleUrl));
-        console.log('\nAlso you can use Playground App to scan the qrcode on device list page.');
-    }
-    if (Config.entryBundleUrl) {
-        Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, Config.ip);
-        //fixme ugly 与具体耦合的逻辑 易变！
-        var urlObj = Url.parse(Config.entryBundleUrl, true);
-        if (!/wh_weex=true/.test(Config.entryBundleUrl) && !urlObj.query['_wx_tpl']) {
-            urlObj.query['_wx_tpl'] = Config.entryBundleUrl;
-            urlObj.search = '';
-            Config.entryBundleUrl = Url.format(urlObj);
-        }
-    }
-    if (Config.root) {
-        console.log('\nDirectory[' + Program.file + '] has been mapped to ' + LogStyle.yellow('http://' + ip + ':' + port + '/' + Config.bundleDir + '/'));
-    }
 
-    console.info('\nThe websocket address for native is ' + LogStyle.yellow('ws://' + ip + ':' + port + '/debugProxy/native'));
-    DebugServer.start(port);
-    if (!Program.manual) {
-        LaunchDevTool(ip, port);
+function startServerAndLaunchDevtool(entry) {
+  let port = Config.inUse ? Config.inUse.open : Program.port;
+  let ip = IP.address();
+  let inUse = Config.inUse;
+  let message = chalk.green('Start debugger server!')
+  
+  if (inUse) {
+    message += ' ' + chalk.red(`(on port ${inUse.open},` +
+    ` because ${inUse.old} is already in use)`)
+  }
+
+  message += '\n\n'
+
+  message += `- ${chalk.bold('Websocket Address For Native: ')} ws://${ip}:${port}/debugProxy/native\n`
+  message += `- ${chalk.bold('Debug Server:                 ')} http://${ip}:${port}\n`
+
+//   console.info('start debugger server at ' + chalk.yellow('http://' + ip + ':' + port));
+  if (entry) {
+    let ext = Path.extname(entry);
+    Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
+    message += `\n${chalk.grey('Also you can use Playground App to scan the qrcode on device list page.')}`
+    message += `\n${(ext && ext.slice(1) || 'vue').toUpperCase()} File(s) Mapped:              ${chalk.yellow(Config.entryBundleUrl)}`
+  }
+  if (Config.entryBundleUrl) {
+    Config.entryBundleUrl = Config.entryBundleUrl.replace(/127\.0\.0\.1/g, ip);
+    //fixme ugly 与具体耦合的逻辑 易变！
+    let urlObj = Url.parse(Config.entryBundleUrl, true);
+    if (!/wh_weex=true/.test(Config.entryBundleUrl) && !urlObj.query['_wx_tpl']) {
+      urlObj.query['_wx_tpl'] = Config.entryBundleUrl;
+      urlObj.search = '';
+      Config.entryBundleUrl = Url.format(urlObj);
     }
+  }
+  if (Config.root) {
+    message += `\nDirectory[${chalk.yellow(Program.file)}] Mapped:          ${chalk.yellow('http://' + ip + ':' + port + '/' + Config.bundleDir + '/')}`
+  }
+  DebugServer.start(port);
+  if (!Program.manual) {
+    LaunchDevTool(ip, port);
+  }
+  console.log(boxen(message, {
+    padding: 1,
+    borderColor: 'green',
+    margin: 1
+  }))
 }

@@ -5,7 +5,6 @@ const Path = require('path');
 const Webpack = require('webpack');
 const Loader = require('weex-loader');
 const Logger = require('./Logger');
-const LogStyle = require('../../common/LogStyle');
 const Transformer = require('weex-transformer');
 const builder = require('weex-builder');
 const Fs = require('fs-extra');
@@ -31,14 +30,14 @@ exports.loader = function (source, targetPath = '') {
         let targetDir = Path.join(__dirname, '../../frontend/', Config.bundleDir, targetPath);
         builder.build(source, targetDir, Config.webpackConfig, (err, output, json) => {
             if (err) {
-                console.log(LogStyle.red('build failed!'))
-                console.error(LogStyle.red(err))
+                console.log(chalk.red('Build failed!'))
+                console.error(chalk.red(err))
                 return reject(err);
             }
             else {
-                console.log(LogStyle.green('build completed!\noutput:'))
-                console.log(LogStyle.green(output.toString()))
-                console.log(LogStyle.green('\nTime: ' + json.time + 'ms'))
+                console.log('Build completed!\nChild')
+                console.log(output.toString())
+                console.log(`Time: ${chalk.bold(json.time)}ms`)
                 resolve(targetDir + '/' + basename + '.js');
             }
         })

@@ -19,7 +19,6 @@ exports.start = function (port, cb) {
     app.use(bodyParser());
     app.ws.use(WsRouter.routes());
     app.on('error', function (err, ctx) {
-        console.log(err)
         if (Config.verbose) {
             if (err.status == 404) {
                 console.log('404')
@@ -28,7 +27,6 @@ exports.start = function (port, cb) {
                 console.error(err);
             }
         }
-
     });
     /*
      ===================================

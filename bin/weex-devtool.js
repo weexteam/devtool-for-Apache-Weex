@@ -21,7 +21,6 @@ const Path = require('path');
 const IP = require('ip');
 const LaunchDevTool = require('../lib/util/LaunchDevTool');
 const Del = require('del');
-const Watch = require('node-watch');
 const MessageBus = require('../lib/components/MessageBus');
 const Hosts = require('../lib/util/Hosts');
 const UpgradeNotice = require('../lib/util/UpgradeNotice');
@@ -52,6 +51,7 @@ Program['arguments']('[file]').action(function (file) {
 });
 Program.parse(process.argv);
 
+Config.verbose = Program.verbose
 //fix tj's commander bug overwrite --help
 if (Program.help == undefined) {
   Program.outputHelp();
@@ -84,9 +84,8 @@ try {
 
 // Check whether the port is occupied
 detect(Program.port).then(open => {
-    Config.inUse = open !== Program.port
+    Config.inUse = open !== +Program.port
     if (Config.inUse) {
-      Program.port = open
       Config.inUse = {
         old: Program.port,
         open

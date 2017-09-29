@@ -97,10 +97,11 @@ function exists(file) {
 let bundleDir = Path.join(__dirname, '../../frontend/', Config.bundleDir);
 httpRouter.get('/' + Config.bundleDir + '/*', function*(next) {
     let ext = Path.extname(this.params[0]);
-    if (ext == '.js' || ext == '.we' || ext == '.vue') {
+    if (ext == '.js' || ext == '.we' || ext == '.vue' || ext == '.map') {
         let dir = Path.dirname(this.params[0]);
         let basename = Path.basename(this.params[0], ext);
         let bundle = Path.join(bundleDir, dir, basename + '.js');
+        let map = Path.join(bundleDir, dir, basename + '.map');
         let we = Path.join(Config.root || bundleDir, dir, basename + '.we');
         let vue = Path.join(Config.root || bundleDir, dir, basename + '.vue');
         if (yield exists(bundle)) {
@@ -119,6 +120,11 @@ httpRouter.get('/' + Config.bundleDir + '/*', function*(next) {
             this.response.status = 200;
             this.type = 'text/javascript';
             this.response.body = Fs.createReadStream(targetPath);
+        }
+        else if (yield exists(map)) {
+            this.response.status = 200;
+            this.type = 'text/javascript';
+            this.response.body = Fs.createReadStream(map);
         }
         else {
             this.response.status = 404;

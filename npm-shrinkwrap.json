@@ -1,6 +1,6 @@
 {
   "name": "weex-devtool",
-  "version": "0.3.2-beta.4",
+  "version": "0.3.2-beta.7",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -14,9 +14,9 @@
       }
     },
     "abbrev": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.1.0.tgz",
-      "integrity": "sha1-0FVMIlZjbi9W58LlrRg/hZQo2B8="
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz",
+      "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="
     },
     "accepts": {
       "version": "1.3.4",
@@ -866,9 +866,9 @@
       "integrity": "sha1-muuabF6IY4qtFx4Wf1kAq+JINdA="
     },
     "bluebird": {
-      "version": "3.5.0",
-      "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.0.tgz",
-      "integrity": "sha1-eRQg1/VR7qKJdFOop3ZT+WYG1nw="
+      "version": "3.5.1",
+      "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.5.1.tgz",
+      "integrity": "sha512-MKiLiV+I1AA596t9w1sQJ8jkiSr5+ZKi0WKrYGUn6d1Fx+Ij4tIj+m2WMQSGczs5jZVxV339chE8iwk6F64wjA=="
     },
     "boxen": {
       "version": "1.2.1",
@@ -1359,7 +1359,7 @@
       "resolved": "https://registry.npmjs.org/consolidate/-/consolidate-0.14.5.tgz",
       "integrity": "sha1-WiUEe8dvcwcmZ8jLUsmJiI9JTGM=",
       "requires": {
-        "bluebird": "3.5.0"
+        "bluebird": "3.5.1"
       }
     },
     "constants-browserify": {
@@ -1609,7 +1609,7 @@
       "resolved": "https://registry.npmjs.org/editorconfig/-/editorconfig-0.13.3.tgz",
       "integrity": "sha512-WkjsUNVCu+ITKDj73QDvi0trvpdDWdkDyHybDGSXPfekLCqwmpD7CP7iPbvBgosNuLcI96XTDwNa75JyFl7tEQ==",
       "requires": {
-        "bluebird": "3.5.0",
+        "bluebird": "3.5.1",
         "commander": "2.11.0",
         "lru-cache": "3.2.0",
         "semver": "5.4.1",
@@ -3508,15 +3508,10 @@
         }
       }
     },
-    "js-base64": {
-      "version": "2.1.9",
-      "resolved": "https://registry.npmjs.org/js-base64/-/js-base64-2.1.9.tgz",
-      "integrity": "sha1-8OgK4DmkvWVLXygfyT8EqRSn/M4="
-    },
     "js-beautify": {
-      "version": "1.6.14",
-      "resolved": "https://registry.npmjs.org/js-beautify/-/js-beautify-1.6.14.tgz",
-      "integrity": "sha1-07j3Mi0CuSd9WL0jgmTDJ+WARM0=",
+      "version": "1.7.4",
+      "resolved": "https://registry.npmjs.org/js-beautify/-/js-beautify-1.7.4.tgz",
+      "integrity": "sha512-6YX1g+lIl0/JDxjFFbgj7fz6i0bWFa2Hdc7PfGqFhynaEiYe1NJ3R1nda0VGaRiGU82OllR+EGDoWFpGr3k5Kg==",
       "requires": {
         "config-chain": "1.1.11",
         "editorconfig": "0.13.3",
@@ -3985,7 +3980,7 @@
       "resolved": "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz",
       "integrity": "sha1-xkZdvwirzU2zWTF/eaxopkayj/k=",
       "requires": {
-        "abbrev": "1.1.0"
+        "abbrev": "1.1.1"
       }
     },
     "normalize-path": {
@@ -4257,47 +4252,19 @@
       "dev": true
     },
     "postcss": {
-      "version": "5.2.17",
-      "resolved": "https://registry.npmjs.org/postcss/-/postcss-5.2.17.tgz",
-      "integrity": "sha1-z09Ze4ZNZcikkrLqvp1wbIecOIs=",
+      "version": "6.0.13",
+      "resolved": "https://registry.npmjs.org/postcss/-/postcss-6.0.13.tgz",
+      "integrity": "sha512-nHsrD1PPTMSJDfU+osVsLtPkSP9YGeoOz4FDLN4r1DW4N5vqL1J+gACzTQHsfwIiWG/0/nV4yCzjTMo1zD8U1g==",
       "requires": {
-        "chalk": "1.1.3",
-        "js-base64": "2.1.9",
-        "source-map": "0.5.7",
-        "supports-color": "3.2.3"
+        "chalk": "2.1.0",
+        "source-map": "0.6.1",
+        "supports-color": "4.4.0"
       },
       "dependencies": {
-        "ansi-styles": {
-          "version": "2.2.1",
-          "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz",
-          "integrity": "sha1-tDLdM1i2NM914eRmQ2gkBTPB3b4="
-        },
-        "chalk": {
-          "version": "1.1.3",
-          "resolved": "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz",
-          "integrity": "sha1-qBFcVeSnAv5NFQq9OHKCKn4J/Jg=",
-          "requires": {
-            "ansi-styles": "2.2.1",
-            "escape-string-regexp": "1.0.5",
-            "has-ansi": "2.0.0",
-            "strip-ansi": "3.0.1",
-            "supports-color": "2.0.0"
-          },
-          "dependencies": {
-            "supports-color": {
-              "version": "2.0.0",
-              "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz",
-              "integrity": "sha1-U10EXOa2Nj+kARcIRimZXp3zJMc="
-            }
-          }
-        },
-        "supports-color": {
-          "version": "3.2.3",
-          "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-3.2.3.tgz",
-          "integrity": "sha1-ZawFBLOVQXHYpklGsq48u4pfVPY=",
-          "requires": {
-            "has-flag": "1.0.0"
-          }
+        "source-map": {
+          "version": "0.6.1",
+          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
+          "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
         }
       }
     },
@@ -4742,15 +4709,16 @@
       "integrity": "sha1-5wEjENj0F/TetXEhUOVni4euVl8=",
       "requires": {
         "json-stable-stringify": "0.0.1",
-        "sha.js": "2.4.8"
+        "sha.js": "2.4.9"
       },
       "dependencies": {
         "sha.js": {
-          "version": "2.4.8",
-          "resolved": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.8.tgz",
-          "integrity": "sha1-NwaMLEdra69ALRSknGf1l5IfY08=",
+          "version": "2.4.9",
+          "resolved": "https://registry.npmjs.org/sha.js/-/sha.js-2.4.9.tgz",
+          "integrity": "sha512-G8zektVqbiPHrylgew9Zg1VRB1L/DtXNUVAM6q4QLy8NE3qtHlFXTf8VLL4k1Yl6c7NMjtZUTdXV+X44nFaT6A==",
           "requires": {
-            "inherits": "2.0.3"
+            "inherits": "2.0.3",
+            "safe-buffer": "5.1.1"
           }
         }
       }
@@ -5289,31 +5257,44 @@
       }
     },
     "vue-hot-reload-api": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/vue-hot-reload-api/-/vue-hot-reload-api-2.1.0.tgz",
-      "integrity": "sha1-nKWKbg35B4VUzhcIaItleHVNht4="
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/vue-hot-reload-api/-/vue-hot-reload-api-2.1.1.tgz",
+      "integrity": "sha512-oHuG8rOJ/b8wKVZJBx3HvLyOk9klqjUpjd6YlJQ1aHy1yGyBgy62BphQ13+Tuzsxl52ZNV5EQSvd385mTPMxdg=="
     },
     "vue-style-loader": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/vue-style-loader/-/vue-style-loader-1.0.0.tgz",
-      "integrity": "sha1-q+t70PRjEwg3QSRNMHnU8URJ4Ek=",
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/vue-style-loader/-/vue-style-loader-3.0.3.tgz",
+      "integrity": "sha512-P/ihpaZKU23T1kq3E0y4c+F8sbm1HQO69EFYoLoGMSGVAHroHsGir/WQ9qUavP8dyFYHmXenzHaJ/nqd8vfaxw==",
       "requires": {
-        "loader-utils": "0.2.17"
+        "hash-sum": "1.0.2",
+        "loader-utils": "1.1.0"
+      },
+      "dependencies": {
+        "loader-utils": {
+          "version": "1.1.0",
+          "resolved": "https://registry.npmjs.org/loader-utils/-/loader-utils-1.1.0.tgz",
+          "integrity": "sha1-yYrvSIvM7aL/teLeZG1qdUQp9c0=",
+          "requires": {
+            "big.js": "3.1.3",
+            "emojis-list": "2.1.0",
+            "json5": "0.5.1"
+          }
+        }
       }
     },
     "vue-template-compiler": {
-      "version": "2.4.2",
-      "resolved": "https://registry.npmjs.org/vue-template-compiler/-/vue-template-compiler-2.4.2.tgz",
-      "integrity": "sha512-sKa2Bdvh+j6V9eQSyJRxsf8fak0FtQkCZ145aYFDVwZBhHOTt1vKrODLo4RelI1dUczKlDCp5aZ9MD7uJOZwvw==",
+      "version": "2.4.4",
+      "resolved": "https://registry.npmjs.org/vue-template-compiler/-/vue-template-compiler-2.4.4.tgz",
+      "integrity": "sha512-XdHsNi8Z5WqwuFl/Z5eLKgE2DOEEOdMk1aA459uSgvwyy+pjKLBlQWsUpAtoR6o6Wmpujw6NtinAUGuqSTituQ==",
       "requires": {
         "de-indent": "1.0.2",
         "he": "1.1.1"
       }
     },
     "vue-template-es2015-compiler": {
-      "version": "1.5.3",
-      "resolved": "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.5.3.tgz",
-      "integrity": "sha512-j3TBDtjqz7pC9XUzeSeqF5oekqPahxyUHsdG+kZKDH/V/DTexq5inYdLGstnqCUljoLC9LTj3H/5hmyToeSd1A=="
+      "version": "1.6.0",
+      "resolved": "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz",
+      "integrity": "sha512-x3LV3wdmmERhVCYy3quqA57NJW7F3i6faas++pJQWtknWT+n7k30F4TVdHvCLn48peTJFRvCpxs3UuFPqgeELg=="
     },
     "watchpack": {
       "version": "0.2.9",
@@ -5384,9 +5365,9 @@
       }
     },
     "weex-builder": {
-      "version": "0.2.12",
-      "resolved": "https://registry.npmjs.org/weex-builder/-/weex-builder-0.2.12.tgz",
-      "integrity": "sha512-FQYshmj96+6AUAhIsAE5+9qumgUtFdz9uiBFBVRp3PeVRqmsgegZtWzmJQbZD1hkg0xWTA7nlbvtbyWTDdnTfA==",
+      "version": "0.2.13-beta.2",
+      "resolved": "https://registry.npmjs.org/weex-builder/-/weex-builder-0.2.13-beta.2.tgz",
+      "integrity": "sha512-i1UPL4LIU3vpxEvcmPzm0y1jFVTzVj5I15fxHS2AQzQIJNKom/Fyg9jJLDOV30acD+qhUZO4n31cQlXdS7hgtA==",
       "requires": {
         "babel-core": "6.26.0",
         "babel-loader": "6.4.1",
@@ -10675,9 +10656,9 @@
       "integrity": "sha1-c8tB+I4uHO7YbZXR9dtLCiE8/VM="
     },
     "weex-loader": {
-      "version": "0.4.5",
-      "resolved": "https://registry.npmjs.org/weex-loader/-/weex-loader-0.4.5.tgz",
-      "integrity": "sha512-yCXevW901zJUrNOeCJYGejE7C4oCfpGnMia7Py9VqC4PEZFv8XjHYj8cZ32lSAR7W5EMwyO92CuhOdvDxrDT/w==",
+      "version": "0.5.3",
+      "resolved": "https://registry.npmjs.org/weex-loader/-/weex-loader-0.5.3.tgz",
+      "integrity": "sha512-O/9/bR631tEEzDnLuJV44Wj302TiQvxXABvvqhCudv3QH6ugqNaSlDOpK9wre8gnZtgvRf7IdeuDe+GSCXX3fA==",
       "requires": {
         "babel-loader": "6.4.1",
         "babel-plugin-transform-runtime": "6.23.0",
@@ -10689,103 +10670,10 @@
         "parse5": "2.2.3",
         "source-map": "0.5.7",
         "weex-scripter": "0.1.5",
-        "weex-styler": "0.1.10",
+        "weex-styler": "0.2.3",
         "weex-templater": "0.3.5",
         "weex-transformer": "0.4.5",
-        "weex-vue-loader": "0.2.12"
-      },
-      "dependencies": {
-        "ansi-styles": {
-          "version": "2.2.1",
-          "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz",
-          "integrity": "sha1-tDLdM1i2NM914eRmQ2gkBTPB3b4="
-        },
-        "commander": {
-          "version": "2.9.0",
-          "resolved": "https://registry.npmjs.org/commander/-/commander-2.9.0.tgz",
-          "integrity": "sha1-nJkJQXbhIkDLItbFFGCYQA/g99Q=",
-          "requires": {
-            "graceful-readlink": "1.0.1"
-          }
-        },
-        "jsonfile": {
-          "version": "2.4.0",
-          "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-2.4.0.tgz",
-          "integrity": "sha1-NzaitCi4e72gzIO1P6PWM6NcKug=",
-          "requires": {
-            "graceful-fs": "4.1.11"
-          }
-        },
-        "supports-color": {
-          "version": "2.0.0",
-          "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz",
-          "integrity": "sha1-U10EXOa2Nj+kARcIRimZXp3zJMc="
-        },
-        "weex-transformer": {
-          "version": "0.4.5",
-          "resolved": "https://registry.npmjs.org/weex-transformer/-/weex-transformer-0.4.5.tgz",
-          "integrity": "sha512-R7dmWY20b50t/S8ImGO2dmtlBN8kFUeGyxLN/HlSYH0/lSK2QQiL86V+sClfEpDLskfZF0E1Nbu+HAH8mevODQ==",
-          "requires": {
-            "chalk": "1.1.3",
-            "commander": "2.9.0",
-            "fs-extra": "0.26.7",
-            "md5": "2.1.0",
-            "parse5": "2.1.5",
-            "printf": "0.2.5",
-            "weex-scripter": "0.1.5",
-            "weex-styler": "0.2.2",
-            "weex-templater": "0.3.5"
-          },
-          "dependencies": {
-            "chalk": {
-              "version": "1.1.3",
-              "resolved": "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz",
-              "integrity": "sha1-qBFcVeSnAv5NFQq9OHKCKn4J/Jg=",
-              "requires": {
-                "ansi-styles": "2.2.1",
-                "escape-string-regexp": "1.0.5",
-                "has-ansi": "2.0.0",
-                "strip-ansi": "3.0.1",
-                "supports-color": "2.0.0"
-              }
-            },
-            "fs-extra": {
-              "version": "0.26.7",
-              "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-0.26.7.tgz",
-              "integrity": "sha1-muH92UiXeY7at20JGM9C0MMYT6k=",
-              "requires": {
-                "graceful-fs": "4.1.11",
-                "jsonfile": "2.4.0",
-                "klaw": "1.3.1",
-                "path-is-absolute": "1.0.1",
-                "rimraf": "2.6.1"
-              }
-            },
-            "md5": {
-              "version": "2.1.0",
-              "resolved": "https://registry.npmjs.org/md5/-/md5-2.1.0.tgz",
-              "integrity": "sha1-IuyS8zrJem703BbA9X+kbAHtE7s=",
-              "requires": {
-                "charenc": "0.0.2",
-                "crypt": "0.0.2",
-                "is-buffer": "1.1.5"
-              }
-            },
-            "parse5": {
-              "version": "2.1.5",
-              "resolved": "https://registry.npmjs.org/parse5/-/parse5-2.1.5.tgz",
-              "integrity": "sha1-eoZ3reJd2sBCN5Bfe+VGRVctzwU="
-            },
-            "weex-styler": {
-              "version": "0.2.2",
-              "resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.2.2.tgz",
-              "integrity": "sha512-OaZbmaNEE+sooHzlWxvfN067rYZblFW4vpjzlCFJ0Ru2Tl3XJzigcBHepIZHWA40extP2Op69ZKrmvFKI08HSQ==",
-              "requires": {
-                "css": "2.2.1"
-              }
-            }
-          }
-        }
+        "weex-vue-loader": "0.4.2"
       }
     },
     "weex-scripter": {
@@ -10883,17 +10771,17 @@
       }
     },
     "weex-styler": {
-      "version": "0.1.10",
-      "resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.1.10.tgz",
-      "integrity": "sha1-irikZIsmHwFX09LZlCu1xfbxiRw=",
+      "version": "0.2.3",
+      "resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.2.3.tgz",
+      "integrity": "sha512-uSJ+oJyJHkD3y11npAVq6Z/1mv4ZYFwv1BKzLnkgLBg1ZWijZ3PNAHA2AAzspErAzEyIP9DCpgUU6YpCsQy/LA==",
       "requires": {
         "css": "2.2.1"
       }
     },
     "weex-template-compiler": {
-      "version": "2.1.10-weex.2",
-      "resolved": "https://registry.npmjs.org/weex-template-compiler/-/weex-template-compiler-2.1.10-weex.2.tgz",
-      "integrity": "sha1-fyQHRfCYSRbDjHpSmmPXDy5yqHA=",
+      "version": "2.4.2-weex.3",
+      "resolved": "https://registry.npmjs.org/weex-template-compiler/-/weex-template-compiler-2.4.2-weex.3.tgz",
+      "integrity": "sha512-86+h/YpPrcQAl+uGTWdlAvmjDQ0+bons58L/lmIUfGu2EXnY7oVfkMeiN6qQJrDep14is76KU83n6RdrPV6dbw==",
       "requires": {
         "he": "1.1.1"
       }
@@ -10911,13 +10799,21 @@
           "version": "2.1.5",
           "resolved": "https://registry.npmjs.org/parse5/-/parse5-2.1.5.tgz",
           "integrity": "sha1-eoZ3reJd2sBCN5Bfe+VGRVctzwU="
+        },
+        "weex-styler": {
+          "version": "0.1.10",
+          "resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.1.10.tgz",
+          "integrity": "sha1-irikZIsmHwFX09LZlCu1xfbxiRw=",
+          "requires": {
+            "css": "2.2.1"
+          }
         }
       }
     },
     "weex-transformer": {
-      "version": "0.3.1",
-      "resolved": "https://registry.npmjs.org/weex-transformer/-/weex-transformer-0.3.1.tgz",
-      "integrity": "sha1-3I8ILy6b4mnuCAcitP7rlSoAHaI=",
+      "version": "0.4.5",
+      "resolved": "https://registry.npmjs.org/weex-transformer/-/weex-transformer-0.4.5.tgz",
+      "integrity": "sha512-R7dmWY20b50t/S8ImGO2dmtlBN8kFUeGyxLN/HlSYH0/lSK2QQiL86V+sClfEpDLskfZF0E1Nbu+HAH8mevODQ==",
       "requires": {
         "chalk": "1.1.3",
         "commander": "2.9.0",
@@ -10926,8 +10822,8 @@
         "parse5": "2.1.5",
         "printf": "0.2.5",
         "weex-scripter": "0.1.5",
-        "weex-styler": "0.0.17",
-        "weex-templater": "0.2.3"
+        "weex-styler": "0.2.3",
+        "weex-templater": "0.3.5"
       },
       "dependencies": {
         "ansi-styles": {
@@ -10994,47 +10890,30 @@
           "version": "2.0.0",
           "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz",
           "integrity": "sha1-U10EXOa2Nj+kARcIRimZXp3zJMc="
-        },
-        "weex-styler": {
-          "version": "0.0.17",
-          "resolved": "https://registry.npmjs.org/weex-styler/-/weex-styler-0.0.17.tgz",
-          "integrity": "sha1-kNSLTFL/5qtFnVAYNh57I5oGOVk=",
-          "requires": {
-            "css": "2.2.1"
-          }
-        },
-        "weex-templater": {
-          "version": "0.2.3",
-          "resolved": "https://registry.npmjs.org/weex-templater/-/weex-templater-0.2.3.tgz",
-          "integrity": "sha1-xeVOks6fvGBeuc8IH3F+EjiVfRo=",
-          "requires": {
-            "parse5": "2.1.5",
-            "weex-styler": "0.0.17"
-          }
         }
       }
     },
     "weex-vue-loader": {
-      "version": "0.2.12",
-      "resolved": "https://registry.npmjs.org/weex-vue-loader/-/weex-vue-loader-0.2.12.tgz",
-      "integrity": "sha1-onscX80seff56c0+hungov29c4Q=",
+      "version": "0.4.2",
+      "resolved": "https://registry.npmjs.org/weex-vue-loader/-/weex-vue-loader-0.4.2.tgz",
+      "integrity": "sha512-P+A95yXv97NumQneMiH1GbNQi8XYU9oEVcWMDmCenzf4di5fG1UvqEDEFZ4owO+3Dw5k9dF4F9mgarV/PyYKBA==",
       "requires": {
         "consolidate": "0.14.5",
         "hash-sum": "1.0.2",
         "he": "1.1.1",
-        "js-beautify": "1.6.14",
+        "js-beautify": "1.7.4",
         "loader-utils": "0.2.17",
         "lru-cache": "4.1.1",
         "object-assign": "4.1.1",
-        "postcss": "5.2.17",
+        "postcss": "6.0.13",
         "postcss-selector-parser": "2.2.3",
         "source-map": "0.5.7",
-        "vue-hot-reload-api": "2.1.0",
-        "vue-style-loader": "1.0.0",
-        "vue-template-compiler": "2.4.2",
-        "vue-template-es2015-compiler": "1.5.3",
-        "weex-styler": "0.1.10",
-        "weex-template-compiler": "2.1.10-weex.2"
+        "vue-hot-reload-api": "2.1.1",
+        "vue-style-loader": "3.0.3",
+        "vue-template-compiler": "2.4.4",
+        "vue-template-es2015-compiler": "1.6.0",
+        "weex-styler": "0.2.3",
+        "weex-template-compiler": "2.4.2-weex.3"
       }
     },
     "which": {

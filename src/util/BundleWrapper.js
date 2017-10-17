@@ -1,62 +1,62 @@
 /**
  * Created by godsong on 16/7/7.
  */
-var injectedGlobals = [
+const injectedGlobals = [
     // ES
-    'Promise',
+  'Promise',
     // W3C
-    'window',
-    'weex',
-    'service',
-    'Rax',
-    'services',
-    'global',
-    'screen',
-    'document',
-    'navigator',
-    'location',
-    'fetch',
-    'Headers',
-    'Response',
-    'Request',
-    'URL',
-    'URLSearchParams',
-    'setTimeout',
-    'clearTimeout',
-    'setInterval',
-    'clearInterval',
-    'requestAnimationFrame',
-    'cancelAnimationFrame',
-    'alert',
+  'window',
+  'weex',
+  'service',
+  'Rax',
+  'services',
+  'global',
+  'screen',
+  'document',
+  'navigator',
+  'location',
+  'fetch',
+  'Headers',
+  'Response',
+  'Request',
+  'URL',
+  'URLSearchParams',
+  'setTimeout',
+  'clearTimeout',
+  'setInterval',
+  'clearInterval',
+  'requestAnimationFrame',
+  'cancelAnimationFrame',
+  'alert',
     // ModuleJS
-    'define',
-    'require',
+  'define',
+  'require',
     // Weex
-    'bootstrap',
-    'register',
-    'render',
-    '__d',
-    '__r',
-    '__DEV__',
-    '__weex_define__',
-    '__weex_require__',
-    '__weex_viewmodel__',
-    '__weex_document__',
-    '__weex_bootstrap__',
-    '__weex_options__',
-    '__weex_data__',
-    '__weex_downgrade__',
-    '__weex_require_module__',
-    'Vue'
+  'bootstrap',
+  'register',
+  'render',
+  '__d',
+  '__r',
+  '__DEV__',
+  '__weex_define__',
+  '__weex_require__',
+  '__weex_viewmodel__',
+  '__weex_document__',
+  '__weex_bootstrap__',
+  '__weex_options__',
+  '__weex_data__',
+  '__weex_downgrade__',
+  '__weex_require_module__',
+  'Vue'
 
 ];
-const bundleWrapper = 'function __weex_bundle_entry__('+injectedGlobals.join(',')+'){"use strict";';
+const bundleWrapper = 'function __weex_bundle_entry__(' + injectedGlobals.join(',') + '){"use strict";';
 const rearRegexp = /\/\/#\s*sourceMappingURL(?!.*?\s+.)|$/;
-module.exports = function (code,sourceUrl) {
-    var match=/^\s*(\/\/.+)\r?\n/.exec(code);
-    var anno='';
-    if(match){
-        anno='$$frameworkFlag["'+(sourceUrl||'@')+'"]="'+match[1].replace(/"/g,'\\"')+'";';
-    }
-    return anno+bundleWrapper + code.replace(rearRegexp, '}\n$&');
-}
+module.exports = function (code, sourceUrl) {
+  const match = /^\s*(\/\/.+)\r?\n/.exec(code);
+  let anno = '';
+  if (match) {
+    anno = '$$frameworkFlag["' + (sourceUrl || '@') + '"]="' + match[1].replace(/"/g, '\\"') + '";';
+  }
+  return anno + bundleWrapper + code.replace(rearRegexp, '}\n$&');
+};

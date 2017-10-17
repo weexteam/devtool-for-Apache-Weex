@@ -5,7 +5,7 @@ const Emitter = require('events').EventEmitter;
 const Uuid = require('../util/Uuid');
 const Logger = require('./Logger');
 class Peer extends Emitter {
-  constructor(websocket) {
+  constructor (websocket) {
     super();
     this.messageBuffer = [];
     this.websocket = websocket;
@@ -19,10 +19,10 @@ class Peer extends Emitter {
       if (this.messageBuffer.length > 0) {}
       this.messageBuffer = [];
       this.emit('close');
-    })
+    });
   }
-  send(message) {
-    if (this.websocket.readyState == 1) {
+  send (message) {
+    if (this.websocket.readyState === 1) {
       if (Array.isArray(message)) {
         message.forEach((m) => {
           this.websocket.send(JSON.stringify(m));
@@ -36,7 +36,7 @@ class Peer extends Emitter {
       Logger.error('websocket not opened!');
     }
   }
-  setOppositePeer(peer) {
+  setOppositePeer (peer) {
     this.oppositePeer = peer;
     if (this.messageBuffer.length > 0) {
       peer.send(this.messageBuffer);
@@ -44,31 +44,31 @@ class Peer extends Emitter {
     }
   }
 }
-var _sessionMap = {};
+const _sessionMap = {};
 class P2PSession extends Emitter {
-  constructor() {
+  constructor () {
     super();
     this.peerList = [];
     this.id = Uuid();
     this.fresh = true;
   }
-  static newSession(websocket) {
-    let session = new P2PSession();
+  static newSession (websocket) {
+    const session = new P2PSession();
     session.addPeer(websocket);
     websocket._p2pSessionId = session.id;
     _sessionMap[session.id] = session;
     return session;
   }
-  static removeSession(websocket) {
-    var session = _sessionMap[websocket._p2pSessionId];
+  static removeSession (websocket) {
+    const session = _sessionMap[websocket._p2pSessionId];
     if (session) {
       session.destroy();
     }
   }
-  static join(sessionId, websocket) {
+  static join (sessionId, websocket) {
     if (_sessionMap[sessionId]) {
       websocket._p2pSessionId = sessionId;
-      var fresh = _sessionMap[sessionId].fresh;
+      const fresh = _sessionMap[sessionId].fresh;
       _sessionMap[sessionId].addPeer(websocket);
       return fresh;
     }
@@ -76,32 +76,32 @@ class P2PSession extends Emitter {
       Logger.error('can not join session,unknown sessionId[' + sessionId + ']');
     }
   }
-  join(websocket) {
+  join (websocket) {
     this.addPeer(websocket);
     return this.fresh;
   }
-  static findOppositePeer(websocket) {
-    let session = _sessionMap[websocket._p2pSessionId];
+  static findOppositePeer (websocket) {
+    const session = _sessionMap[websocket._p2pSessionId];
     if (!session) {
-      //Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
+      // Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
       return;
     }
-    let peer = session.findPeer(websocket);
+    const peer = session.findPeer(websocket);
     if (peer) {
       return peer.oppositePeer;
     }
     return null;
   }
-  static postMessage(websocket, message) {
-    let session = _sessionMap[websocket._p2pSessionId];
+  static postMessage (websocket, message) {
+    const session = _sessionMap[websocket._p2pSessionId];
     if (!session) {
-      //Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
+      // Logger.error('can not find session with [' + websocket._p2pSessionId + ']');
       return;
     }
     session.postMessage(websocket, message);
   }
-  postMessage(websocket, message) {
-    let peer = this.findPeer(websocket);
+  postMessage (websocket, message) {
+    const peer = this.findPeer(websocket);
     if (peer) {
       if (peer.oppositePeer) {
         peer.oppositePeer.send(message);
@@ -114,20 +114,20 @@ class P2PSession extends Emitter {
       Logger.error('Error:can not find the peer : ', websocket._info);
     }
   }
-  destroy() {
+  destroy () {
     this.removeAllListeners();
     this.peerList = null;
     delete _sessionMap[this.id];
   }
-  findPeer(websocket) {
+  findPeer (websocket) {
     return this.peerList.filter((peer) => peer.websocket === websocket)[0];
   }
-  addPeer(websocket) {
-    let peer = new Peer(websocket);
-    if (this.peerList.length == 0) {
+  addPeer (websocket) {
+    const peer = new Peer(websocket);
+    if (this.peerList.length === 0) {
       this.peerList.push(peer);
     }
-    else if (this.peerList.length == 1) {
+    else if (this.peerList.length === 1) {
       if (this.peerList[0].websocket === websocket) {
         this.peerList[0] = peer;
       }
@@ -140,7 +140,7 @@ class P2PSession extends Emitter {
     else {
       let replaced = false;
       this.peerList = this.peerList.map((p) => {
-        if (p.websocket == null) {
+        if (p.websocket === null) {
           console.error('bug！');
         }
         if (p.websocket && (p.websocket === websocket || p.websocket._deviceId === websocket._deviceId)) {
@@ -150,13 +150,14 @@ class P2PSession extends Emitter {
           p.websocket.removed = true;
           p.oppositePeer.setOppositePeer(peer);
           return peer;
-        } else {
+        }
+        else {
           return p;
         }
       });
       if (!replaced) {
         this.peerList.forEach(function (peer) {
-          Logger.debug('state:', peer.websocket._info)
+          Logger.debug('state:', peer.websocket._info);
         });
         Logger.debug('Peer session can not add the third peer!');
         return;
@@ -172,7 +173,7 @@ class P2PSession extends Emitter {
       }
     });
     Logger.debug('addPeer', this.id, this.peerList.length, peer.websocket._info);
-    if (this.peerList.length == 2) {
+    if (this.peerList.length === 2) {
       this.fresh = false;
     }
   }

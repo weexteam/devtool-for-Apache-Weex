@@ -34,7 +34,7 @@ if (nodeVersion.major < 6) {
   process.exit(1);
 }
 
-Program.option('-h, --help', 'display help').option('-V, --verbose', 'display logs of debugger server').option('-v, --version', 'display version').option('-p, --port [port]', 'set debugger server port', Config.port).option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path').option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true).option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader').option('-M, --manual', 'manual mode,this mode will not auto open chrome').option('--min', '').option('-l, --local', '');
+Program.option('-h, --help', 'display help').option('-V, --verbose', 'display logs of debugger server').option('-v, --version', 'display version').option('-p, --port [port]', 'set debugger server port', Config.port).option('-e, --entry [entry]', 'set the entry bundlejs path when you specific the bundle server root path').option('-m, --mode [mode]', 'set build mode [transformer|loader]', 'loader').option('--min', '').option('-l, --local', '').option('-M, --manual', 'manual mode,this mode will not auto open chrome').option('-w, --watch', 'watch we file changes auto build them and refresh debugger page![default enabled]', true).option('-H --host [host]', 'set the host ip of debugger server');
 // 支持命令后跟一个file/directory参数
 Program['arguments']('[file]').action(function (file) {
   Program.file = file;
@@ -149,7 +149,7 @@ function buildFileAndWatchIt(buildMode, filePath) {
 
 function startServerAndLaunchDevtool(entry) {
   var port = Config.inUse ? Config.inUse.open : Program.port;
-  var ip = IP.address();
+  var ip = Program.host || IP.address();
   var inUse = Config.inUse;
   var message = chalk.green('Start debugger server!');
 

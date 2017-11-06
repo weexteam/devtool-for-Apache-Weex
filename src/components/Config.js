@@ -5,7 +5,7 @@ module.exports = {
   bundleDir: 'weex',
   webpackConfig: {
     watch: true,
-    min: false
+    devtool: 'inline-source-map'
   },
   port: '8088'
 };

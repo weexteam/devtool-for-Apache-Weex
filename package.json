@@ -1,9 +1,9 @@
 {
   "name": "weex-devtool",
   "description": "weex developer tool for debugging weex app with chrome devtool",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "exolution <exolution@163.com>",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "main": "index.js",
   "keywords": [
     "weex",

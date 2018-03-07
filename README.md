@@ -1,17 +1,15 @@
 Weex-devtool
 ============
 
-[Weex Devtools] (http://alibaba.github.io/weex/doc/tools/devtools.html) is a set of weex debugging tool. The weex-devtool works as a debugging server, it cooperates with the inspect modules on [Android] (https://github.com/weexteam/weex_devtools_android) and [iOS] (https://github.com/weexteam/weex-devtool-iOS) to help user to inspect/debug weex source codes and project:
-
-    1.support android and ios;
-    2.could debug on device and emulator;
-    3.could inspect native Elements, vdom, Network, Console, Resources; 
-    4.could debug on source files like JS/weex/Rx... files;
-    5.could breakpoint and debug both JS files and native Java(Android)/C(IOS) files in the same active session.
-    6.support remote debugging, don't need USB connecting to PC.
-    7.support screencast and select element
-    8.support inspect/debug multiple app the same time
-
+[Weex Devtools](http://alibaba.github.io/weex/doc/tools/devtools.html) is a set of weex debugging tool. The weex-devtool works as a debugging server, it cooperates with the inspect modules on [Android](https://github.com/weexteam/weex_devtools_android) and [iOS](https://github.com/weexteam/weex-devtool-iOS) to help user to inspect/debug weex source codes and project:
+- support android and ios;
+- could debug on device and emulator;
+- could inspect native Elements, vdom, Network, Console, Resources; 
+- could debug on source files like JS/weex/Rx... files;
+- could breakpoint and debug both JS files and native Java(Android)/C(IOS) files in the same active session.
+- support remote debugging, don't need USB connecting to PC.
+- support screencast and select element
+- support inspect/debug multiple app the same time
 
 ## Install
 ```

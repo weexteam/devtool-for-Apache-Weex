@@ -167,12 +167,11 @@ function startServerAndLaunchDevtool(entry) {
   //   console.info('start debugger server at ' + chalk.yellow('http://' + ip + ':' + port));
   if (entry) {
     var ext = Path.extname(entry);
-    var index = Path.dirname(entry).indexOf('/');
     // To determine whether the non-folder input single file mode, if so, do not need to isolate the file scope
     if (Path.extname(Program.file)) {
-      Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
+      Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, entry.replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
     } else {
-      Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, index > 0 ? Path.dirname(entry).substring(index) : '', Path.basename(entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
+      Config.entryBundleUrl = 'http://' + ip + ':' + port + Path.join('/' + Config.bundleDir, Path.relative(Program.file, entry).replace(/\.(we|vue)$/, '.js')).replace(/\\/g, '/');
     }
     message += '\n' + chalk.grey('Also you can use Playground App to scan the qrcode on device list page.');
     message += '\n' + (ext && ext.slice(1) || 'vue').toUpperCase() + ' File(s) Mapped:              ' + chalk.yellow(Config.entryBundleUrl);
